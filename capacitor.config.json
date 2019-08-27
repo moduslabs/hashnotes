@@ -1,0 +1,7 @@
+{
+  "appId": "com.moduscreate.labs.hashnotes",
+  "appName": "HashNotes",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
