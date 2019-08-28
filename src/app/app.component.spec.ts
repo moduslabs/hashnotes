@@ -39,11 +39,12 @@ describe("AppComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create the app", async () => {
+  it("should create the app", () => {
     expect(component).toBeTruthy();
   });
 
   it("should initialize the app on Ionic platform ready", async () => {
+    // tslint:disable-next-line no-lifecycle-call
     await component.ngOnInit();
     expect(platformSpy.ready).toHaveBeenCalled();
     expect(statusBarSpy.styleDefault).toHaveBeenCalled();

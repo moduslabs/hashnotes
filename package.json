@@ -10,7 +10,7 @@
     "test.ci": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "lint-fix": "prettier \"src/**/*.{js,ts}\" --write && ng lint --fix",
-    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "lint-check-rules": "tslint-config-prettier-check ./tslint.json",
     "e2e": "ng e2e",
     "cap-open-electron": "cap open electron"
   },
