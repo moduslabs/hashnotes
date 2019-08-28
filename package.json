@@ -12,6 +12,7 @@
     "lint-fix": "prettier \"src/**/*.{js,ts}\" --write && ng lint --fix",
     "lint-check-rules": "tslint-config-prettier-check ./tslint.json",
     "e2e": "ng e2e",
+    "gimbal": "gimbal",
     "cap-open-electron": "cap open electron"
   },
   "private": true,
@@ -43,6 +44,9 @@
     "@angular/language-service": "~8.1.2",
     "@capacitor/cli": "1.1.1",
     "@ionic/angular-toolkit": "~2.0.0",
+    "@modus/gimbal": "^1.1.14",
+    "@modus/gimbal-plugin-axe": "^1.1.14",
+    "@modus/gimbal-plugin-source-map-explorer": "^1.1.14",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
