@@ -1,11 +1,12 @@
-import { browser, by, element } from 'protractor';
+// tslint:disable-next-line no-implicit-dependencies
+import { browser, by, element } from "protractor";
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  public async navigateTo(): Promise<any> {
+    return browser.get("/");
   }
 
-  getParagraphText() {
-    return element(by.deepCss('app-root ion-content')).getText();
+  public async getParagraphText(): Promise<string> {
+    return element(by.deepCss("app-root ion-content")).getText();
   }
 }

@@ -1,14 +1,15 @@
-import { AppPage } from './app.po';
+import { AppPage } from "./app.po";
 
-describe('new App', () => {
+describe("new App", () => {
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
   });
 
-  it('should be blank', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toContain('The world is your oyster.');
+  it("should be blank", async () => {
+    await page.navigateTo();
+    const text = await page.getParagraphText();
+    await expect(text).toContain("The world is your oyster.");
   });
 });
