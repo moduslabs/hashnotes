@@ -10,4 +10,4 @@ If you are a first time contributor, you can learn how from this _free_ series [
 
 ### License
 
-By contributing, you agree that your contributions will belicensed under it's [license](../LICENSE).
+By contributing, you agree that your contributions will be licensed under it's [license](../LICENSE).

@@ -7,50 +7,80 @@ Project description - one or two paragraphs. The enemy is dark and creates major
 
 - [Getting Started](#getting-started)
 - [How it Works](#how-it-works)
-- [Developing](#developing)
-  - [Prerequisites](#prerequisites)
-  - [Testing](#testing)
-  - [Contributing](#contributing)
+- [Testing](#testing)
+- [Contributing](#contributing)
 - [Modus Create](#modus-create)
-- [License](#license)
+- [Licensing](#licensing)
 
-# Getting Started
+## Getting Started
 
-{Minimal steps required for a quick software trial.}
+1. ```bash
+   git clone https://github.com/ModusCreateOrg/hashnotes
+   ```
 
-# How it works
+2. ```bash
+   cd hashnotes
+   ```
+
+3. ```bash
+   npm i
+   ```
+
+4. ```bash
+   npm start
+   ```
+
+## How it works
 
 {Describe how it works. Include images if possible.}
 
-# Developing
-
-{Show how engineers can set up a development environment and contribute.}
-
-## Prerequisites
-
-{Explain the prerequisites}
-
 ## Testing
 
-{Notes on testing}
+- Lint
+
+  ```bash
+  npm run lint
+  ```
+
+- Unit
+
+  ```bash
+  npm test
+  ```
+
+- Unit (via CI)
+
+  ```bash
+  npm run test.ci
+  ```
+
+- E2E
+
+  ```bash
+  npm run e2e
+  ```
+
+- Gimbal
+
+  ```bash
+  npm run build && npm run gimbal
+  ```
 
 ## Contributing
 
-{How can the community contribute}
+See [Contributing Guide](./.github/CONTRIBUTING.md "Contributing Guide")
 
-# Modus Create
+## Modus Create
 
-{replace PROJECT_NAME in links below with the name of this project}
+[Modus Create](https://moduscreate.com "Modus Create") is a digital product consultancy. We use a distributed team of the best talent in the world to offer a full suite of digital product design-build services; ranging from consumer facing apps, to digital migration, to agile development training, and business transformation.
 
-[Modus Create](https://moduscreate.com) is a digital product consultancy. We use a distributed team of the best talent in the world to offer a full suite of digital product design-build services; ranging from consumer facing apps, to digital migration, to agile development training, and business transformation.
-
-<a href="https://moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=PROJECT_NAME"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1533109874/modus/logo-long-black.svg" height="80" alt="Modus Create"/></a>
+<a href="https://moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1533109874/modus/logo-long-black.svg" height="80" alt="Modus Create"/></a>
 <br />
 
-This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=PROJECT_NAME).
+This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes "Modus Labs").
 
-<a href="https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=PROJECT_NAME"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1531492623/labs/logo-black.svg" height="80" alt="Modus Labs"/></a>
+<a href="https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1531492623/labs/logo-black.svg" height="80" alt="Modus Labs"/></a>
 
-# Licensing
+## Licensing
 
-This project is [MIT licensed](./LICENSE).
+This project is [MIT licensed](./LICENSE "MIT licensed").
