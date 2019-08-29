@@ -22,4 +22,25 @@ export class HomePage {
 <p>What can partners get in return for certifying? What is their incentive? #question</p>
 <p></p>
 <p>Why do 146/893 sales partner enroll but not start? #question</p>`;
+  public tags = [];
+
+  updateTags() {
+    var re = /<p>(.+)#([\w\-]+)<\/p>/g;
+    var m: any[] | RegExpExecArray;
+    var tagsNew = [];
+    do {
+      m = re.exec(this.editorContents);
+      if (m) {
+        if (tagsNew.some((tag) => tag.name === m[2])) { //merge if tag already appears in list
+          tagsNew.find((tag) => tag.name === m[2]).content.push(m[1])
+        } else {
+          tagsNew.push({
+            name: m[2],
+            content: [m[1]],
+          });
+        }
+      }
+    } while (m);
+    this.tags = tagsNew;
+  }
 }
