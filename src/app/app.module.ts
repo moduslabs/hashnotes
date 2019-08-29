@@ -16,13 +16,9 @@ import { AppComponent } from "./app.component";
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
-    // {
-    //   provide: APP_BASE_HREF,
-    //   useValue: "./",
-    // },
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ]
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  ],
 })
 export class AppModule {}
