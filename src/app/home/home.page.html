@@ -48,11 +48,11 @@
     </div>
     <div class="tags-list">
       <h1>Tag Summary</h1>
-      <div *ngFor="let tag of tags">
+      <div *ngFor="let tag of tags;trackBy: identifyTag">
         <ion-chip>
           <ion-label>#{{tag.name}}</ion-label>
         </ion-chip>
-        <ul *ngFor="let content of tag.content">
+        <ul *ngFor="let content of tag.content; trackBy: identifyContent">
           <li>
             {{content}}
           </li>

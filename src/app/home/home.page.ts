@@ -24,23 +24,31 @@ export class HomePage {
 <p>Why do 146/893 sales partner enroll but not start? #question</p>`;
   public tags = [];
 
-  updateTags() {
-    var re = /<p>(.+)#([\w\-]+)<\/p>/g;
-    var m: any[] | RegExpExecArray;
-    var tagsNew = [];
+  public updateTags(): void {
+    const re = /<p>(.+)#([\w\-]+)<\/p>/g;
+    let m: Array<any> | RegExpExecArray;
+    const tagsNew = [];
     do {
       m = re.exec(this.editorContents);
       if (m) {
-        if (tagsNew.some((tag) => tag.name === m[2])) { //merge if tag already appears in list
+        if (tagsNew.some((tag) => tag.name === m[2])) { // merge if tag already appears in list
           tagsNew.find((tag) => tag.name === m[2]).content.push(m[1])
         } else {
           tagsNew.push({
-            name: m[2],
             content: [m[1]],
+            name: m[2],
           });
         }
       }
     } while (m);
     this.tags = tagsNew;
+  }
+
+  public identifyTag(index, item): any {
+    return item.name;
+  }
+
+  public identifyContent(index, item): any {
+    return item;
   }
 }
