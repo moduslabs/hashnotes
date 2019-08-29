@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
+import { EditorModule } from "@tinymce/tinymce-angular";
 
 import { HomePage } from "./home.page";
 
@@ -10,7 +12,7 @@ describe("HomePage", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [HomePage],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), EditorModule, FormsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomePage);

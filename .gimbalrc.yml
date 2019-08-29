@@ -2,7 +2,6 @@ audits:
   - axe
   - size
   - lighthouse
-  - unused-source
   - heap-snapshot
   - source-map-explorer
 
@@ -10,12 +9,15 @@ configs:
   buildDir: www
   heap-snapshot:
     threshold:
-      Nodes: 120
-      RecalcStyleCount: 10
+      Documents: 20
+      Frames: 10
+      LayoutCount: 20
+      Nodes: 1000
+      RecalcStyleCount: 50
   lighthouse:
     threshold:
       accessibility: 80
-      "best-practices": 100
+      "best-practices": 80
       performance: 0
       pwa: 20
       seo: 90
@@ -44,9 +46,11 @@ plugins:
     thresholds:
       color-contrast: serious
       landmark-one-main: moderate
+      landmark-complementary-is-top-level: moderate
       meta-viewport: critical
       region: moderate
       page-has-heading-one: moderate
+      scrollable-region-focusable: moderate
   - plugin: "@modus/gimbal-plugin-source-map-explorer"
     bundles:
       - path: "*.js"
