@@ -41,7 +41,7 @@
     "@angular-devkit/schematics": "~8.1.2",
     "@angular/cli": "~8.1.2",
     "@angular/compiler-cli": "~8.1.2",
-    "@angular/language-service": "~8.1.2",
+    "@angular/language-service": "~8.2.4",
     "@capacitor/cli": "1.1.1",
     "@ionic/angular-toolkit": "~2.0.0",
     "@modus/gimbal": "^1.1.14",
