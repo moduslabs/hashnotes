@@ -24,7 +24,7 @@ configs:
       - path: www/main-*.js
         maxSize: 3 KB
       - path: www/polyfills-es5.js
-        maxSize: 90 KB
+        maxSize: 200 KB
       - path: www/runtime-*.js
         maxSize: 1.75 KB
       - path: www/styles-*.js
