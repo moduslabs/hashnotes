@@ -33,6 +33,8 @@ jobs:
         run: npm run build
       - name: Test - gimbal
         run: npm run gimbal
+        env:
+          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Build:
     runs-on: ubuntu-latest
