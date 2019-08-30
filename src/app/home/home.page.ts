@@ -44,9 +44,8 @@ export class HomePage {
     tagsNew.forEach(tag => {
       const taggedLines = editorLines.filter((line) => line.includes(tag.name))
       taggedLines.forEach((line) => {
-        let findContent = /(<\w+>)?(.*?)\s*#/g;
+        const findContent = /(<\w+>)?(.*?)\s*#/g;
         m = findContent.exec(line)
-        console.log(m)
         if (m) {
           tag.content.push(m[2])
         } else {
