@@ -25,22 +25,35 @@ export class HomePage {
   public tags = [];
 
   public updateTags(): void {
-    const re = /<p>(.+)#([\w\-]+)<\/p>/g;
+    const findTags = /#[\w\-]+/g;
     let m: Array<any> | RegExpExecArray;
     const tagsNew = [];
     do {
-      m = re.exec(this.editorContents);
+      m = findTags.exec(this.editorContents);
       if (m) {
-        if (tagsNew.some((tag) => tag.name === m[2])) { // merge if tag already appears in list
-          tagsNew.find((tag) => tag.name === m[2]).content.push(m[1])
-        } else {
+        if (!tagsNew.some((tag) => tag.name === m[0])) { // skip if tag already appears in list
           tagsNew.push({
-            content: [m[1]],
-            name: m[2],
+            content: [],
+            name: m[0],
           });
         }
       }
     } while (m);
+    
+    const editorLines = this.editorContents.split("\n");
+    tagsNew.forEach(tag => {
+      const taggedLines = editorLines.filter((line) => line.includes(tag.name))
+      taggedLines.forEach((line) => {
+        let findContent = /(<\w+>)?(.*?)\s*#/g;
+        m = findContent.exec(line)
+        console.log(m)
+        if (m) {
+          tag.content.push(m[2])
+        } else {
+          tag.content.push("") // shouldn't execute
+        }
+      });
+    });
     this.tags = tagsNew;
   }
 

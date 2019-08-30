@@ -50,7 +50,7 @@
       <h1>Tag Summary</h1>
       <div *ngFor="let tag of tags;trackBy: identifyTag">
         <ion-chip>
-          <ion-label>#{{tag.name}}</ion-label>
+          <ion-label>{{tag.name}}</ion-label>
         </ion-chip>
         <ul *ngFor="let content of tag.content; trackBy: identifyContent">
           <li>
