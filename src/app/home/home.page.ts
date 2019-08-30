@@ -36,6 +36,8 @@ export class HomePage {
   }
 
   public onContentChange(): void {
-    this.selectedNote.updatedAt = new Date();
+    const now = new Date();
+    this.selectedNote.updatedAt = now;
+    this.selectedNote.displayDate = this.notesProvider.formatDate(now);
   }
 }
