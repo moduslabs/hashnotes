@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule } from "@angular/forms";
-import { IonicModule } from "@ionic/angular";
-import { EditorModule } from "@tinymce/tinymce-angular";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
-import { HomePage } from "./home.page";
+import { HomePage } from './home.page';
 
-describe("HomePage", () => {
+describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
 
@@ -20,7 +20,7 @@ describe("HomePage", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

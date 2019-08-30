@@ -38,6 +38,7 @@
         --padding-bottom: 0.5rem;
         --padding-start: 1rem;
         --padding-top: 0.5rem;
+        cursor: pointer;
 
         &.selected {
           --background: #000000;
@@ -49,9 +50,11 @@
           color: #ffffff;
         }
 
-        h2 {
-          font-weight: bold;
-          margin-bottom: 0.5rem;
+        .content {
+          max-height: 4.5rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .date {

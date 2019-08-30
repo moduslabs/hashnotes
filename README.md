@@ -7,6 +7,7 @@ Project description - one or two paragraphs. The enemy is dark and creates major
 
 - [Getting Started](#getting-started)
 - [How it Works](#how-it-works)
+- [Start development build with Electron](#start-development-build-with-electron)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [Modus Create](#modus-create)
@@ -33,6 +34,24 @@ Project description - one or two paragraphs. The enemy is dark and creates major
 ## How it works
 
 {Describe how it works. Include images if possible.}
+
+## Start development build with Electron
+
+1. Add Electron to Capacitor
+
+   - Note: You only need to do this step once
+
+   ```bash
+   ./node_modules/.bin/cap add electron
+   ```
+
+2. ```bash
+   npm run build
+   ```
+
+3. ```bash
+   npm run cap-open-electron
+   ```
 
 ## Testing
 
@@ -68,19 +87,19 @@ Project description - one or two paragraphs. The enemy is dark and creates major
 
 ## Contributing
 
-See [Contributing Guide](./.github/CONTRIBUTING.md "Contributing Guide")
+See [Contributing Guide](./.github/CONTRIBUTING.md 'Contributing Guide')
 
 ## Modus Create
 
-[Modus Create](https://moduscreate.com "Modus Create") is a digital product consultancy. We use a distributed team of the best talent in the world to offer a full suite of digital product design-build services; ranging from consumer facing apps, to digital migration, to agile development training, and business transformation.
+[Modus Create](https://moduscreate.com 'Modus Create') is a digital product consultancy. We use a distributed team of the best talent in the world to offer a full suite of digital product design-build services; ranging from consumer facing apps, to digital migration, to agile development training, and business transformation.
 
 <a href="https://moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1533109874/modus/logo-long-black.svg" height="80" alt="Modus Create"/></a>
 <br />
 
-This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes "Modus Labs").
+This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes 'Modus Labs').
 
 <a href="https://labs.moduscreate.com/?utm_source=labs&utm_medium=github&utm_campaign=HashNotes"><img src="https://res.cloudinary.com/modus-labs/image/upload/h_80/v1531492623/labs/logo-black.svg" height="80" alt="Modus Labs"/></a>
 
 ## Licensing
 
-This project is [MIT licensed](./LICENSE "MIT licensed").
+This project is [MIT licensed](./LICENSE 'MIT licensed').
