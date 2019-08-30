@@ -50,7 +50,7 @@
     "@modus/gimbal-plugin-source-map-explorer": "^1.1.14",
     "@types/jasmine": "~3.4.0",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "~12.7.3",
     "angular-tslint-rules": "^1.18.0",
     "cap": "^0.2.1",
     "codelyzer": "^5.1.0",
