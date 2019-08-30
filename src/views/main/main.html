@@ -1,0 +1,17 @@
+<ion-content>
+  <div class="main-container">
+    <hn-note-sidebar
+      (noteSelection)="onNoteSelection($event)"
+      [notes]="notes"
+      [selectedNote]="selectedNote"
+      [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"
+    ></hn-note-sidebar>
+    <hn-note-editor
+      (noteEdit)="onNoteEdit($event)"
+      [note]="selectedNote"
+    ></hn-note-editor>
+    <hn-tag-sidebar 
+      [noteContent]="selectedNote.content"
+    ></hn-tag-sidebar>
+  </div>
+</ion-content>

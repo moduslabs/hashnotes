@@ -1,0 +1,13 @@
+<div class="tag-sidebar">
+  <h1>Tag Summary</h1>
+  <div *ngFor="let tag of tags; trackBy: tagTracker">
+    <ion-chip>
+      <ion-label>{{tag.name}}</ion-label>
+    </ion-chip>
+    <ul *ngFor="let content of tag.content; trackBy: contentTracker">
+      <li>
+        <div class="content" [innerHTML]="content"></div>
+      </li>
+    </ul>
+  </div>
+</div>

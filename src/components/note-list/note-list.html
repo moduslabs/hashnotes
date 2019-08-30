@@ -1,0 +1,14 @@
+<div class="note-list">
+  <ion-list>
+    <ion-item
+      *ngFor="let note of notes; trackBy: tracker"
+      [ngClass]="{ selected: note === selectedNote }"
+      (click)="onNoteClick(note)"
+    >
+      <ion-label>
+        <div class="content" [innerHTML]="note.content"></div>
+        <div class="date">{{ note.displayDate }}</div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</div>
