@@ -1,0 +1,10 @@
+<div class="note-editor">
+  <editor
+    *ngIf="note"
+    [init]="{ height: '100%' }"
+    [(ngModel)]="note.content"
+    (onChange)="onEditorContentChange($event)"
+    (onKeyUp)="onEditorContentChange($event)"
+    (onInit)="onEditorInit($event)"
+  ></editor>
+</div>

@@ -3,19 +3,19 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { EditorModule } from '@tinymce/tinymce-angular';
 
-import { HomePage } from './home.page';
+import { NoteEditorComponent } from './note-editor';
 
-describe('HomePage', () => {
-  let component: HomePage;
-  let fixture: ComponentFixture<HomePage>;
+describe('NoteEditorComponent', () => {
+  let component: NoteEditorComponent;
+  let fixture: ComponentFixture<NoteEditorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomePage],
+      declarations: [NoteEditorComponent],
       imports: [IonicModule.forRoot(), EditorModule, FormsModule],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePage);
+    fixture = TestBed.createComponent(NoteEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

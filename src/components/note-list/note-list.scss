@@ -1,0 +1,35 @@
+ion-list {
+  background: transparent;
+
+  ion-item {
+    --background: transparent;
+    --color: #ffffff;
+    --padding-bottom: 0.5rem;
+    --padding-start: 1rem;
+    --padding-top: 0.5rem;
+    cursor: pointer;
+
+    &.selected {
+      --background: #000000;
+      --padding-start: calc(1rem - 3px);
+      border-left: 3px solid #ff5c5d;
+    }
+
+    * {
+      color: #ffffff;
+    }
+
+    .content {
+      max-height: 4.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .date {
+      color: #beb8b8;
+      font-size: 12px;
+      margin-top: 1rem;
+    }
+  }
+}

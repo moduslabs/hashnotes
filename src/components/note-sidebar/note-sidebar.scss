@@ -1,0 +1,22 @@
+.note-sidebar {
+  background-color: #1b1b1b;
+  height: 100%;
+  overflow-y: auto;
+  width: 240px;
+
+  ion-searchbar {
+    background-color: #000000;
+    padding: 1rem;
+  }
+
+  ion-button {
+    margin: 1rem 1rem 0.5rem;
+  }
+
+  hr {
+    border-bottom: 1px solid #5c5c5c;
+    height: 0;
+    margin: 0 1rem;
+    width: calc(100% - 2rem);
+  }
+}

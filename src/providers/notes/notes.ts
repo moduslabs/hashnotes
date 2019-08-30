@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import * as uuidv4 from 'uuid/v4';
 
 import { Note } from '../../interfaces/note';
@@ -7,6 +7,7 @@ import { Note } from '../../interfaces/note';
   providedIn: 'root',
 })
 export class NotesProvider {
+  private static readonly NEW_NOTE_CONTENT = '<h1></h1>';
   private static readonly DATE_FORMAT_WEEKDAY = new Intl.DateTimeFormat(
     undefined,
     {
@@ -30,7 +31,7 @@ export class NotesProvider {
     },
   );
 
-  public notes: Array<Note> = [
+  public activeNotes: Array<Note> = [
     {
       content: `<h1>WebEx University Kickoff Notes</h1>
 <p>Todd Wilkens: runs partner ops for CC #people</p>
@@ -50,7 +51,7 @@ export class NotesProvider {
 <p>Why do 146/893 sales partner enroll but not start? #question</p>`,
       createdAt: new Date(),
       deletedAt: undefined,
-      displayDate: this.formatDate(new Date()),
+      displayDate: NotesProvider.formatDate(new Date()),
       id: uuidv4(),
       updatedAt: new Date(),
     },
@@ -60,7 +61,9 @@ export class NotesProvider {
 <p>Do a rewind. Haven't thought about</p>`,
       createdAt: new Date('2019-08-29T20:05:00.000Z'),
       deletedAt: undefined,
-      displayDate: this.formatDate(new Date('2019-08-29T20:05:00.000Z')),
+      displayDate: NotesProvider.formatDate(
+        new Date('2019-08-29T20:05:00.000Z'),
+      ),
       id: uuidv4(),
       updatedAt: new Date('2019-08-29T20:05:00.000Z'),
     },
@@ -70,7 +73,9 @@ export class NotesProvider {
 <p>Let's start with some ideas</p>`,
       createdAt: new Date('2019-08-28T10:39:00.000Z'),
       deletedAt: undefined,
-      displayDate: this.formatDate(new Date('2019-08-28T10:39:00.000Z')),
+      displayDate: NotesProvider.formatDate(
+        new Date('2019-08-28T10:39:00.000Z'),
+      ),
       id: uuidv4(),
       updatedAt: new Date('2019-08-28T10:39:00.000Z'),
     },
@@ -80,39 +85,16 @@ export class NotesProvider {
 <p>Time to start hashing some notes</p>`,
       createdAt: new Date('2019-08-20T00:00:00.000Z'),
       deletedAt: undefined,
-      displayDate: this.formatDate(new Date('2019-08-20T00:00:00.000Z')),
+      displayDate: NotesProvider.formatDate(
+        new Date('2019-08-20T00:00:00.000Z'),
+      ),
       id: uuidv4(),
       updatedAt: new Date('2019-08-20T00:00:00.000Z'),
     },
   ].sort(NotesProvider.sortNotes);
+  public trashNotes: Array<Note> = [].sort(NotesProvider.sortNotes);
 
-  private static sortNotes(noteA: Note, noteB: Note): number {
-    return noteB.updatedAt.getTime() - noteA.updatedAt.getTime();
-  }
-
-  public createNote(
-    { content = '' }: { content?: string } = { content: '' },
-  ): Note {
-    const now = new Date();
-    const note = {
-      content,
-      createdAt: now,
-      deletedAt: undefined,
-      displayDate: this.formatDate(now),
-      id: uuidv4(),
-      updatedAt: now,
-    };
-    this.notes.push(note);
-    this.notes.sort(NotesProvider.sortNotes);
-
-    return note;
-  }
-
-  public tracker(_index: number, note: Note): string {
-    return note ? note.id : undefined;
-  }
-
-  public formatDate(date: Date): string {
+  public static formatDate(date: Date): string {
     const now = new Date();
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -132,5 +114,35 @@ export class NotesProvider {
     }
 
     return NotesProvider.DATE_FORMAT_OLDER_THAN_A_WEEK.format(date);
+  }
+
+  public static sortNotes(noteA: Note, noteB: Note): number {
+    return noteB.updatedAt.getTime() - noteA.updatedAt.getTime();
+  }
+
+  constructor() {
+    if (!this.activeNotes.length) {
+      this.createNote();
+    }
+  }
+
+  public createNote(
+    { content = NotesProvider.NEW_NOTE_CONTENT }: { content?: string } = {
+      content: NotesProvider.NEW_NOTE_CONTENT,
+    },
+  ): Note {
+    const now = new Date();
+    const note = {
+      content,
+      createdAt: now,
+      deletedAt: undefined,
+      displayDate: NotesProvider.formatDate(now),
+      id: uuidv4(),
+      updatedAt: now,
+    };
+    this.activeNotes.push(note);
+    this.activeNotes.sort(NotesProvider.sortNotes);
+
+    return note;
   }
 }

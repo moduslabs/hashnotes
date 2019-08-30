@@ -17,7 +17,7 @@ configs:
   lighthouse:
     threshold:
       accessibility: 80
-      "best-practices": 80
+      'best-practices': 80
       performance: 0
       pwa: 20
       seo: 90
@@ -42,8 +42,9 @@ outputs:
   markdown: artifacts/gimbal.md
 
 plugins:
-  - plugin: "@modus/gimbal-plugin-axe"
+  - plugin: '@modus/gimbal-plugin-axe'
     thresholds:
+      aria-allowed-attr: critical
       color-contrast: serious
       landmark-one-main: moderate
       landmark-complementary-is-top-level: moderate
@@ -51,8 +52,8 @@ plugins:
       region: moderate
       page-has-heading-one: moderate
       scrollable-region-focusable: moderate
-  - plugin: "@modus/gimbal-plugin-source-map-explorer"
+  - plugin: '@modus/gimbal-plugin-source-map-explorer'
     bundles:
-      - path: "*.js"
+      - path: '*.js'
         thresholds:
           <unmapped>: 5 MB
