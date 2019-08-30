@@ -1,11 +1,11 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
-import { IonicModule } from "@ionic/angular";
-import { EditorModule } from "@tinymce/tinymce-angular";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
-import { HomePage } from "./home.page";
+import { HomePage } from './home.page';
 
 @NgModule({
   declarations: [HomePage],
@@ -16,7 +16,7 @@ import { HomePage } from "./home.page";
     RouterModule.forChild([
       {
         component: HomePage,
-        path: "",
+        path: '',
       },
     ]),
     EditorModule,
