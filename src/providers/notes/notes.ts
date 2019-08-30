@@ -7,6 +7,29 @@ import { Note } from '../../interfaces/note';
   providedIn: 'root',
 })
 export class NotesProvider {
+  private static readonly DATE_FORMAT_WEEKDAY = new Intl.DateTimeFormat(
+    undefined,
+    {
+      weekday: 'long',
+    },
+  );
+  private static readonly DATE_FORMAT_TIME = new Intl.DateTimeFormat(
+    undefined,
+    {
+      hour: '2-digit',
+      hour12: true,
+      minute: '2-digit',
+    },
+  );
+  private static readonly DATE_FORMAT_OLDER_THAN_A_WEEK = new Intl.DateTimeFormat(
+    undefined,
+    {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    },
+  );
+
   public notes: Array<Note> = [
     {
       content: `<h1>WebEx University Kickoff Notes</h1>
@@ -25,37 +48,41 @@ export class NotesProvider {
 <p>What can partners get in return for certifying? What is their incentive? #question</p>
 <p></p>
 <p>Why do 146/893 sales partner enroll but not start? #question</p>`,
-      createdAt: new Date('2019-08-30T00:00:00.000Z'),
+      createdAt: new Date(),
       deletedAt: undefined,
+      displayDate: this.formatDate(new Date()),
       id: uuidv4(),
-      updatedAt: new Date('2019-08-30T00:00:00.000Z'),
+      updatedAt: new Date(),
     },
     {
       content: `<h1>AARP Weekly Meeting</h1>
 <p>Agenda:</p>
 <p>Do a rewind. Haven't thought about</p>`,
-      createdAt: new Date('2019-08-29T00:00:00.000Z'),
+      createdAt: new Date('2019-08-29T20:05:00.000Z'),
       deletedAt: undefined,
+      displayDate: this.formatDate(new Date('2019-08-29T20:05:00.000Z')),
       id: uuidv4(),
-      updatedAt: new Date('2019-08-29T00:00:00.000Z'),
+      updatedAt: new Date('2019-08-29T20:05:00.000Z'),
     },
     {
       content: `<h1>Motherboard Weekly Meeting</h1>
 <p>Agenda:</p>
 <p>Let's start with some ideas</p>`,
-      createdAt: new Date('2019-08-28T00:00:00.000Z'),
+      createdAt: new Date('2019-08-28T10:39:00.000Z'),
       deletedAt: undefined,
+      displayDate: this.formatDate(new Date('2019-08-28T10:39:00.000Z')),
       id: uuidv4(),
-      updatedAt: new Date('2019-08-28T00:00:00.000Z'),
+      updatedAt: new Date('2019-08-28T10:39:00.000Z'),
     },
     {
       content: `<h1>HashNotes Weekly Meeting</h1>
 <p>Agenda:</p>
 <p>Time to start hashing some notes</p>`,
-      createdAt: new Date('2019-08-27T00:00:00.000Z'),
+      createdAt: new Date('2019-08-20T00:00:00.000Z'),
       deletedAt: undefined,
+      displayDate: this.formatDate(new Date('2019-08-20T00:00:00.000Z')),
       id: uuidv4(),
-      updatedAt: new Date('2019-08-27T00:00:00.000Z'),
+      updatedAt: new Date('2019-08-20T00:00:00.000Z'),
     },
   ].sort(NotesProvider.sortNotes);
 
@@ -71,6 +98,7 @@ export class NotesProvider {
       content,
       createdAt: now,
       deletedAt: undefined,
+      displayDate: this.formatDate(now),
       id: uuidv4(),
       updatedAt: now,
     };
@@ -82,5 +110,27 @@ export class NotesProvider {
 
   public tracker(_index: number, note: Note): string {
     return note ? note.id : undefined;
+  }
+
+  public formatDate(date: Date): string {
+    const now = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    if (date.toDateString() === now.toDateString()) {
+      return `Today, ${NotesProvider.DATE_FORMAT_TIME.format(date)}`;
+    }
+    if (date.toDateString() === yesterday.toDateString()) {
+      return `Yesterday, ${NotesProvider.DATE_FORMAT_TIME.format(date)}`;
+    }
+    if (date.getTime() > oneWeekAgo.getTime()) {
+      return `${NotesProvider.DATE_FORMAT_WEEKDAY.format(
+        date,
+      )}, ${NotesProvider.DATE_FORMAT_TIME.format(date)}`;
+    }
+
+    return NotesProvider.DATE_FORMAT_OLDER_THAN_A_WEEK.format(date);
   }
 }
