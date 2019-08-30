@@ -31,8 +31,8 @@ jobs:
         run: npm run e2e
       - name: Build
         run: npm run build
-      - name: Test - gimbal
-        run: npm run gimbal
+      - name: Test - Gimbal
+        uses: ModusCreateOrg/gimbal/action@master
         env:
           GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
