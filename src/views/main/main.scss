@@ -1,0 +1,23 @@
+.main-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  hn-note-sidebar,
+  hn-note-editor,
+  hn-tag-sidebar {
+    height: 100%;
+  }
+
+  hn-note-sidebar {
+    flex-shrink: 0;
+  }
+
+  hn-note-editor {
+    flex-grow: 1;
+  }
+
+  hn-tag-sidebar {
+    flex-shrink: 0;
+  }
+}
