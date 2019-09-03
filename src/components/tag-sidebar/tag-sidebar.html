@@ -1,33 +1,13 @@
 <div class="tag-sidebar">
   <h1>Tag Summary</h1>
-  <ion-chip>
-    <ion-label>#people</ion-label>
-  </ion-chip>
-  <ul>
-    <li>
-      Todd Wilkens: runs partner ops for CC
-    </li>
-    <li>
-      Eric Wilkens: Cloud ops subset, provisioning, partner help desk
-    </li>
-  </ul>
-  <ion-chip>
-    <ion-label>#pain-point</ion-label>
-  </ion-chip>
-  <ul>
-    <li>
-      Sell what we have vs what we don't have
-    </li>
-  </ul>
-  <ion-chip>
-    <ion-label>#question</ion-label>
-  </ion-chip>
-  <ul>
-    <li>
-      What can partners get in return for certifying? What is their incentive?
-    </li>
-    <li>
-      Why do 146/893 sales partner enroll but not start?
-    </li>
-  </ul>
+  <div *ngFor="let tag of tags; trackBy: tagTracker">
+    <ion-chip>
+      <ion-label>{{tag.name}}</ion-label>
+    </ion-chip>
+    <ul *ngFor="let content of tag.content; trackBy: contentTracker">
+      <li>
+        <div class="content" [innerHTML]="content"></div>
+      </li>
+    </ul>
+  </div>
 </div>
