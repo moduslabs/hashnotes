@@ -21,6 +21,8 @@ export class NoteSidebarComponent {
   @Input() public readonly selectedNote: Note;
   @Output() public readonly noteSelection = new EventEmitter();
 
+  public searchText = '';
+
   constructor(public notesProvider: NotesProvider) {}
 
   public onNewNoteButtonClick(): void {
@@ -30,5 +32,9 @@ export class NoteSidebarComponent {
 
   public onNoteSelection(note: Note): void {
     this.noteSelection.emit(note);
+  }
+
+  public onSearchChange(event: any): void {
+    this.searchText = event.detail.value;
   }
 }
