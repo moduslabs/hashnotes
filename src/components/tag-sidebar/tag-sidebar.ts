@@ -9,7 +9,6 @@ import { Tag } from '../../interfaces/tag';
   templateUrl: 'tag-sidebar.html',
 })
 export class TagSidebarComponent {
-
   @Input() public set noteContent(noteContent: string) {
     this._noteContent = noteContent;
     this.onNoteContentChange();
@@ -39,6 +38,28 @@ export class TagSidebarComponent {
       );
   }
 
+  private static findTagsInNoteContent({
+    noteContent,
+  }: {
+    noteContent: string;
+  }): Array<Tag> {
+    const tagMatches =
+      noteContent.match(TagSidebarComponent.TAG_REGEX_GLOBAL) || [];
+    const tagMatchesUnique = [...new Set(tagMatches)];
+
+    const noteContentLines = noteContent.split('\n');
+
+    return tagMatchesUnique.map(
+      (tagName: string): Tag => ({
+        content: TagSidebarComponent.findTagContentInNoteContentLines({
+          noteContentLines,
+          tagName,
+        }),
+        name: tagName,
+      }),
+    );
+  }
+
   public tagTracker(_index: number, tag: Tag): string {
     return tag.name;
   }
@@ -49,23 +70,9 @@ export class TagSidebarComponent {
 
   private onNoteContentChange(): void {
     this.tags.length = 0;
-    this.tags.push(...this.findTagsInNoteContent());
-  }
-
-  private findTagsInNoteContent(): Array<Tag> {
-    const tagMatches =
-      this.noteContent.match(TagSidebarComponent.TAG_REGEX_GLOBAL) || [];
-    const tagMatchesUnique = [...new Set(tagMatches)];
-
-    const noteContentLines = this.noteContent.split('\n');
-
-    return tagMatchesUnique.map(
-      (tagName: string): Tag => ({
-        content: TagSidebarComponent.findTagContentInNoteContentLines({
-          noteContentLines,
-          tagName,
-        }),
-        name: tagName,
+    this.tags.push(
+      ...TagSidebarComponent.findTagsInNoteContent({
+        noteContent: this.noteContent,
       }),
     );
   }
