@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { Note } from '../../interfaces/note';
+import { Tag } from '../../interfaces/tag';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,49 +8,65 @@ import { Note } from '../../interfaces/note';
   styleUrls: ['tag-sidebar.scss'],
   templateUrl: 'tag-sidebar.html',
 })
-export class TagSidebarComponent implements OnChanges {
-  @Input() public readonly noteContent: string;
-  
-  public tags = [];
+export class TagSidebarComponent {
 
-  public ngOnChanges(): void {
-    const findTags = /#[\w\-]+/g;
-    let m: Array<any> | RegExpExecArray;
-    const tagsNew = [];
-    do {
-      m = findTags.exec(this.noteContent);
-      if (m) {
-        if (!tagsNew.some((tag) => tag.name === m[0])) { // skip if tag already appears in list
-          tagsNew.push({
-            content: [],
-            name: m[0],
-          });
-        }
-      }
-    } while (m);
-    
-    const editorLines = this.noteContent.split("\n");
-    tagsNew.forEach(tag => {
-      const taggedLines = editorLines.filter((line) => line.includes(tag.name))
-      taggedLines.forEach((line) => {
-        const findContent = /(<\w+>)?(.*?)\s*#/g;
-        m = findContent.exec(line)
-        if (m) {
-          tag.content.push(m[2])
-        } else {
-          tag.content.push("") // shouldn't execute
-        }
-      });
-    });
+  @Input() public set noteContent(noteContent: string) {
+    this._noteContent = noteContent;
+    this.onNoteContentChange();
+  }
+  public get noteContent(): string {
+    return this._noteContent;
+  }
+  private static readonly TAG_REGEX_GLOBAL = /#[\w\-]+/g;
+  private static readonly TAG_CONTENT_REGEX = /(?:<\w+>)?(.*?)(?:\s*#)/;
 
-    this.tags = tagsNew;
+  public tags: Array<Tag> = [];
+
+  private _noteContent = '';
+
+  private static findTagContentInNoteContentLines({
+    noteContentLines,
+    tagName,
+  }: {
+    noteContentLines: Array<string>;
+    tagName: string;
+  }): Array<string> {
+    return noteContentLines
+      .filter((line: string): boolean => line.includes(tagName))
+      .map(
+        (line: string): string =>
+          line.match(TagSidebarComponent.TAG_CONTENT_REGEX)[1],
+      );
   }
 
-  public tagTracker(index, item): any {
-    return item.name;
+  public tagTracker(_index: number, tag: Tag): string {
+    return tag.name;
   }
 
-  public contentTracker(index, item): any {
-    return item;
+  public contentTracker(_index: number, content): string {
+    return content;
+  }
+
+  private onNoteContentChange(): void {
+    this.tags.length = 0;
+    this.tags.push(...this.findTagsInNoteContent());
+  }
+
+  private findTagsInNoteContent(): Array<Tag> {
+    const tagMatches =
+      this.noteContent.match(TagSidebarComponent.TAG_REGEX_GLOBAL) || [];
+    const tagMatchesUnique = [...new Set(tagMatches)];
+
+    const noteContentLines = this.noteContent.split('\n');
+
+    return tagMatchesUnique.map(
+      (tagName: string): Tag => ({
+        content: TagSidebarComponent.findTagContentInNoteContentLines({
+          noteContentLines,
+          tagName,
+        }),
+        name: tagName,
+      }),
+    );
   }
 }
