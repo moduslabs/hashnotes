@@ -61,10 +61,10 @@ export class TagSidebarComponent {
   }
 
   public tagTracker(_index: number, tag: Tag): string {
-    return tag.name;
+    return `${tag.name}-${tag.content.join('-')}`;
   }
 
-  public contentTracker(_index: number, content): string {
+  public contentTracker(_index: number, content: string): string {
     return content;
   }
 
