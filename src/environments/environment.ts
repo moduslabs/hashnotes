@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  tinyMceApiKey: '5r8oemkihto3c9vhxgl8948pjq5l0qf9si4783ykykf3oyvt',
 };
 
 /*

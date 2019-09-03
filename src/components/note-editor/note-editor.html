@@ -1,6 +1,7 @@
 <div class="note-editor">
   <editor
     *ngIf="note"
+    [apiKey]="tinyMceApiKey"
     [init]="tinyMceConfig"
     [(ngModel)]="note.content"
     (onChange)="onEditorContentChange($event)"
