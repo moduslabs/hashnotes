@@ -26,6 +26,39 @@ export class NoteEditorComponent {
   }
 
   @Output() public readonly noteEdit = new EventEmitter();
+  @Output() public readonly newNoteButtonClick = new EventEmitter();
+  @Output() public readonly deleteNoteButtonClick = new EventEmitter();
+
+  public tinyMceConfig = {
+    height: '100%',
+    menu: {
+      modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
+    },
+    menubar: 'modusFile edit view format',
+    setup: (editor) => {
+      editor.ui.registry.addMenuItem('modusnewnote', {
+        onAction: () => {
+          this.newNoteButtonClick.emit();
+        },
+        text: 'New note',
+      });
+      editor.ui.registry.addMenuItem('modusdeletenote', {
+        onAction: () => {
+          this.deleteNoteButtonClick.emit(this.note);
+        },
+        text: 'Delete note',
+      });
+      editor.ui.registry.addButton('modustrash', {
+        icon: 'remove',
+        onAction: () => {
+          this.deleteNoteButtonClick.emit(this.note);
+        },
+        tooltip: 'Delete note',
+      });
+    },
+    toolbar:
+      'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
+  };
 
   private _note: Note;
   private _noteContent: string;

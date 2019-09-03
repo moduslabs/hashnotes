@@ -2,16 +2,20 @@
   <div class="main-container">
     <hn-note-sidebar
       (noteSelection)="onNoteSelection($event)"
+      (newNoteButtonClick)="onNewNoteButtonClick($event)"
+      (trashButtonClick)="onTrashButtonClick($event)"
+      (backToNoteButtonClick)="onBackToNoteButtonClick($event)"
       [notes]="notes"
       [selectedNote]="selectedNote"
       [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"
+      [isShowingActiveNotes]="isShowingActiveNotes"
     ></hn-note-sidebar>
     <hn-note-editor
       (noteEdit)="onNoteEdit($event)"
+      (newNoteButtonClick)="onNewNoteButtonClick($event)"
+      (deleteNoteButtonClick)="onDeleteNoteButtonClick($event)"
       [note]="selectedNote"
     ></hn-note-editor>
-    <hn-tag-sidebar 
-      [noteContent]="selectedNote.content"
-    ></hn-tag-sidebar>
+    <hn-tag-sidebar [noteContent]="selectedNote.content"></hn-tag-sidebar>
   </div>
 </ion-content>
