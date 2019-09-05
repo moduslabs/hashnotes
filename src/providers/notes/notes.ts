@@ -27,6 +27,7 @@ export class NotesProvider {
     {
       day: '2-digit',
       month: '2-digit',
+      weekday: 'short',
       year: 'numeric',
     },
   );
