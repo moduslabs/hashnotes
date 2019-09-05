@@ -19,15 +19,22 @@ export class NoteSidebarComponent {
   @Input() public readonly selectedNoteUpdatedAt: Date;
   @Input() public readonly notes: Array<Note>;
   @Input() public readonly selectedNote: Note;
+  @Input() public readonly isShowingActiveNotes: boolean;
   @Output() public readonly noteSelection = new EventEmitter();
+  @Output() public readonly newNoteButtonClick = new EventEmitter();
+  @Output() public readonly trashButtonClick = new EventEmitter();
+  @Output() public readonly backToNoteButtonClick = new EventEmitter();
 
   public searchText = '';
+
+  public get placeholderText(): string {
+    return this.isShowingActiveNotes ? 'Search Notes' : 'Search Trash';
+  }
 
   constructor(public notesProvider: NotesProvider) {}
 
   public onNewNoteButtonClick(): void {
-    const note = this.notesProvider.createNote();
-    this.noteSelection.emit(note);
+    this.newNoteButtonClick.emit();
   }
 
   public onNoteSelection(note: Note): void {
@@ -36,5 +43,13 @@ export class NoteSidebarComponent {
 
   public onSearchChange(event: any): void {
     this.searchText = event.detail.value;
+  }
+
+  public onBackToNotesButtonClick(): void {
+    this.backToNoteButtonClick.emit();
+  }
+
+  public onTrashButtonClick(): void {
+    this.trashButtonClick.emit();
   }
 }

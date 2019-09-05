@@ -93,7 +93,21 @@ export class NotesProvider {
       updatedAt: new Date('2019-08-20T00:00:00.000Z'),
     },
   ].sort(NotesProvider.sortNotes);
-  public trashNotes: Array<Note> = [].sort(NotesProvider.sortNotes);
+
+  public trashNotes: Array<Note> = [
+    {
+      content: `<h1>Trashy Note</h1>
+<p>Agenda:</p>
+<p>Get trashed.</p>`,
+      createdAt: new Date('2019-08-29T20:05:00.000Z'),
+      deletedAt: undefined,
+      displayDate: NotesProvider.formatDate(
+        new Date('2019-08-29T20:05:00.000Z'),
+      ),
+      id: uuidv4(),
+      updatedAt: new Date('2019-08-29T20:05:00.000Z'),
+    },
+  ].sort(NotesProvider.sortNotes);
 
   public static formatDate(date: Date): string {
     const now = new Date();
@@ -142,11 +156,36 @@ export class NotesProvider {
       updatedAt: now,
     };
 
-    // Update reference to trigger OnPush updates
-    this.activeNotes = [...this.activeNotes];
     this.activeNotes.push(note);
     this.activeNotes.sort(NotesProvider.sortNotes);
+    this.updateActiveNotesReference();
 
     return note;
+  }
+
+  public deleteNote(note: Note): void {
+    if (this.activeNotes.includes(note)) {
+      const deletedNotes = this.activeNotes.splice(
+        this.activeNotes.indexOf(note),
+        1,
+      );
+      this.trashNotes.push(...deletedNotes);
+      this.trashNotes.sort(NotesProvider.sortNotes);
+      this.updateActiveNotesReference();
+      this.updateTrashNotesReference();
+    } else if (this.trashNotes.includes(note)) {
+      this.trashNotes.splice(this.trashNotes.indexOf(note), 1);
+      this.updateTrashNotesReference();
+    }
+  }
+
+  // Update references to trigger OnPush updates
+  private updateActiveNotesReference(): void {
+    this.activeNotes = [...this.activeNotes];
+  }
+
+  // Update references to trigger OnPush updates
+  private updateTrashNotesReference(): void {
+    this.trashNotes = [...this.trashNotes];
   }
 }

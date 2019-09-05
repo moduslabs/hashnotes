@@ -1,7 +1,7 @@
 <div class="note-editor">
   <editor
     *ngIf="note"
-    [init]="{ height: '100%' }"
+    [init]="tinyMceConfig"
     [(ngModel)]="note.content"
     (onChange)="onEditorContentChange($event)"
     (onKeyUp)="onEditorContentChange($event)"

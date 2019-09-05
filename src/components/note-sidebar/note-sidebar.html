@@ -1,18 +1,49 @@
 <div class="note-sidebar">
-  <ion-searchbar
-    placeholder="Search Notes"
-    (ionChange)="onSearchChange($event)"
-  ></ion-searchbar>
-  <ion-button color="danger" expand="block" (click)="onNewNoteButtonClick()"
-    ><ion-icon slot="start" name="add-circle-outline"></ion-icon>New
-    Note</ion-button
-  >
-  <hr />
-  <hn-note-list
-    (noteSelection)="onNoteSelection($event)"
-    [notes]="notes"
-    [searchText]="searchText"
-    [selectedNote]="selectedNote"
-    [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"
-  ></hn-note-list>
+  <div>
+    <ion-searchbar
+      [placeholder]="placeholderText"
+      (ionChange)="onSearchChange($event)"
+    ></ion-searchbar>
+    <ion-button
+      *ngIf="isShowingActiveNotes; else backToNotesButton"
+      class="new-note-button"
+      color="danger"
+      expand="block"
+      (click)="onNewNoteButtonClick()"
+      ><ion-icon slot="start" name="add-circle-outline"></ion-icon>New
+      Note</ion-button
+    >
+    <ng-template #backToNotesButton>
+      <ion-button
+        class="back-to-notes-button"
+        fill="clear"
+        expand="block"
+        (click)="onBackToNotesButtonClick()"
+        ><ion-icon slot="start" name="arrow-back"></ion-icon>Back to
+        notes</ion-button
+      >
+    </ng-template>
+    <hr />
+  </div>
+  <div>
+    <hn-note-list
+      (noteSelection)="onNoteSelection($event)"
+      [notes]="notes"
+      [searchText]="searchText"
+      [selectedNote]="selectedNote"
+      [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"
+    ></hn-note-list>
+  </div>
+  <div *ngIf="isShowingActiveNotes">
+    <hr />
+    <ion-button
+      class="trash-button"
+      fill="clear"
+      expand="full"
+      (click)="onTrashButtonClick()"
+    >
+      <ion-icon slot="start" name="trash"></ion-icon>
+      Trash Folder
+    </ion-button>
+  </div>
 </div>
