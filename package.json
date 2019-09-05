@@ -14,7 +14,7 @@
     "e2e": "ng e2e",
     "gimbal": "gimbal",
     "cap-open-electron": "cap open electron",
-    "electron-pack": "cd electron && electron-builder --config ../electron-builder.config.js"
+    "electron-pack": "cd electron && rimraf dist && electron-builder --config ../electron-builder.config.js"
   },
   "private": true,
   "dependencies": {
@@ -68,6 +68,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "prettier": "^1.18.2",
     "protractor": "~5.4.0",
+    "rimraf": "^3.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~5.19.0",
     "tslint-config-airbnb": "^5.11.1",
