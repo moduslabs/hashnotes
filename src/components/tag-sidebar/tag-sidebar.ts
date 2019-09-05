@@ -10,7 +10,7 @@ import { Tag } from '../../interfaces/tag';
 })
 export class TagSidebarComponent {
   @Input() public set noteContent(noteContent: string) {
-    this._noteContent = noteContent;
+    this._noteContent = noteContent ? noteContent : '';
     this.onNoteContentChange();
   }
   public get noteContent(): string {

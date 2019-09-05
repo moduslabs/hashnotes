@@ -1,4 +1,5 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import * as uuidv4 from 'uuid/v4';
 
 import { Note } from '../../interfaces/note';
@@ -32,82 +33,10 @@ export class NotesProvider {
     },
   );
 
-  public activeNotes: Array<Note> = [
-    {
-      content: `<h1>WebEx University Kickoff Notes</h1>
-<p>Todd Wilkens: runs partner ops for CC #people</p>
-<p>Eric Wilkens: Cloud ops subset, provisioning, partner help desk #people</p>
-<p></p>
-<h2>What is it?</h2>
-<p>Training became part of BU</p>
-<p>Before all revenue based, take a course and pay for it</p>
-<p>Focus has shift. Gain seats, provide better service to partners adding seats.</p>
-<p>Tier 1 services interface with end users, confused on tech. It's advanced, not plug & play.</p>
-<p>End users go to partners, partners aren't trained. Train the trainer approach, main trainer isn't retaining everything.</p>
-<p></p>
-<p>Sell what we have vs what we don't have #pain-point</p>
-<p></p>
-<p>What can partners get in return for certifying? What is their incentive? #question</p>
-<p></p>
-<p>Why do 146/893 sales partner enroll but not start? #question</p>`,
-      createdAt: new Date(),
-      deletedAt: undefined,
-      displayDate: NotesProvider.formatDate(new Date()),
-      id: uuidv4(),
-      updatedAt: new Date(),
-    },
-    {
-      content: `<h1>AARP Weekly Meeting</h1>
-<p>Agenda:</p>
-<p>Do a rewind. Haven't thought about</p>`,
-      createdAt: new Date('2019-08-29T20:05:00.000Z'),
-      deletedAt: undefined,
-      displayDate: NotesProvider.formatDate(
-        new Date('2019-08-29T20:05:00.000Z'),
-      ),
-      id: uuidv4(),
-      updatedAt: new Date('2019-08-29T20:05:00.000Z'),
-    },
-    {
-      content: `<h1>Motherboard Weekly Meeting</h1>
-<p>Agenda:</p>
-<p>Let's start with some ideas</p>`,
-      createdAt: new Date('2019-08-28T10:39:00.000Z'),
-      deletedAt: undefined,
-      displayDate: NotesProvider.formatDate(
-        new Date('2019-08-28T10:39:00.000Z'),
-      ),
-      id: uuidv4(),
-      updatedAt: new Date('2019-08-28T10:39:00.000Z'),
-    },
-    {
-      content: `<h1>HashNotes Weekly Meeting</h1>
-<p>Agenda:</p>
-<p>Time to start hashing some notes</p>`,
-      createdAt: new Date('2019-08-20T00:00:00.000Z'),
-      deletedAt: undefined,
-      displayDate: NotesProvider.formatDate(
-        new Date('2019-08-20T00:00:00.000Z'),
-      ),
-      id: uuidv4(),
-      updatedAt: new Date('2019-08-20T00:00:00.000Z'),
-    },
-  ].sort(NotesProvider.sortNotes);
+  public activeNotes: Array<Note> = [];
+  public trashNotes: Array<Note> = [];
 
-  public trashNotes: Array<Note> = [
-    {
-      content: `<h1>Trashy Note</h1>
-<p>Agenda:</p>
-<p>Get trashed.</p>`,
-      createdAt: new Date('2019-08-29T20:05:00.000Z'),
-      deletedAt: undefined,
-      displayDate: NotesProvider.formatDate(
-        new Date('2019-08-29T20:05:00.000Z'),
-      ),
-      id: uuidv4(),
-      updatedAt: new Date('2019-08-29T20:05:00.000Z'),
-    },
-  ].sort(NotesProvider.sortNotes);
+  public initialized: Promise<void>;
 
   public static formatDate(date: Date): string {
     const now = new Date();
@@ -135,17 +64,23 @@ export class NotesProvider {
     return noteB.updatedAt.getTime() - noteA.updatedAt.getTime();
   }
 
-  constructor() {
-    if (!this.activeNotes.length) {
-      this.createNote();
-    }
+  constructor(private storage: Storage) {
+    this.initialized = this.loadNotes().then(
+      (): Promise<void> => {
+        if (!this.activeNotes.length) {
+          this.createNote();
+          return this.saveNotes();
+        }
+        return Promise.resolve();
+      },
+    );
   }
 
   public createNote(
     { content = NotesProvider.NEW_NOTE_CONTENT }: { content?: string } = {
       content: NotesProvider.NEW_NOTE_CONTENT,
     },
-  ): Note {
+  ): Promise<Note> {
     const now = new Date();
     const note = {
       content,
@@ -160,10 +95,10 @@ export class NotesProvider {
     this.activeNotes.sort(NotesProvider.sortNotes);
     this.updateActiveNotesReference();
 
-    return note;
+    return this.saveNotes().then((): Promise<Note> => Promise.resolve(note));
   }
 
-  public deleteNote(note: Note): void {
+  public deleteNote(note: Note): Promise<void> {
     if (this.activeNotes.includes(note)) {
       const deletedNotes = this.activeNotes.splice(
         this.activeNotes.indexOf(note),
@@ -171,12 +106,44 @@ export class NotesProvider {
       );
       this.trashNotes.push(...deletedNotes);
       this.trashNotes.sort(NotesProvider.sortNotes);
+      if (!this.activeNotes.length) {
+        this.createNote();
+      }
       this.updateActiveNotesReference();
       this.updateTrashNotesReference();
     } else if (this.trashNotes.includes(note)) {
       this.trashNotes.splice(this.trashNotes.indexOf(note), 1);
       this.updateTrashNotesReference();
     }
+    return this.saveNotes();
+  }
+
+  public saveNotes(): Promise<void> {
+    return this.storage.set('notes', {
+      activeNotes: this.activeNotes,
+      trashNotes: this.trashNotes,
+    });
+  }
+
+  private loadNotes(): Promise<void> {
+    return this.storage.get('notes').then(
+      (notesAsJson: any): Promise<void> => {
+        const notes = notesAsJson ? notesAsJson : {};
+        this.activeNotes = Object.prototype.hasOwnProperty.call(
+          notes,
+          'activeNotes',
+        )
+          ? notes.activeNotes
+          : [];
+        this.trashNotes = Object.prototype.hasOwnProperty.call(
+          notes,
+          'trashNotes',
+        )
+          ? notes.trashNotes
+          : [];
+        return Promise.resolve();
+      },
+    );
   }
 
   // Update references to trigger OnPush updates
