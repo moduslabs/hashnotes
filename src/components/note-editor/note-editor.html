@@ -1,9 +1,9 @@
 <div class="note-editor">
   <editor
-    *ngIf="note"
     [apiKey]="tinyMceApiKey"
+    [disabled]="isDisabled"
     [init]="tinyMceConfig"
-    [(ngModel)]="note.content"
+    [(ngModel)]="noteContent"
     (onChange)="onEditorContentChange($event)"
     (onKeyUp)="onEditorContentChange($event)"
     (onInit)="onEditorInit($event)"

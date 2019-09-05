@@ -19,9 +19,13 @@ import { environment } from '../../environments/environment';
 })
 export class NoteEditorComponent {
   @Input() public set note(note: Note) {
-    this._note = note;
-    this._noteContent = note.content;
-    NoteEditorComponent.focusOnEditor();
+    this.isDisabled = !note;
+    this._note = !!note ? note : null;
+    this.noteContent =
+      !!note && Object.prototype.hasOwnProperty.call(note, 'content')
+        ? note.content
+        : '';
+    setTimeout(NoteEditorComponent.focusOnEditor, 0);
   }
   public get note(): Note {
     return this._note;
@@ -63,8 +67,10 @@ export class NoteEditorComponent {
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
+  public noteContent = '';
+  public isDisabled = false;
+
   private _note: Note;
-  private _noteContent: string;
 
   private static focusOnEditor(): void {
     // Focus on the editor when note changes
@@ -82,8 +88,8 @@ export class NoteEditorComponent {
   }
 
   public onEditorContentChange(): void {
-    if (this.note.content !== this._noteContent) {
-      this._noteContent = this.note.content;
+    if (!!this.note && this.note.content !== this.noteContent) {
+      this.note.content = this.noteContent;
       const now = new Date();
       this.note.updatedAt = now;
       this.note.displayDate = NotesProvider.formatDate(now);

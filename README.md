@@ -100,14 +100,10 @@ Project description - one or two paragraphs. The enemy is dark and creates major
    ```
 
 3. ```bash
-   npm run cap-open-electron
-   ```
-
-4. ```bash
    npm run electron-pack
    ```
 
-5. Refer to Electron dist directory for the files: `./electron/dist/`
+4. Refer to Electron dist directory for the files: `./electron/dist/`
 
 ## Contributing
 
