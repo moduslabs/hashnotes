@@ -46,6 +46,7 @@ plugins:
     thresholds:
       aria-allowed-attr: critical
       color-contrast: serious
+      empty-heading: minor
       landmark-one-main: moderate
       landmark-complementary-is-top-level: moderate
       meta-viewport: critical

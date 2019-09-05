@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 import { EditorModule } from '@tinymce/tinymce-angular';
 
 import { NoteEditorModule } from '../../components/note-editor/note-editor.module';
@@ -18,6 +19,7 @@ describe('MainPage', () => {
       declarations: [MainPage],
       imports: [
         IonicModule.forRoot(),
+        IonicStorageModule.forRoot(),
         EditorModule,
         FormsModule,
         NoteEditorModule,

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as uuidv4 from 'uuid/v4';
 
@@ -32,11 +33,22 @@ export class NotesProvider {
       year: 'numeric',
     },
   );
+  private static readonly TOAST_NOTE_DELETION_CLOSE_BUTTON_TEXT = 'Dismiss';
+  private static readonly TOAST_NOTE_DELETION_CSS_CLASS = 'toast-note-deletion';
+  private static readonly TOAST_NOTE_DELETION_DURATION = 1000 * 4;
+  private static readonly TOAST_NOTE_DELETION_ACTIVE_HEADER =
+    'Moved 1 item to the trash.';
+  private static readonly TOAST_NOTE_DELETION_TRASH_HEADER =
+    'Permanently deleted 1 item.';
+  private static readonly TOAST_NOTE_DELETION_POSITION = 'bottom';
 
   public activeNotes: Array<Note> = [];
   public trashNotes: Array<Note> = [];
 
   public initialized: Promise<void>;
+
+  public activeNotesChange: EventEmitter<void> = new EventEmitter();
+  public trashNotesChange: EventEmitter<void> = new EventEmitter();
 
   public static formatDate(date: Date): string {
     const now = new Date();
@@ -64,19 +76,24 @@ export class NotesProvider {
     return noteB.updatedAt.getTime() - noteA.updatedAt.getTime();
   }
 
-  constructor(private storage: Storage) {
+  constructor(
+    private readonly storage: Storage,
+    private readonly toastCtrl: ToastController,
+  ) {
     this.initialized = this.loadNotes().then(
-      (): Promise<void> => {
+      async (): Promise<void> => {
         if (!this.activeNotes.length) {
-          this.createNote();
-          return this.saveNotes();
+          return this.createNote().then(
+            async (): Promise<void> => Promise.resolve(),
+          );
         }
+
         return Promise.resolve();
       },
     );
   }
 
-  public createNote(
+  public async createNote(
     { content = NotesProvider.NEW_NOTE_CONTENT }: { content?: string } = {
       content: NotesProvider.NEW_NOTE_CONTENT,
     },
@@ -93,41 +110,58 @@ export class NotesProvider {
 
     this.activeNotes.push(note);
     this.activeNotes.sort(NotesProvider.sortNotes);
-    this.updateActiveNotesReference();
+    this.activeNotesChange.emit();
 
-    return this.saveNotes().then((): Promise<Note> => Promise.resolve(note));
+    return this.saveNotes().then(
+      async (): Promise<Note> => Promise.resolve(note),
+    );
   }
 
-  public deleteNote(note: Note): Promise<void> {
+  public async deleteNote(note: Note): Promise<void> {
     if (this.activeNotes.includes(note)) {
+      const noteLocation = 'ACTIVE';
       const deletedNotes = this.activeNotes.splice(
         this.activeNotes.indexOf(note),
         1,
       );
       this.trashNotes.push(...deletedNotes);
       this.trashNotes.sort(NotesProvider.sortNotes);
-      if (!this.activeNotes.length) {
-        this.createNote();
-      }
-      this.updateActiveNotesReference();
-      this.updateTrashNotesReference();
-    } else if (this.trashNotes.includes(note)) {
-      this.trashNotes.splice(this.trashNotes.indexOf(note), 1);
-      this.updateTrashNotesReference();
+      this.activeNotesChange.emit();
+      this.trashNotesChange.emit();
+
+      const createOrSavePromise = this.activeNotes.length
+        ? this.saveNotes()
+        : this.createNote().then(async (): Promise<void> => Promise.resolve());
+
+      return createOrSavePromise.then(
+        async (): Promise<void> =>
+          this.presentDeletionToast({ note, noteLocation }),
+      );
     }
-    return this.saveNotes();
+    if (this.trashNotes.includes(note)) {
+      const noteLocation = 'TRASH';
+      this.trashNotes.splice(this.trashNotes.indexOf(note), 1);
+      this.trashNotesChange.emit();
+
+      return this.saveNotes().then(
+        async (): Promise<void> =>
+          this.presentDeletionToast({ note, noteLocation }),
+      );
+    }
+
+    return Promise.resolve();
   }
 
-  public saveNotes(): Promise<void> {
+  public async saveNotes(): Promise<void> {
     return this.storage.set('notes', {
       activeNotes: this.activeNotes,
       trashNotes: this.trashNotes,
     });
   }
 
-  private loadNotes(): Promise<void> {
+  private async loadNotes(): Promise<void> {
     return this.storage.get('notes').then(
-      (notesAsJson: any): Promise<void> => {
+      async (notesAsJson: any): Promise<void> => {
         const notes = notesAsJson ? notesAsJson : {};
         this.activeNotes = Object.prototype.hasOwnProperty.call(
           notes,
@@ -141,18 +175,69 @@ export class NotesProvider {
         )
           ? notes.trashNotes
           : [];
+
         return Promise.resolve();
       },
     );
   }
 
-  // Update references to trigger OnPush updates
-  private updateActiveNotesReference(): void {
-    this.activeNotes = [...this.activeNotes];
+  private async restoreNote({
+    note,
+    noteLocation,
+  }: {
+    note: Note;
+    noteLocation: 'ACTIVE' | 'TRASH';
+  }): Promise<void> {
+    if (noteLocation === 'ACTIVE') {
+      this.trashNotes.splice(this.trashNotes.indexOf(note), 1);
+      this.activeNotes.push(note);
+      this.activeNotes.sort(NotesProvider.sortNotes);
+      this.activeNotesChange.emit();
+      this.trashNotesChange.emit();
+    } else {
+      this.trashNotes.push(note);
+      this.trashNotes.sort(NotesProvider.sortNotes);
+      this.trashNotesChange.emit();
+    }
+
+    return this.saveNotes();
   }
 
-  // Update references to trigger OnPush updates
-  private updateTrashNotesReference(): void {
-    this.trashNotes = [...this.trashNotes];
+  private async presentDeletionToast({
+    note,
+    noteLocation,
+  }: {
+    note: Note;
+    noteLocation: 'ACTIVE' | 'TRASH';
+  }): Promise<void> {
+    return this.toastCtrl
+      .create({
+        buttons: [
+          {
+            handler: async (): Promise<boolean> =>
+              this.restoreNote({ note, noteLocation }).then(
+                async (): Promise<boolean> => Promise.resolve(true),
+              ),
+            side: 'end',
+            text: 'Cancel',
+          },
+        ],
+        closeButtonText: NotesProvider.TOAST_NOTE_DELETION_CLOSE_BUTTON_TEXT,
+        cssClass: NotesProvider.TOAST_NOTE_DELETION_CSS_CLASS,
+        duration: NotesProvider.TOAST_NOTE_DELETION_DURATION,
+        header:
+          noteLocation === 'ACTIVE'
+            ? NotesProvider.TOAST_NOTE_DELETION_ACTIVE_HEADER
+            : NotesProvider.TOAST_NOTE_DELETION_TRASH_HEADER,
+        position: NotesProvider.TOAST_NOTE_DELETION_POSITION,
+        showCloseButton: true,
+      })
+      .then(
+        async (toast: any): Promise<void> => {
+          toast.present();
+
+          return Promise.resolve();
+        },
+      );
   }
 }

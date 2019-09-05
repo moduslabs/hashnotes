@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { Note } from '../../interfaces/note';
 import { NotesProvider } from '../../providers/notes/notes';
@@ -8,85 +9,107 @@ import { NotesProvider } from '../../providers/notes/notes';
   styleUrls: ['main.scss'],
   templateUrl: 'main.html',
 })
-export class MainPage implements OnInit {
+export class MainPage implements OnInit, OnDestroy {
   public notes: Array<Note> = [];
   public selectedNote: Note;
   public selectedNoteUpdatedAt: Date;
   public isShowingActiveNotes = true;
 
-  constructor(public notesProvider: NotesProvider) {}
+  private activeNotesChangeSubscription: Subscription;
+  private trashNotesChangeSubscription: Subscription;
 
-  public ngOnInit(): Promise<void> {
+  constructor(
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly notesProvider: NotesProvider,
+  ) {}
+
+  public async ngOnInit(): Promise<void> {
     return this.notesProvider.initialized.then(
-      (): Promise<void> => {
+      async (): Promise<void> => {
         this.showActiveNotes();
+        this.changeDetectorRef.detectChanges();
+
+        this.activeNotesChangeSubscription = this.notesProvider.activeNotesChange.subscribe(
+          (): void => {
+            if (this.isShowingActiveNotes) {
+              this.showActiveNotes();
+            }
+            this.changeDetectorRef.detectChanges();
+          },
+        );
+        this.trashNotesChangeSubscription = this.notesProvider.trashNotesChange.subscribe(
+          (): void => {
+            if (!this.isShowingActiveNotes) {
+              this.showTrashNotes();
+            }
+            this.changeDetectorRef.detectChanges();
+          },
+        );
+
         return Promise.resolve();
       },
     );
+  }
+
+  public ngOnDestroy(): void {
+    if (this.activeNotesChangeSubscription) {
+      this.activeNotesChangeSubscription.unsubscribe();
+    }
+    if (this.trashNotesChangeSubscription) {
+      this.trashNotesChangeSubscription.unsubscribe();
+    }
   }
 
   public onNoteSelection(note: Note): void {
     this.selectedNote = note;
   }
 
-  public onNewNoteButtonClick(): Promise<void> {
-    return this.notesProvider.createNote().then(
-      (note: Note): Promise<void> => {
-        this.notes = this.notesProvider.activeNotes;
-        this.selectedNote = note;
-        this.isShowingActiveNotes = true;
-        return Promise.resolve();
-      },
-    );
+  public async onNewNoteButtonClick(): Promise<Note> {
+    this.notes = [];
+    this.selectedNote = undefined;
+    this.isShowingActiveNotes = true;
+
+    return this.notesProvider.createNote();
   }
 
-  public onDeleteNoteButtonClick(note: Note): Promise<void> {
-    return this.notesProvider.deleteNote(note).then(
-      (): Promise<void> => {
-        this.notes = this.isShowingActiveNotes
-          ? this.notesProvider.activeNotes
-          : this.notesProvider.trashNotes;
-        this.selectedNote = this.notes[0];
-        return Promise.resolve();
-      },
-    );
+  public async onDeleteNoteButtonClick(note: Note): Promise<void> {
+    this.notes = [];
+    this.selectedNote = undefined;
+
+    return this.notesProvider.deleteNote(note);
   }
 
   public onTrashButtonClick(): void {
-    this.isShowingActiveNotes = false;
     this.showTrashNotes();
   }
 
   public onBackToNoteButtonClick(): void {
-    this.isShowingActiveNotes = true;
     this.showActiveNotes();
   }
 
-  public onNoteEdit(updatedAt: Date): Promise<void> {
+  public async onNoteEdit(updatedAt: Date): Promise<void> {
     return this.notesProvider.saveNotes().then(
-      (): Promise<void> => {
+      async (): Promise<void> => {
         this.selectedNoteUpdatedAt = updatedAt;
         if (this.notes) {
           this.notes.sort(NotesProvider.sortNotes);
-          this.updateNotesReference();
+          this.notes = [...this.notes];
         }
+
         return Promise.resolve();
       },
     );
   }
 
   private showActiveNotes(): void {
-    this.notes = this.notesProvider.activeNotes;
-    this.selectedNote = this.notes.length ? this.notes[0] : null;
+    this.isShowingActiveNotes = true;
+    this.notes = [...this.notesProvider.activeNotes];
+    this.selectedNote = this.notes.length ? this.notes[0] : undefined;
   }
 
   private showTrashNotes(): void {
-    this.notes = this.notesProvider.trashNotes;
-    this.selectedNote = this.notes.length ? this.notes[0] : null;
-  }
-
-  // Update references to trigger OnPush updates
-  private updateNotesReference(): void {
-    this.notes = [...this.notes];
+    this.isShowingActiveNotes = false;
+    this.notes = [...this.notesProvider.trashNotes];
+    this.selectedNote = this.notes.length ? this.notes[0] : undefined;
   }
 }

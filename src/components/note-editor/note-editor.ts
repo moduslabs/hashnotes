@@ -19,8 +19,7 @@ import { environment } from '../../environments/environment';
 })
 export class NoteEditorComponent {
   @Input() public set note(note: Note) {
-    this.isDisabled = !note;
-    this._note = !!note ? note : null;
+    this._note = !!note ? note : undefined;
     this.noteContent =
       !!note && Object.prototype.hasOwnProperty.call(note, 'content')
         ? note.content
@@ -68,7 +67,6 @@ export class NoteEditorComponent {
   public tinyMceApiKey = environment.tinyMceApiKey;
 
   public noteContent = '';
-  public isDisabled = false;
 
   private _note: Note;
 
