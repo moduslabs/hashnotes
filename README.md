@@ -85,6 +85,30 @@ Project description - one or two paragraphs. The enemy is dark and creates major
   npm run build && npm run gimbal
   ```
 
+## Distribute Electron Build
+
+1. Add Electron to Capacitor
+
+   - Note: You only need to do this step once
+
+   ```bash
+   ./node_modules/.bin/cap add electron
+   ```
+
+2. ```bash
+   npm run build
+   ```
+
+3. ```bash
+   npm run cap-open-electron
+   ```
+
+4. ```bash
+   npm run electron-pack
+   ```
+
+5. Refer to Electron dist directory for the files: `./electron/dist/`
+
 ## Contributing
 
 See [Contributing Guide](./.github/CONTRIBUTING.md 'Contributing Guide')
