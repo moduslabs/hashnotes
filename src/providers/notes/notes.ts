@@ -140,6 +140,9 @@ export class NotesProvider {
       id: uuidv4(),
       updatedAt: now,
     };
+
+    // Update reference to trigger OnPush updates
+    this.activeNotes = [...this.activeNotes];
     this.activeNotes.push(note);
     this.activeNotes.sort(NotesProvider.sortNotes);
 

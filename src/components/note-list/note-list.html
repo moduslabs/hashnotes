@@ -1,7 +1,7 @@
 <div class="note-list">
-  <ion-list>
+  <ion-list *ngIf="filteredNotes.length || !searchText; else noMatchingNotes">
     <ion-item
-      *ngFor="let note of notes; trackBy: tracker"
+      *ngFor="let note of filteredNotes; trackBy: tracker"
       [ngClass]="{ selected: note === selectedNote }"
       (click)="onNoteClick(note)"
     >
@@ -11,4 +11,9 @@
       </ion-label>
     </ion-item>
   </ion-list>
+  <ng-template #noMatchingNotes>
+    <p class="no-matching-notes">
+      We didn't find any notes that match your search.
+    </p>
+  </ng-template>
 </div>
