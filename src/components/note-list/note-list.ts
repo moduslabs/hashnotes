@@ -37,7 +37,7 @@ export class NoteListComponent {
 
   public filteredNotes: Array<Note> = [];
 
-  private _searchText: string = '';
+  private _searchText = '';
   private _notes: Array<Note> = [];
 
   public onNoteClick(note: Note): void {

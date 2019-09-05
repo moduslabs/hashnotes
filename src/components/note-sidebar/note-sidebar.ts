@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 
 import { Note } from '../../interfaces/note';
-import { NotesProvider } from '../../providers/notes/notes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,8 +29,6 @@ export class NoteSidebarComponent {
   public get placeholderText(): string {
     return this.isShowingActiveNotes ? 'Search Notes' : 'Search Trash';
   }
-
-  constructor(public notesProvider: NotesProvider) {}
 
   public onNewNoteButtonClick(): void {
     this.newNoteButtonClick.emit();
