@@ -9,6 +9,8 @@ import {
 import { Note } from '../../interfaces/note';
 import { NotesProvider } from '../../providers/notes/notes';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'hn-note-editor',
@@ -59,6 +61,7 @@ export class NoteEditorComponent {
     toolbar:
       'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
   };
+  public tinyMceApiKey = environment.tinyMceApiKey;
 
   private _note: Note;
   private _noteContent: string;
