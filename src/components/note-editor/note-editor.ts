@@ -35,6 +35,8 @@ export class NoteEditorComponent {
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
 
   public tinyMceConfig = {
+    content_style: 'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
+    extended_valid_elements: "span[class]",
     height: '100%',
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
@@ -63,6 +65,7 @@ export class NoteEditorComponent {
     },
     toolbar:
       'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
+    valid_classes: 'hashtag'
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
@@ -85,8 +88,15 @@ export class NoteEditorComponent {
     }
   }
 
-  public onEditorContentChange(): void {
+  public processTags(content: string) {
+    const removedTagMarkers = content.replace(/<span[^>]*>(.*?)<\/span>/g, '$1');
+    const processed = removedTagMarkers.replace(/(?<!<span[^>]*>)#[\w\-]+/g, '<span class="hashtag">$&</span>');
+    return processed;
+  }
+
+  public onEditorContentChange(event: any): void {
     if (!!this.note && this.note.content !== this.noteContent) {
+      this.noteContent = this.processTags(this.noteContent);
       this.note.content = this.noteContent;
       const now = new Date();
       this.note.updatedAt = now;
