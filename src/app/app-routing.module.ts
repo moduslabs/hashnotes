@@ -3,10 +3,10 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
-    pathMatch: 'full',
     loadChildren: () =>
       import('../views/main/main.module').then((m) => m.MainPageModule),
+    path: '',
+    pathMatch: 'full',
   },
 ];
 
