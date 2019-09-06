@@ -67,6 +67,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "netlify-cli": "^2.13.1",
     "prettier": "^1.18.2",
     "protractor": "~5.4.0",
     "rimraf": "^3.0.0",
