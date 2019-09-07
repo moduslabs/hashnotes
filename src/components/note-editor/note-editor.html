@@ -4,7 +4,6 @@
     [apiKey]="tinyMceApiKey"
     [disabled]="isDisabled"
     [init]="tinyMceConfig"
-    [(ngModel)]="noteContent"
     (onChange)="onEditorContentChange($event)"
     (onKeyUp)="onEditorContentChange($event)"
     (onInit)="onEditorInit($event)"

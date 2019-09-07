@@ -20,15 +20,14 @@ import { environment } from '../../environments/environment';
 export class NoteEditorComponent {
   @Input() public set note(note: Note) {
     this._note = !!note ? note : undefined;
-    this.noteContent =
-      !!note && Object.prototype.hasOwnProperty.call(note, 'content')
-        ? note.content
-        : '';
-    setTimeout(NoteEditorComponent.focusOnEditor, 0);
+    this.loadNoteToEditor();
   }
   public get note(): Note {
     return this._note;
   }
+
+  private static readonly TAG_UNSTYLED_GLOBAL = /(?<!<span[^>]*>)#[\w\-]+/g;
+  private static readonly TAG_INVALID_GLOBAL = /^#[\w\-]+$/g;
 
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
@@ -69,35 +68,31 @@ export class NoteEditorComponent {
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
-  public noteContent = '';
+  public editor = undefined;
 
   private _note: Note;
 
-  private static focusOnEditor(): void {
-    // Focus on the editor when note changes
-    // Note: There's probably a more ng-friendly way to do this
-    const iFrames = document.getElementsByTagName('iframe');
-    if (iFrames.length) {
-      const iFrameBodies = iFrames[0].contentDocument.getElementsByTagName(
-        'body',
-      );
-
-      if (iFrameBodies.length) {
-        iFrameBodies[0].focus();
+  public updateTagElements(): void {
+    // remove span elements for invalid tags
+    const elementList = this.editor.$('span').toArray();
+    elementList.forEach((element) => {
+      if (!element.innerText.match(NoteEditorComponent.TAG_INVALID_GLOBAL)) {
+        const parentNode = element.parentNode;
+        while (element.firstChild) { parentNode.insertBefore(element.firstChild, element) }
+        parentNode.removeChild(element)
       }
+    })
+    // add missing span elements
+    const noteContent = this.editor.getContent()
+    if (noteContent.match(NoteEditorComponent.TAG_UNSTYLED_GLOBAL)) {
+      this.editor.setContent(noteContent.replace(NoteEditorComponent.TAG_UNSTYLED_GLOBAL, '<span class="hashtag">$&</span>'));
     }
   }
 
-  public processTags(content: string) {
-    const removedTagMarkers = content.replace(/<span[^>]*>(.*?)<\/span>/g, '$1');
-    const processed = removedTagMarkers.replace(/(?<!<span[^>]*>)#[\w\-]+/g, '<span class="hashtag">$&</span>');
-    return processed;
-  }
-
   public onEditorContentChange(event: any): void {
-    if (!!this.note && this.note.content !== this.noteContent) {
-      this.noteContent = this.processTags(this.noteContent);
-      this.note.content = this.noteContent;
+    if (!!this.note && this.note.content !== this.editor.getContent()) {
+      this.updateTagElements();
+      this.note.content = this.editor.getContent();
       const now = new Date();
       this.note.updatedAt = now;
       this.note.displayDate = NotesProvider.formatDate(now);
@@ -105,7 +100,18 @@ export class NoteEditorComponent {
     }
   }
 
-  public onEditorInit(): void {
-    NoteEditorComponent.focusOnEditor();
+  public onEditorInit(event: any): void {
+    this.editor = event.editor;
+    this.loadNoteToEditor();
+    this.editor.focus();
+  }
+
+  public loadNoteToEditor(): void {
+    if (!!this.editor) {
+      this.editor.setContent(!!this.note && Object.prototype.hasOwnProperty.call(this.note, 'content')
+      ? this.note.content
+      : '');
+      this.editor.focus();
+    }
   }
 }
