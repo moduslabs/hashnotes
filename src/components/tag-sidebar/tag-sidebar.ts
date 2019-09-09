@@ -16,8 +16,9 @@ export class TagSidebarComponent {
   public get noteContent(): string {
     return this._noteContent;
   }
-  private static readonly TAG_REGEX_GLOBAL = /#[\w\-]+/g;
-  private static readonly TAG_CONTENT_REGEX = /(?:<\w+>)?(.*?)(?:\s*#)/;
+  private static readonly TAG_CONTENT_REGEX = /(.*)(?:<span class="hashtag">)(?:.*)(?:<\/span>)/;
+  private static readonly TAG_REGEX = /(?:<span class="hashtag">)(.*)(?:<\/span>)/;
+  private static readonly TAG_REGEX_GLOBAL = /(?:<span class="hashtag">)(#[\w\-]+)(?:<\/span>)/g;
 
   public tags: Array<Tag> = [];
 
@@ -31,7 +32,9 @@ export class TagSidebarComponent {
     tagName: string;
   }): Array<string> {
     return noteContentLines
-      .filter((line: string): boolean => line.includes(tagName))
+      .filter((line: string): boolean =>
+        line.includes(`<span class="hashtag">${tagName}</span>`),
+      )
       .map(
         (line: string): string =>
           line.match(TagSidebarComponent.TAG_CONTENT_REGEX)[1],
@@ -43,8 +46,13 @@ export class TagSidebarComponent {
   }: {
     noteContent: string;
   }): Array<Tag> {
-    const tagMatches =
+    const tagSpanMatches =
       noteContent.match(TagSidebarComponent.TAG_REGEX_GLOBAL) || [];
+    const tagMatches =
+      tagSpanMatches.map(
+        (tagSpan: string): string =>
+          tagSpan.match(TagSidebarComponent.TAG_REGEX)[1],
+      ) || [];
     const tagMatchesUnique = [...new Set(tagMatches)];
 
     const noteContentLines = noteContent.split('\n');
