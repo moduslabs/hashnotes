@@ -26,9 +26,6 @@ export class NoteEditorComponent {
     return this._note;
   }
 
-  private static readonly TAG_UNSTYLED_GLOBAL = /(?<!<span[^>]*>)#[\w\-]+/g;
-  private static readonly TAG_INVALID_GLOBAL = /^#[\w\-]+$/g;
-
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
@@ -75,33 +72,36 @@ export class NoteEditorComponent {
   public updateTagElements(): void {
     // remove span elements for invalid tags
     const elementList = this.editor.$('span').toArray();
-    elementList.forEach((element) => {
-      if (!element.innerText.match(NoteEditorComponent.TAG_INVALID_GLOBAL)) {
+    elementList.forEach((element : HTMLElement) => {
+      const textAfter = element.nextSibling ? element.nextSibling.textContent : "";
+      if (!element.innerText.match(/^#[\w\-]+$/) || textAfter.match(/^[\w\-]/)) {
         const parentNode = element.parentNode;
         while (element.firstChild) { parentNode.insertBefore(element.firstChild, element) }
         parentNode.removeChild(element)
+        parentNode.normalize()
       }
     })
+    
     // add missing span elements
     const treeWalker = document.createTreeWalker(this.editor.dom.getRoot(), NodeFilter.SHOW_TEXT, undefined, false)
     let textNode = treeWalker.nextNode()
     while (textNode) {
-      let match = NoteEditorComponent.TAG_UNSTYLED_GLOBAL.exec(textNode.textContent)
-      while (match) {
+      const match = textNode.textContent.match(/#[\w\-]+/)
+      if (match) {
         if (textNode.parentElement.className !== "hashtag") {
           const rng = document.createRange()
           rng.setStart(textNode, match.index)
-          rng.setEnd(textNode, match.index + match.length + 1)
+          rng.setEnd(textNode, match.index + match[0].length)
           const newElement = document.createElement("span")
           newElement.setAttribute("class", "hashtag")
           const cursor = this.editor.selection.getBookmark()
           rng.surroundContents(newElement)
           this.editor.selection.moveToBookmark(cursor)
         }
-        match = NoteEditorComponent.TAG_UNSTYLED_GLOBAL.exec(textNode.textContent)
       }
       textNode = treeWalker.nextNode()
     }
+    
   }
 
   public onEditorContentChange(event: any): void {
