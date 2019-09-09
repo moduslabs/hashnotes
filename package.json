@@ -49,7 +49,7 @@
     "@angular/language-service": "~8.2.4",
     "@capacitor/cli": "1.1.1",
     "@ionic/angular-toolkit": "~2.0.0",
-    "@modus/gimbal": "^1.1.14",
+    "@modus/gimbal": "^1.2.3",
     "@modus/gimbal-plugin-axe": "^1.1.14",
     "@modus/gimbal-plugin-source-map-explorer": "^1.1.14",
     "@types/jasmine": "~3.4.0",

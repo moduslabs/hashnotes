@@ -20,21 +20,23 @@ import { environment } from '../../environments/environment';
 export class NoteEditorComponent {
   @Input() public set note(note: Note) {
     this._note = !!note ? note : undefined;
-    this.noteContent =
-      !!note && Object.prototype.hasOwnProperty.call(note, 'content')
-        ? note.content
-        : '';
-    setTimeout(NoteEditorComponent.focusOnEditor, 0);
+    this.loadNoteToEditor();
   }
   public get note(): Note {
     return this._note;
   }
+
+  private static readonly TAG_REGEX = /^#[\w\-]+$/;
+  private static readonly NOT_TAG_REGEX = /^[\w\-]/;
 
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
 
   public tinyMceConfig = {
+    content_style:
+      'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
+    extended_valid_elements: 'span[class]',
     height: '100%',
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
@@ -63,31 +65,18 @@ export class NoteEditorComponent {
     },
     toolbar:
       'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
+    valid_classes: 'hashtag',
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
-  public noteContent = '';
+  public editor = undefined;
 
   private _note: Note;
 
-  private static focusOnEditor(): void {
-    // Focus on the editor when note changes
-    // Note: There's probably a more ng-friendly way to do this
-    const iFrames = document.getElementsByTagName('iframe');
-    if (iFrames.length) {
-      const iFrameBodies = iFrames[0].contentDocument.getElementsByTagName(
-        'body',
-      );
-
-      if (iFrameBodies.length) {
-        iFrameBodies[0].focus();
-      }
-    }
-  }
-
-  public onEditorContentChange(): void {
-    if (!!this.note && this.note.content !== this.noteContent) {
-      this.note.content = this.noteContent;
+  public onEditorContentChange(event: any): void {
+    if (!!this.note && this.note.content !== this.editor.getContent()) {
+      this.updateTagElements();
+      this.note.content = this.editor.getContent();
       const now = new Date();
       this.note.updatedAt = now;
       this.note.displayDate = NotesProvider.formatDate(now);
@@ -95,7 +84,74 @@ export class NoteEditorComponent {
     }
   }
 
-  public onEditorInit(): void {
-    NoteEditorComponent.focusOnEditor();
+  public onEditorInit(event: any): void {
+    this.editor = event.editor;
+    this.loadNoteToEditor();
+  }
+
+  private loadNoteToEditor(): void {
+    if (!!this.editor) {
+      this.editor.setContent(
+        !!this.note &&
+          Object.prototype.hasOwnProperty.call(this.note, 'content')
+          ? this.note.content
+          : '',
+      );
+      this.editor.focus();
+    }
+  }
+
+  private updateTagElements(): void {
+    this.removeInvalidTagSpans();
+    this.addTagSpans();
+  }
+
+  private removeInvalidTagSpans(): void {
+    const elementList = this.editor.$('span').toArray();
+    elementList.forEach((element: HTMLElement): void => {
+      const textAfter = element.nextSibling
+        ? element.nextSibling.textContent
+        : '';
+      if (
+        !element.innerText.match(NoteEditorComponent.TAG_REGEX) ||
+        textAfter.match(NoteEditorComponent.NOT_TAG_REGEX)
+      ) {
+        const parentNode = element.parentNode;
+        while (element.firstChild) {
+          parentNode.insertBefore(element.firstChild, element);
+        }
+        parentNode.removeChild(element);
+        parentNode.normalize();
+      }
+    });
+  }
+
+  private addTagSpans(): void {
+    const treeWalker = document.createTreeWalker(
+      this.editor.dom.getRoot(),
+      NodeFilter.SHOW_TEXT,
+      undefined,
+      false,
+    );
+
+    let textNode = treeWalker.nextNode();
+    while (textNode) {
+      const match = textNode.textContent.match(/#[\w\-]+/);
+      if (match) {
+        if (textNode.parentElement.className !== 'hashtag') {
+          const range = document.createRange();
+          range.setStart(textNode, match.index);
+          range.setEnd(textNode, match.index + match[0].length);
+
+          const newElement = document.createElement('span');
+          newElement.setAttribute('class', 'hashtag');
+
+          const cursor = this.editor.selection.getBookmark();
+          range.surroundContents(newElement);
+          this.editor.selection.moveToBookmark(cursor);
+        }
+      }
+      textNode = treeWalker.nextNode();
+    }
   }
 }
