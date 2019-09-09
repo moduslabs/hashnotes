@@ -43,7 +43,7 @@ export class NoteEditorComponent {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
     },
     menubar: 'modusFile edit insert view format',
-    plugins: 'link autolink',
+    plugins: 'autolink link lists',
     setup: (editor) => {
       editor.ui.registry.addMenuItem('modusnewnote', {
         onAction: () => {
@@ -67,7 +67,7 @@ export class NoteEditorComponent {
     },
     target_list: false,
     toolbar:
-      'undo redo | styleselect | link | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
+      'undo redo | styleselect | link | bold italic | numlist bullist | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
     valid_classes: 'hashtag',
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
