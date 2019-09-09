@@ -23,6 +23,8 @@ configs:
       seo: 90
   size:
     threshold:
+      - path: www
+        maxSize: 20 MB
       - path: www/main-*.js
         maxSize: 3 KB
       - path: www/polyfills-es5.js
