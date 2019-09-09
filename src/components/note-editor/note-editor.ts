@@ -38,10 +38,12 @@ export class NoteEditorComponent {
       'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
     extended_valid_elements: 'span[class]',
     height: '100%',
+    link_title: false,
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
     },
-    menubar: 'modusFile edit view format',
+    menubar: 'modusFile edit insert view format',
+    plugins: 'link autolink',
     setup: (editor) => {
       editor.ui.registry.addMenuItem('modusnewnote', {
         onAction: () => {
@@ -63,8 +65,9 @@ export class NoteEditorComponent {
         tooltip: 'Delete note',
       });
     },
+    target_list: false,
     toolbar:
-      'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
+      'undo redo | styleselect | link | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
     valid_classes: 'hashtag',
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
