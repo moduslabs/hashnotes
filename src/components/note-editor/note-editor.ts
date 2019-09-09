@@ -26,13 +26,17 @@ export class NoteEditorComponent {
     return this._note;
   }
 
+  private static readonly TAG_REGEX = /^#[\w\-]+$/;
+  private static readonly NOT_TAG_REGEX = /^[\w\-]/;
+
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
 
   public tinyMceConfig = {
-    content_style: 'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
-    extended_valid_elements: "span[class]",
+    content_style:
+      'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
+    extended_valid_elements: 'span[class]',
     height: '100%',
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
@@ -61,48 +65,13 @@ export class NoteEditorComponent {
     },
     toolbar:
       'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
-    valid_classes: 'hashtag'
+    valid_classes: 'hashtag',
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
   public editor = undefined;
 
   private _note: Note;
-
-  public updateTagElements(): void {
-    // remove span elements for invalid tags
-    const elementList = this.editor.$('span').toArray();
-    elementList.forEach((element : HTMLElement) => {
-      const textAfter = element.nextSibling ? element.nextSibling.textContent : "";
-      if (!element.innerText.match(/^#[\w\-]+$/) || textAfter.match(/^[\w\-]/)) {
-        const parentNode = element.parentNode;
-        while (element.firstChild) { parentNode.insertBefore(element.firstChild, element) }
-        parentNode.removeChild(element)
-        parentNode.normalize()
-      }
-    })
-    
-    // add missing span elements
-    const treeWalker = document.createTreeWalker(this.editor.dom.getRoot(), NodeFilter.SHOW_TEXT, undefined, false)
-    let textNode = treeWalker.nextNode()
-    while (textNode) {
-      const match = textNode.textContent.match(/#[\w\-]+/)
-      if (match) {
-        if (textNode.parentElement.className !== "hashtag") {
-          const rng = document.createRange()
-          rng.setStart(textNode, match.index)
-          rng.setEnd(textNode, match.index + match[0].length)
-          const newElement = document.createElement("span")
-          newElement.setAttribute("class", "hashtag")
-          const cursor = this.editor.selection.getBookmark()
-          rng.surroundContents(newElement)
-          this.editor.selection.moveToBookmark(cursor)
-        }
-      }
-      textNode = treeWalker.nextNode()
-    }
-    
-  }
 
   public onEditorContentChange(event: any): void {
     if (!!this.note && this.note.content !== this.editor.getContent()) {
@@ -120,12 +89,69 @@ export class NoteEditorComponent {
     this.loadNoteToEditor();
   }
 
-  public loadNoteToEditor(): void {
+  private loadNoteToEditor(): void {
     if (!!this.editor) {
-      this.editor.setContent(!!this.note && Object.prototype.hasOwnProperty.call(this.note, 'content')
-      ? this.note.content
-      : '');
+      this.editor.setContent(
+        !!this.note &&
+          Object.prototype.hasOwnProperty.call(this.note, 'content')
+          ? this.note.content
+          : '',
+      );
       this.editor.focus();
+    }
+  }
+
+  private updateTagElements(): void {
+    this.removeInvalidTagSpans();
+    this.addTagSpans();
+  }
+
+  private removeInvalidTagSpans(): void {
+    const elementList = this.editor.$('span').toArray();
+    elementList.forEach((element: HTMLElement): void => {
+      const textAfter = element.nextSibling
+        ? element.nextSibling.textContent
+        : '';
+      if (
+        !element.innerText.match(NoteEditorComponent.TAG_REGEX) ||
+        textAfter.match(NoteEditorComponent.NOT_TAG_REGEX)
+      ) {
+        const parentNode = element.parentNode;
+        while (element.firstChild) {
+          parentNode.insertBefore(element.firstChild, element);
+        }
+        parentNode.removeChild(element);
+        parentNode.normalize();
+      }
+    });
+  }
+
+  private addTagSpans(): void {
+    const treeWalker = document.createTreeWalker(
+      this.editor.dom.getRoot(),
+      NodeFilter.SHOW_TEXT,
+      undefined,
+      false,
+    );
+
+    let textNode = treeWalker.nextNode();
+    while (textNode) {
+      const match = textNode.textContent.match(/#[\w\-]+/);
+      if (match) {
+        if (textNode.parentElement.className !== 'hashtag') {
+          const range = document.createRange();
+          range.setStart(textNode, match.index);
+          range.setEnd(textNode, match.index + match[0].length);
+
+          const newElement = document.createElement('span');
+          newElement.setAttribute('class', 'hashtag');
+
+          const cursor = this.editor.selection.getBookmark();
+          range.surroundContents(newElement);
+          this.editor.selection.moveToBookmark(cursor);
+        }
+      }
+      textNode = treeWalker.nextNode();
     }
   }
 }
