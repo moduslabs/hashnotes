@@ -83,9 +83,24 @@ export class NoteEditorComponent {
       }
     })
     // add missing span elements
-    const noteContent = this.editor.getContent()
-    if (noteContent.match(NoteEditorComponent.TAG_UNSTYLED_GLOBAL)) {
-      this.editor.setContent(noteContent.replace(NoteEditorComponent.TAG_UNSTYLED_GLOBAL, '<span class="hashtag">$&</span>'));
+    const treeWalker = document.createTreeWalker(this.editor.dom.getRoot(), NodeFilter.SHOW_TEXT, undefined, false)
+    let textNode = treeWalker.nextNode()
+    while (textNode) {
+      let match = NoteEditorComponent.TAG_UNSTYLED_GLOBAL.exec(textNode.textContent)
+      while (match) {
+        if (textNode.parentElement.className !== "hashtag") {
+          const rng = document.createRange()
+          rng.setStart(textNode, match.index)
+          rng.setEnd(textNode, match.index + match.length + 1)
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "hashtag")
+          const cursor = this.editor.selection.getBookmark()
+          rng.surroundContents(newElement)
+          this.editor.selection.moveToBookmark(cursor)
+        }
+        match = NoteEditorComponent.TAG_UNSTYLED_GLOBAL.exec(textNode.textContent)
+      }
+      textNode = treeWalker.nextNode()
     }
   }
 
@@ -103,7 +118,6 @@ export class NoteEditorComponent {
   public onEditorInit(event: any): void {
     this.editor = event.editor;
     this.loadNoteToEditor();
-    this.editor.focus();
   }
 
   public loadNoteToEditor(): void {
