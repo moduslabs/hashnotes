@@ -16,7 +16,7 @@ export class TagSidebarComponent {
   public get noteContent(): string {
     return this._noteContent;
   }
-  private static readonly TAG_REGEX_GLOBAL = /#[\w\-]+(?<=\s|$)/g;
+  private static readonly TAG_REGEX_GLOBAL = /#[\w\-]+/g;
   private static readonly TAG_CONTENT_REGEX = /(?:<\w+>)?(.*?)(?:\s*#)/;
 
   public tags: Array<Tag> = [];
