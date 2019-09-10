@@ -21,8 +21,6 @@ export class TagSidebarComponent {
     this.onNoteContentChange();
   }
 
-  @ViewChild('tagSummary', { static: false }) tagSummary: ElementRef;
-
   public get noteContent(): string {
     return this._noteContent;
   }
@@ -34,6 +32,8 @@ export class TagSidebarComponent {
   private static readonly TAG_CONTENT_REGEX = /(.*)(?:<span class="hashtag">)(?:.*)(?:<\/span>)/;
   private static readonly TAG_REGEX = /(?:<span class="hashtag">)(.*)(?:<\/span>)/;
   private static readonly TAG_REGEX_GLOBAL = /(?:<span class="hashtag">)(#[\w\-]+)(?:<\/span>)/g;
+
+  @ViewChild('tagSummary', { static: false }) public tagSummary: ElementRef;
 
   public tags: Array<Tag> = [];
 
@@ -83,7 +83,32 @@ export class TagSidebarComponent {
     );
   }
 
-  constructor(private clipboardService: ClipboardService) {}
+  private static getTagSummaryText(node: any): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return `${node.textContent}`;
+    }
+    if (
+      !!node.className &&
+      node.className === TagSidebarComponent.CLASSNAME_COPY_SPACER
+    ) {
+      return '\n';
+    }
+    if (
+      !!node.className &&
+      node.className === TagSidebarComponent.CLASSNAME_COPY_BULLET
+    ) {
+      return '- ';
+    }
+
+    let text = '';
+    for (const childNode of node.childNodes) {
+      text += TagSidebarComponent.getTagSummaryText(childNode);
+    }
+
+    return text;
+  }
+
+  constructor(private readonly clipboardService: ClipboardService) {}
 
   public tagTracker(_index: number, tag: Tag): string {
     return `${tag.name}-${tag.content.join('-')}`;
@@ -97,31 +122,9 @@ export class TagSidebarComponent {
     print();
   }
 
-  private getTagSummaryText(node: any): string {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return `${node.textContent}`;
-    } else if (
-      !!node.className &&
-      node.className === TagSidebarComponent.CLASSNAME_COPY_SPACER
-    ) {
-      return '\n';
-    } else if (
-      !!node.className &&
-      node.className === TagSidebarComponent.CLASSNAME_COPY_BULLET
-    ) {
-      return '- ';
-    }
-
-    let text = '';
-    for (let i = 0; i < node.childNodes.length; i++) {
-      text += this.getTagSummaryText(node.childNodes[i]);
-    }
-    return text;
-  }
-
   public onCopyButtonClick(): void {
     this.clipboardService.copyFromContent(
-      this.getTagSummaryText(this.tagSummary.nativeElement),
+      TagSidebarComponent.getTagSummaryText(this.tagSummary.nativeElement),
     );
   }
 
