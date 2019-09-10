@@ -20,4 +20,15 @@
   hn-tag-sidebar {
     flex-shrink: 0;
   }
+
+  @media print {
+    hn-note-sidebar,
+    hn-note-editor {
+      display: none;
+    }
+
+    hn-tag-sidebar {
+      flex-grow: 1;
+    }
+  }
 }

@@ -1,13 +1,37 @@
 <div class="tag-sidebar">
-  <h1>Tag Summary</h1>
-  <div *ngFor="let tag of tags; trackBy: tagTracker">
-    <ion-chip>
-      <ion-label>{{ tag.name }}</ion-label>
-    </ion-chip>
-    <ul *ngFor="let content of tag.content; trackBy: contentTracker">
-      <li>
-        <div class="content" [innerHTML]="content"></div>
-      </li>
-    </ul>
+  <div class="buttons">
+    <ion-button
+      class="export-button"
+      fill="clear"
+      (click)="onExportButtonClick()"
+    >
+      <ion-icon slot="start" name="code-download"></ion-icon>
+      Export Summary
+    </ion-button>
+    <ion-button class="copy-button" fill="clear" (click)="onCopyButtonClick()">
+      <ion-icon slot="start" name="copy"></ion-icon>
+      Copy
+    </ion-button>
+  </div>
+  <h1 class="title-screen">Tag Summary</h1>
+  <div class="tag-summary" #tagSummary>
+    <div class="title-print" [innerHTML]="title"></div>
+    <span class="tag-summary-copy-spacer"></span>
+    <span class="tag-summary-copy-spacer"></span>
+    <div *ngFor="let tag of tags; trackBy: tagTracker">
+      <ion-chip>
+        <ion-label>{{ tag.name }}</ion-label>
+      </ion-chip>
+      <span class="tag-summary-copy-spacer"></span>
+      <span class="tag-summary-copy-spacer"></span>
+      <ul *ngFor="let content of tag.content; trackBy: contentTracker">
+        <li>
+          <span class="tag-summary-copy-bullet"></span>
+          <div class="content" [innerHTML]="content"></div>
+          <span class="tag-summary-copy-spacer"></span>
+        </li>
+      </ul>
+      <span class="tag-summary-copy-spacer"></span>
+    </div>
   </div>
 </div>
