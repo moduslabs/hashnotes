@@ -76,6 +76,17 @@ export class NotesProvider {
     return noteB.updatedAt.getTime() - noteA.updatedAt.getTime();
   }
 
+  private static getTomorrowZeroed(): Date {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0);
+    tomorrow.setMinutes(0);
+    tomorrow.setSeconds(0);
+    tomorrow.setMilliseconds(0);
+
+    return tomorrow;
+  }
+
   constructor(
     private readonly storage: Storage,
     private readonly toastCtrl: ToastController,
@@ -91,6 +102,7 @@ export class NotesProvider {
         return Promise.resolve();
       },
     );
+    this.scheduleDailyDisplayDatesRefresh();
   }
 
   public async createNote(
@@ -167,13 +179,25 @@ export class NotesProvider {
           notes,
           'activeNotes',
         )
-          ? notes.activeNotes
+          ? notes.activeNotes.map(
+              (note: Note): Note => {
+                note.displayDate = NotesProvider.formatDate(note.updatedAt);
+
+                return note;
+              },
+            )
           : [];
         this.trashNotes = Object.prototype.hasOwnProperty.call(
           notes,
           'trashNotes',
         )
-          ? notes.trashNotes
+          ? notes.trashNotes.map(
+              (note: Note): Note => {
+                note.displayDate = NotesProvider.formatDate(note.updatedAt);
+
+                return note;
+              },
+            )
           : [];
 
         return Promise.resolve();
@@ -239,5 +263,35 @@ export class NotesProvider {
           return Promise.resolve();
         },
       );
+  }
+
+  private scheduleDailyDisplayDatesRefresh(): void {
+    const now = new Date();
+    const tomorrow = NotesProvider.getTomorrowZeroed();
+    const milliseconds = tomorrow.getTime() - now.getTime();
+    setTimeout((): void => {
+      this.refreshDisplayDates();
+      this.scheduleDailyDisplayDatesRefresh();
+    }, milliseconds);
+  }
+
+  private refreshDisplayDates(): void {
+    this.activeNotes = this.activeNotes.map(
+      (note: Note): Note => {
+        note.displayDate = NotesProvider.formatDate(note.updatedAt);
+
+        return note;
+      },
+    );
+    this.trashNotes = this.trashNotes.map(
+      (note: Note): Note => {
+        note.displayDate = NotesProvider.formatDate(note.updatedAt);
+
+        return note;
+      },
+    );
+
+    this.activeNotesChange.emit();
+    this.trashNotesChange.emit();
   }
 }
