@@ -68,6 +68,30 @@ export class NoteEditorComponent {
         },
         tooltip: 'Delete note',
       });
+      editor.ui.registry.addAutocompleter('hashtag', {
+        ch: '#',
+        columns: 1,
+        fetch: async (pattern) => {
+          const hashtags = Array.from(document.querySelectorAll('span.hashtag')).map((element : Element) => element.textContent);
+          const uniqueHashtags = [...new Set(hashtags)]
+          const matchedHashtags = uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1);
+
+          return new Promise((resolve) => {
+            const results = matchedHashtags.map((hashtag) => ({
+              icon: "#",
+              text: hashtag.substring(1),
+              value: hashtag,
+            }));
+            resolve(results);
+          });
+        },
+        minChars: 0,
+        onAction: (autocompleteApi, rng, value) => {
+          editor.selection.setRng(rng);
+          editor.insertContent(value);
+          autocompleteApi.hide();
+        },
+      })
     },
     target_list: false,
     toolbar:
