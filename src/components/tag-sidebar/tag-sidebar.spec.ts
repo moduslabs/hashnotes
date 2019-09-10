@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { TagSidebarComponent } from './tag-sidebar';
 
@@ -10,7 +11,7 @@ describe('TagSidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TagSidebarComponent],
-      imports: [IonicModule.forRoot()],
+      imports: [IonicModule.forRoot(), ClipboardModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TagSidebarComponent);
