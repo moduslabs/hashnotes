@@ -166,20 +166,8 @@ export class NotesProvider {
 
   public async saveNotes(): Promise<void> {
     return this.storage.set('notes', {
-      activeNotes: this.activeNotes.map(
-        (note: Note): Note => {
-          delete note.displayDate;
-
-          return note;
-        },
-      ),
-      trashNotes: this.trashNotes.map(
-        (note: Note): Note => {
-          delete note.displayDate;
-
-          return note;
-        },
-      ),
+      activeNotes: this.activeNotes,
+      trashNotes: this.trashNotes,
     });
   }
 
