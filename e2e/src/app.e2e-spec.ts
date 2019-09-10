@@ -9,6 +9,6 @@ describe('new App', () => {
 
   it('should load', async () => {
     await page.navigateTo();
-    expect(true).toBe(true);
+    await expect(true).toBe(true);
   });
 });
