@@ -29,9 +29,14 @@ export class TagSidebarComponent {
   }
   private static readonly CLASSNAME_COPY_BULLET = 'tag-summary-copy-bullet';
   private static readonly CLASSNAME_COPY_SPACER = 'tag-summary-copy-spacer';
-  private static readonly TAG_CONTENT_REGEX = /(.*)(?:<span class="hashtag">)(?:.*)(?:<\/span>)/;
-  private static readonly TAG_REGEX = /(?:<span class="hashtag">)(.*)(?:<\/span>)/;
-  private static readonly TAG_REGEX_GLOBAL = /(?:<span class="hashtag">)(#[\w\-]+)(?:<\/span>)/g;
+  private static readonly HASHTAG_DELIMITER_REGEX_GLOBAL = /[_-]/g;
+  private static readonly HASHTAG_REGEX_GLOBAL = /#[\w-]+/g;
+  private static readonly TAG_CONTENT_LEADING_TAGS_REGEX_GLOBAL = /^(<[\w]+>)*(<span class="hashtag">#[\w\/-]+<\/span>)*[\s]*/g;
+  private static readonly TAG_CONTENT_TRAILING_TAGS_REGEX_GLOBAL = /[\s]*(<span class="hashtag">#[\w\/-]+<\/span>)*(<\/[\w]+>)*$/g;
+  private static readonly TAG_CONTENT_MIDDLE_HASHTAGS_REGEX_GLOBAL = /<span class="hashtag">(#[\w\/-]+)<\/span>/g;
+  private static readonly TAG_CONTENT_MIDDLE_TAGS_REGEX_GLOBAL = /<\/?[\w]+>/g;
+  private static readonly TAG_REGEX = /(?:<span class="hashtag">)(#[\w\/-]+)(?:<\/span>)/;
+  private static readonly TAG_REGEX_GLOBAL = /(?:<span class="hashtag">)(#[\w\/-]+)(?:<\/span>)/g;
 
   @ViewChild('tagSummary', { static: false }) public tagSummary: ElementRef;
 
@@ -50,10 +55,32 @@ export class TagSidebarComponent {
       .filter((line: string): boolean =>
         line.includes(`<span class="hashtag">${tagName}</span>`),
       )
-      .map(
-        (line: string): string =>
-          line.match(TagSidebarComponent.TAG_CONTENT_REGEX)[1],
+      .map((line: string): string =>
+        line
+          .replace(
+            TagSidebarComponent.TAG_CONTENT_LEADING_TAGS_REGEX_GLOBAL,
+            '',
+          )
+          .replace(
+            TagSidebarComponent.TAG_CONTENT_TRAILING_TAGS_REGEX_GLOBAL,
+            '',
+          )
+          .replace(
+            TagSidebarComponent.TAG_CONTENT_MIDDLE_HASHTAGS_REGEX_GLOBAL,
+            '$1',
+          )
+          .replace(TagSidebarComponent.TAG_CONTENT_MIDDLE_TAGS_REGEX_GLOBAL, '')
+          .replace(
+            TagSidebarComponent.HASHTAG_REGEX_GLOBAL,
+            TagSidebarComponent.sanitizeMiddleHashtag,
+          ),
       );
+  }
+
+  private static sanitizeMiddleHashtag(hashtag: string): string {
+    return hashtag
+      .substring(1, hashtag.length)
+      .replace(TagSidebarComponent.HASHTAG_DELIMITER_REGEX_GLOBAL, ' ');
   }
 
   private static findTagsInNoteContent({
