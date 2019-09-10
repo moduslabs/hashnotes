@@ -26,10 +26,19 @@ export class NoteEditorComponent {
     this._note = !!note ? note : undefined;
     this.loadNoteToEditor();
   }
+
+  @Input() public set notes(notes: Array<Note>) {
+    this._notes = notes;
+  }
+
   public get note(): Note {
     return this._note;
   }
 
+  public get notes(): Array<Note> {
+    return this._notes;
+  }
+  
   private static readonly TAG_REGEX = /^#[\w\-]+$/;
   private static readonly NOT_TAG_REGEX = /^[\w\-]/;
 
@@ -71,13 +80,18 @@ export class NoteEditorComponent {
       editor.ui.registry.addAutocompleter('hashtag', {
         ch: '#',
         columns: 1,
-        fetch: async (pattern) => {
-          const hashtags = Array.from(document.querySelectorAll('span.hashtag')).map((element : Element) => element.textContent);
-          const uniqueHashtags = [...new Set(hashtags)]
-          const matchedHashtags = uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1);
+        fetch: async (pattern: string) => {
+          let suggestedTags : Array<string>;
+          let uniqueHashtags : Array<string> = [];
+          this._notes.forEach((note) => {if (note.tags) {uniqueHashtags.push(...note.tags)}});
+          uniqueHashtags = [...new Set(uniqueHashtags)];
+          suggestedTags = pattern !== "" ? 
+            uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1) :
+            [...new Set(this.recentTags.filter((hashtag) => uniqueHashtags.includes(hashtag)))];
+          
 
           return new Promise((resolve) => {
-            const results = matchedHashtags.map((hashtag) => ({
+            const results = suggestedTags.map((hashtag) => ({
               icon: "#",
               text: hashtag.substring(1),
               value: hashtag,
@@ -85,6 +99,7 @@ export class NoteEditorComponent {
             resolve(results);
           });
         },
+        maxResults: 6,
         minChars: 0,
         onAction: (autocompleteApi, rng, value) => {
           editor.selection.setRng(rng);
@@ -101,12 +116,15 @@ export class NoteEditorComponent {
   public tinyMceApiKey = environment.tinyMceApiKey;
 
   public editor = undefined;
+  public recentTags: Array<string>;
 
   private _note: Note;
+  private _notes: Array<Note>;
 
   public onEditorContentChange(event: any): void {
     if (!!this.note && this.note.content !== this.editor.getContent()) {
       this.updateTagElements();
+      this.note.tags = this.getUniqueTags();
       this.note.content = this.editor.getContent();
       const now = new Date();
       this.note.updatedAt = now;
@@ -118,6 +136,7 @@ export class NoteEditorComponent {
   public onEditorInit(event: any): void {
     this.editor = event.editor;
     this.loadNoteToEditor();
+    this.recentTags = [];
   }
 
   private loadNoteToEditor(): void {
@@ -130,6 +149,12 @@ export class NoteEditorComponent {
       );
       this.editor.focus();
     }
+  }
+
+  private getUniqueTags(): Array<string>{
+    const hashtags = Array.from(this.editor.$('span.hashtag')).map((element : HTMLElement) => element.textContent);
+    
+    return [...new Set(hashtags)];
   }
 
   private updateTagElements(): void {
@@ -147,6 +172,7 @@ export class NoteEditorComponent {
         !element.innerText.match(NoteEditorComponent.TAG_REGEX) ||
         textAfter.match(NoteEditorComponent.NOT_TAG_REGEX)
       ) {
+        if (this.recentTags) {this.recentTags = this.recentTags.filter((value: string) => value !== element.innerText)}
         const parentNode = element.parentNode;
         while (element.firstChild) {
           parentNode.insertBefore(element.firstChild, element);
@@ -180,6 +206,8 @@ export class NoteEditorComponent {
           const cursor = this.editor.selection.getBookmark();
           range.surroundContents(newElement);
           this.editor.selection.moveToBookmark(cursor);
+
+          this.recentTags.unshift(match[0])
         }
       }
       textNode = treeWalker.nextNode();

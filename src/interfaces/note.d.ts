@@ -4,5 +4,6 @@ export interface Note {
   deletedAt: Date | null;
   displayDate: string;
   id: string;
+  tags: string[];
   updatedAt: Date;
 }

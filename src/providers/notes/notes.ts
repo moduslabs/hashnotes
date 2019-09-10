@@ -117,6 +117,7 @@ export class NotesProvider {
       deletedAt: undefined,
       displayDate: NotesProvider.formatDate(now),
       id: uuidv4(),
+      tags: [],
       updatedAt: now,
     };
 
