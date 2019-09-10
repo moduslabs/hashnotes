@@ -19,6 +19,10 @@ import { environment } from '../../environments/environment';
 })
 export class NoteEditorComponent {
   @Input() public set note(note: Note) {
+    if (!!this.editor && this._note !== note) {
+      this.editor.undoManager.clear();
+    }
+
     this._note = !!note ? note : undefined;
     this.loadNoteToEditor();
   }
