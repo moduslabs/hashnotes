@@ -82,14 +82,15 @@ export class NoteEditorComponent {
         columns: 1,
         fetch: async (pattern: string) => {
           let suggestedTags : Array<string>;
-          let uniqueHashtags : Array<string> = [];
-          this._notes.forEach((note) => {if (note.tags) {uniqueHashtags.push(...note.tags)}});
+          let uniqueHashtags : Array<string> = this.getUniqueTags();
+          this._notes.forEach((note) => {if (note.tags && note !== this.note) {uniqueHashtags.push(...note.tags)}});
           uniqueHashtags = [...new Set(uniqueHashtags)];
-          suggestedTags = pattern !== "" ? 
-            uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1) :
-            [...new Set(this.recentTags.filter((hashtag) => uniqueHashtags.includes(hashtag)))];
+          this.recentTags = [...new Set(this.recentTags.filter((hashtag) => uniqueHashtags.includes(hashtag)))] 
+          suggestedTags = pattern.length === 0 ? 
+            this.recentTags :
+            uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1);
+          suggestedTags.length = Math.min(suggestedTags.length, 6);
           
-
           return new Promise((resolve) => {
             const results = suggestedTags.map((hashtag) => ({
               icon: "#",
@@ -99,7 +100,6 @@ export class NoteEditorComponent {
             resolve(results);
           });
         },
-        maxResults: 6,
         minChars: 0,
         onAction: (autocompleteApi, rng, value) => {
           editor.selection.setRng(rng);
