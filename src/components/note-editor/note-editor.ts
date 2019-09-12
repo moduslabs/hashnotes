@@ -11,6 +11,8 @@ import { NotesProvider } from '../../providers/notes/notes';
 
 import { environment } from '../../environments/environment';
 
+import { Storage } from '@ionic/storage';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'hn-note-editor',
@@ -84,13 +86,13 @@ export class NoteEditorComponent {
           let suggestedTags : Array<string>;
           let uniqueHashtags : Array<string> = this.getUniqueTags();
           this._notes.forEach((note) => {if (note.tags && note !== this.note) {uniqueHashtags.push(...note.tags)}});
-          uniqueHashtags = [...new Set(uniqueHashtags)];
-          this.recentTags = [...new Set(this.recentTags.filter((hashtag) => uniqueHashtags.includes(hashtag)))] 
+          uniqueHashtags = [...new Set(uniqueHashtags)].sort();
+          this.recentTags = [...new Set(this.recentTags.filter((hashtag) => uniqueHashtags.includes(hashtag)))]
           suggestedTags = pattern.length === 0 ? 
-            this.recentTags :
+            this.recentTags.slice() :
             uniqueHashtags.filter((hashtag) => hashtag.indexOf(pattern) === 1);
           suggestedTags.length = Math.min(suggestedTags.length, 6);
-          
+
           return new Promise((resolve) => {
             const results = suggestedTags.map((hashtag) => ({
               icon: "#",
@@ -121,9 +123,14 @@ export class NoteEditorComponent {
   private _note: Note;
   private _notes: Array<Note>;
 
+  constructor (
+    private readonly storage: Storage
+  ) { }
+
   public onEditorContentChange(event: any): void {
     if (!!this.note && this.note.content !== this.editor.getContent()) {
       this.updateTagElements();
+      this.saveRecentTags().catch()
       this.note.tags = this.getUniqueTags();
       this.note.content = this.editor.getContent();
       const now = new Date();
@@ -136,7 +143,22 @@ export class NoteEditorComponent {
   public onEditorInit(event: any): void {
     this.editor = event.editor;
     this.loadNoteToEditor();
-    this.recentTags = [];
+    this.updateTagElements();
+    this.loadRecentTags().then(
+      async (value) : Promise<any> => {
+        this.recentTags = value || [] 
+        
+        return Promise.resolve();
+      }
+    ).catch()
+  }
+
+  private async saveRecentTags(): Promise<any> {
+    return this.storage.set('recentTags', this.recentTags)
+  }
+
+  private async loadRecentTags(): Promise<any> {
+    return this.storage.get('recentTags')
   }
 
   private loadNoteToEditor(): void {
