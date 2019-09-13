@@ -49,10 +49,15 @@
     margin-top: 3rem;
   }
 
-  ion-chip {
-    --background: #1b1b1b;
-    --color: #ffffff;
-    margin-top: 2rem;
+  .tag-container {
+    word-break: break-all;
+
+    ion-chip {
+      --background: #1b1b1b;
+      --color: #ffffff;
+      height: auto;
+      margin-top: 2rem;
+    }
   }
 
   .tag-summary-copy-spacer,

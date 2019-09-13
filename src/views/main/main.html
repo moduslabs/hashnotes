@@ -14,6 +14,7 @@
       (noteEdit)="onNoteEdit($event)"
       (newNoteButtonClick)="onNewNoteButtonClick($event)"
       (deleteNoteButtonClick)="onDeleteNoteButtonClick($event)"
+      [notes]="notes"
       [note]="selectedNote"
     ></hn-note-editor>
     <hn-tag-sidebar [noteContent]="selectedNote?.content"></hn-tag-sidebar>

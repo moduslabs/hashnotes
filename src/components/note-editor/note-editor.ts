@@ -26,12 +26,25 @@ export class NoteEditorComponent {
     this._note = !!note ? note : undefined;
     this.loadNoteToEditor();
   }
+
+  @Input() public set notes(notes: Array<Note>) {
+    this._notes = notes;
+  }
+
   public get note(): Note {
     return this._note;
   }
 
-  private static readonly TAG_REGEX = /^#[\w\-]+$/;
-  private static readonly NOT_TAG_REGEX = /^[\w\-]/;
+  public get notes(): Array<Note> {
+    return this._notes;
+  }
+
+  private static readonly AUTOCOMPLETER_ATTRIBUTE_NAME =
+    'data-mce-autocompleter';
+  private static readonly MAX_SUGGESTED_TAGS = 6;
+  private static readonly TAG_REGEX_ENTIRE = /^#[\w-]+$/;
+  private static readonly TAG_REGEX_INSIDE = /#[\w-]+/;
+  private static readonly TAG_REGEX_AUTOCOMPLETE_MATCHER = /#[\w-]*$/;
 
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
@@ -39,7 +52,7 @@ export class NoteEditorComponent {
 
   public tinyMceConfig = {
     content_style:
-      'span.hashtag { color: #ffffff; background-color: #1b1b1b; }',
+      'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; display: inline-block; padding: 0.25rem 0.5rem; word-break: break-all; }',
     extended_valid_elements: 'span[class]',
     height: '100%',
     link_title: false,
@@ -68,6 +81,78 @@ export class NoteEditorComponent {
         },
         tooltip: 'Delete note',
       });
+      editor.ui.registry.addAutocompleter('hashtag', {
+        ch: '#',
+        fetch: async (pattern: string) => {
+          const lowerCasePattern = pattern.toLocaleLowerCase();
+
+          let patternCount = 0;
+          const noteHashtags = this.getNoteHashtags();
+          noteHashtags.forEach((hashtag: string): void => {
+            if (hashtag === pattern) {
+              patternCount += 1;
+            }
+          });
+          const noteUniqueHashtags = [
+            ...new Set(
+              patternCount === 0
+                ? noteHashtags
+                : noteHashtags.filter(
+                    (hashtag: string): boolean => hashtag !== pattern,
+                  ),
+            ),
+          ].sort();
+
+          const allNoteUniqueHashtags = this.notesProvider.getAllNoteUniqueHashtags(
+            { noteToIgnore: this.note },
+          );
+          noteUniqueHashtags.forEach((hashtag: string): void => {
+            if (!allNoteUniqueHashtags.includes(hashtag)) {
+              allNoteUniqueHashtags.push(hashtag);
+            }
+          });
+          allNoteUniqueHashtags.sort();
+
+          const suggestedTags =
+            pattern.length === 0
+              ? allNoteUniqueHashtags
+              : allNoteUniqueHashtags.filter((hashtag: string): boolean =>
+                  hashtag.toLocaleLowerCase().startsWith(lowerCasePattern),
+                );
+          suggestedTags.length = Math.min(
+            suggestedTags.length,
+            NoteEditorComponent.MAX_SUGGESTED_TAGS,
+          );
+
+          if (suggestedTags.length === 0) {
+            suggestedTags.push(pattern);
+          }
+
+          return Promise.resolve(
+            suggestedTags.map((hashtag: string): any => ({
+              text: `#${hashtag}`,
+              value: `#${hashtag}`,
+            })),
+          );
+        },
+        matches: (_range: Range, text: string): boolean => {
+          const isAMatch = !!text.match(
+            NoteEditorComponent.TAG_REGEX_AUTOCOMPLETE_MATCHER,
+          );
+          this.isAutocompleteVisible = isAMatch;
+
+          return isAMatch;
+        },
+        minChars: 0,
+        onAction: (autocompleteApi: any, range: any, hashtag: string): void => {
+          editor.selection.setRng(range);
+          editor.insertContent(hashtag);
+          autocompleteApi.hide();
+
+          this.isAutocompleteVisible = false;
+          this.updateTagElements();
+        },
+      });
     },
     target_list: false,
     toolbar:
@@ -79,10 +164,15 @@ export class NoteEditorComponent {
   public editor = undefined;
 
   private _note: Note;
+  private _notes: Array<Note>;
+  private isAutocompleteVisible = false;
 
-  public onEditorContentChange(event: any): void {
+  constructor(private readonly notesProvider: NotesProvider) {}
+
+  public onEditorContentChange(): void {
     if (!!this.note && this.note.content !== this.editor.getContent()) {
       this.updateTagElements();
+      this.note.hashtags = this.getNoteUniqueHashtags();
       this.note.content = this.editor.getContent();
       const now = new Date();
       this.note.updatedAt = now;
@@ -94,6 +184,7 @@ export class NoteEditorComponent {
   public onEditorInit(event: any): void {
     this.editor = event.editor;
     this.loadNoteToEditor();
+    this.updateTagElements();
   }
 
   private loadNoteToEditor(): void {
@@ -108,6 +199,16 @@ export class NoteEditorComponent {
     }
   }
 
+  private getNoteHashtags(): Array<string> {
+    return Array.from(this.editor.$('span.hashtag')).map(
+      (element: HTMLElement) => element.textContent.substring(1),
+    );
+  }
+
+  private getNoteUniqueHashtags(): Array<string> {
+    return [...new Set(this.getNoteHashtags())].sort();
+  }
+
   private updateTagElements(): void {
     this.removeInvalidTagSpans();
     this.addTagSpans();
@@ -116,12 +217,18 @@ export class NoteEditorComponent {
   private removeInvalidTagSpans(): void {
     const elementList = this.editor.$('span').toArray();
     elementList.forEach((element: HTMLElement): void => {
-      const textAfter = element.nextSibling
-        ? element.nextSibling.textContent
-        : '';
       if (
-        !element.innerText.match(NoteEditorComponent.TAG_REGEX) ||
-        textAfter.match(NoteEditorComponent.NOT_TAG_REGEX)
+        !element.innerText.match(NoteEditorComponent.TAG_REGEX_ENTIRE) &&
+        (!this.isAutocompleteVisible ||
+          (!element.hasAttribute(
+            NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+          ) &&
+            !(
+              element.childElementCount > 0 &&
+              element.firstElementChild.hasAttribute(
+                NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+              )
+            )))
       ) {
         const parentNode = element.parentNode;
         while (element.firstChild) {
@@ -143,20 +250,26 @@ export class NoteEditorComponent {
 
     let textNode = treeWalker.nextNode();
     while (textNode) {
-      const match = textNode.textContent.match(/#[\w\-]+/);
-      if (match) {
-        if (textNode.parentElement.className !== 'hashtag') {
-          const range = document.createRange();
-          range.setStart(textNode, match.index);
-          range.setEnd(textNode, match.index + match[0].length);
+      const match = textNode.textContent.match(
+        NoteEditorComponent.TAG_REGEX_INSIDE,
+      );
+      if (
+        match &&
+        textNode.parentElement.className !== 'hashtag' &&
+        !textNode.parentElement.hasAttribute(
+          NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+        )
+      ) {
+        const range = document.createRange();
+        range.setStart(textNode, match.index);
+        range.setEnd(textNode, match.index + match[0].length);
 
-          const newElement = document.createElement('span');
-          newElement.setAttribute('class', 'hashtag');
+        const newElement = document.createElement('span');
+        newElement.setAttribute('class', 'hashtag');
 
-          const cursor = this.editor.selection.getBookmark();
-          range.surroundContents(newElement);
-          this.editor.selection.moveToBookmark(cursor);
-        }
+        const cursor = this.editor.selection.getBookmark();
+        range.surroundContents(newElement);
+        this.editor.selection.moveToBookmark(cursor);
       }
       textNode = treeWalker.nextNode();
     }

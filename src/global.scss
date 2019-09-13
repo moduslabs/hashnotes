@@ -33,3 +33,16 @@ h1 {
 ion-toast.toast-note-deletion {
   --button-color: #ffffff;
 }
+
+// Important necessary to override vendor style
+.tox-autocompleter {
+  max-height: calc(12.5em + 2px) !important;
+
+  .tox-collection__group {
+    max-width: calc(25em - 2px) !important;
+
+    .tox-collection__item-label {
+      max-width: calc(25em - 20px) !important;
+    }
+  }
+}

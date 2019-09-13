@@ -116,6 +116,7 @@ export class NotesProvider {
       createdAt: now,
       deletedAt: undefined,
       displayDate: NotesProvider.formatDate(now),
+      hashtags: [],
       id: uuidv4(),
       updatedAt: now,
     };
@@ -162,6 +163,35 @@ export class NotesProvider {
     }
 
     return Promise.resolve();
+  }
+
+  public getAllNoteUniqueHashtags({
+    noteToIgnore,
+  }: {
+    noteToIgnore?: Note;
+  } = {}): Array<string> {
+    const activeNoteHashtags = this.activeNotes
+      .map(
+        (note: Note): Array<string> =>
+          !noteToIgnore || noteToIgnore !== note ? note.hashtags : [],
+      )
+      .reduce(
+        (tags: Array<string>, noteTags: Array<string>): Array<string> =>
+          tags.concat(...noteTags),
+        [],
+      );
+    const trashNoteHashtags = this.trashNotes
+      .map(
+        (note: Note): Array<string> =>
+          !noteToIgnore || noteToIgnore !== note ? note.hashtags : [],
+      )
+      .reduce(
+        (tags: Array<string>, noteTags: Array<string>): Array<string> =>
+          tags.concat(...noteTags),
+        [],
+      );
+
+    return [...new Set(activeNoteHashtags.concat(trashNoteHashtags))].sort();
   }
 
   public async saveNotes(): Promise<void> {
