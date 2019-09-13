@@ -18,7 +18,7 @@
     <div class="title-print" [innerHTML]="title"></div>
     <span class="tag-summary-copy-spacer"></span>
     <span class="tag-summary-copy-spacer"></span>
-    <div *ngFor="let tag of tags; trackBy: tagTracker">
+    <div class="tag-container" *ngFor="let tag of tags; trackBy: tagTracker">
       <ion-chip>
         <ion-label>{{ tag.name }}</ion-label>
       </ion-chip>

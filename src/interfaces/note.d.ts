@@ -3,7 +3,7 @@ export interface Note {
   createdAt: Date;
   deletedAt: Date | null;
   displayDate: string;
+  hashtags: string[];
   id: string;
-  tags: string[];
   updatedAt: Date;
 }
