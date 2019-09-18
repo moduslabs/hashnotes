@@ -49,6 +49,7 @@ export class NoteEditorComponent {
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
+  @Output() public readonly editorInit = new EventEmitter();
 
   public tinyMceConfig = {
     content_style:
@@ -185,6 +186,7 @@ export class NoteEditorComponent {
     this.editor = event.editor;
     this.loadNoteToEditor();
     this.updateTagElements();
+    this.editorInit.emit(this.editor);
   }
 
   private loadNoteToEditor(): void {
