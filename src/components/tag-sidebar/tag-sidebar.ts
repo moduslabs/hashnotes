@@ -74,7 +74,8 @@ export class TagSidebarComponent {
             TagSidebarComponent.HASHTAG_REGEX_GLOBAL,
             TagSidebarComponent.sanitizeMiddleHashtag,
           ),
-      );
+      )
+      .filter((line: string): boolean => line.trim().length > 0);
   }
 
   private static sanitizeMiddleHashtag(hashtag: string): string {
