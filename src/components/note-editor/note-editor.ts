@@ -8,6 +8,7 @@ import {
 
 import { Note } from '../../interfaces/note';
 import { NotesProvider } from '../../providers/notes/notes';
+import { RecentHashtagsProvider } from '../../providers/recent-hashtags/recent-hashtags';
 
 import { environment } from '../../environments/environment';
 
@@ -53,7 +54,7 @@ export class NoteEditorComponent {
 
   public tinyMceConfig = {
     content_style:
-      'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; display: inline-block; padding: 0.25rem 0.5rem; word-break: break-all; }',
+      'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; line-height: 175%; padding: 0.25rem 0.5rem; }',
     extended_valid_elements: 'span[class]',
     height: '100%',
     link_title: false,
@@ -85,6 +86,15 @@ export class NoteEditorComponent {
       editor.ui.registry.addAutocompleter('hashtag', {
         ch: '#',
         fetch: async (pattern: string) => {
+          if (pattern.length === 0) {
+            return this.recentHashtagsProvider.hashtags.map(
+              (hashtag: string): any => ({
+                text: `#${hashtag}`,
+                value: `#${hashtag}`,
+              }),
+            );
+          }
+
           const lowerCasePattern = pattern.toLocaleLowerCase();
 
           let patternCount = 0;
@@ -145,13 +155,18 @@ export class NoteEditorComponent {
           return isAMatch;
         },
         minChars: 0,
-        onAction: (autocompleteApi: any, range: any, hashtag: string): void => {
+        onAction: async (
+          autocompleteApi: any,
+          range: any,
+          hashtag: string,
+        ): Promise<void> => {
           editor.selection.setRng(range);
           editor.insertContent(hashtag);
           autocompleteApi.hide();
 
           this.isAutocompleteVisible = false;
-          this.updateTagElements();
+
+          return this.updateTagElements();
         },
       });
     },
@@ -168,11 +183,14 @@ export class NoteEditorComponent {
   private _notes: Array<Note>;
   private isAutocompleteVisible = false;
 
-  constructor(private readonly notesProvider: NotesProvider) {}
+  constructor(
+    private readonly notesProvider: NotesProvider,
+    private readonly recentHashtagsProvider: RecentHashtagsProvider,
+  ) {}
 
-  public onEditorContentChange(): void {
+  public async onEditorContentChange(): Promise<void> {
     if (!!this.note && this.note.content !== this.editor.getContent()) {
-      this.updateTagElements();
+      await this.updateTagElements();
       this.note.hashtags = this.getNoteUniqueHashtags();
       this.note.content = this.editor.getContent();
       const now = new Date();
@@ -180,13 +198,16 @@ export class NoteEditorComponent {
       this.note.displayDate = NotesProvider.formatDate(now);
       this.noteEdit.emit(this.note.updatedAt);
     }
+
+    return Promise.resolve();
   }
 
-  public onEditorInit(event: any): void {
+  public async onEditorInit(event: any): Promise<void> {
     this.editor = event.editor;
     this.loadNoteToEditor();
-    this.updateTagElements();
     this.editorInit.emit(this.editor);
+
+    return this.updateTagElements();
   }
 
   private loadNoteToEditor(): void {
@@ -211,9 +232,10 @@ export class NoteEditorComponent {
     return [...new Set(this.getNoteHashtags())].sort();
   }
 
-  private updateTagElements(): void {
+  private async updateTagElements(): Promise<void> {
     this.removeInvalidTagSpans();
-    this.addTagSpans();
+
+    return this.addTagSpans();
   }
 
   private removeInvalidTagSpans(): void {
@@ -242,7 +264,7 @@ export class NoteEditorComponent {
     });
   }
 
-  private addTagSpans(): void {
+  private async addTagSpans(): Promise<void> {
     const treeWalker = document.createTreeWalker(
       this.editor.dom.getRoot(),
       NodeFilter.SHOW_TEXT,
@@ -272,8 +294,12 @@ export class NoteEditorComponent {
         const cursor = this.editor.selection.getBookmark();
         range.surroundContents(newElement);
         this.editor.selection.moveToBookmark(cursor);
+
+        await this.recentHashtagsProvider.addHashtag(match[0].substring(1));
       }
       textNode = treeWalker.nextNode();
     }
+
+    return Promise.resolve();
   }
 }

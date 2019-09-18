@@ -50,14 +50,15 @@
   }
 
   .tag-container {
-    word-break: break-all;
+    min-height: 3.875rem;
+  }
 
-    ion-chip {
-      --background: #1b1b1b;
-      --color: #ffffff;
-      height: auto;
-      margin-top: 2rem;
-    }
+  .hashtag {
+    background-color: #1b1b1b;
+    border-radius: 13px;
+    color: #ffffff;
+    line-height: 175%;
+    padding: 0.25rem 0.5rem;
   }
 
   .tag-summary-copy-spacer,
