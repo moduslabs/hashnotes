@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Note } from '../../interfaces/note';
 import { NotesProvider } from '../../providers/notes/notes';
+import { RecentHashtagsProvider } from '../../providers/recent-hashtags/recent-hashtags';
 
 @Component({
   selector: 'hn-main',
@@ -21,10 +22,14 @@ export class MainPage implements OnInit, OnDestroy {
   constructor(
     private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly notesProvider: NotesProvider,
+    private readonly recentHashtagsProvider: RecentHashtagsProvider,
   ) {}
 
   public async ngOnInit(): Promise<void> {
-    return this.notesProvider.initialized.then(
+    return Promise.all([
+      this.notesProvider.initialized,
+      this.recentHashtagsProvider.initialized,
+    ]).then(
       async (): Promise<void> => {
         this.showActiveNotes();
         this.changeDetectorRef.detectChanges();
