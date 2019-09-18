@@ -52,7 +52,7 @@ export class NoteEditorComponent {
 
   public tinyMceConfig = {
     content_style:
-      'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; display: inline-block; padding: 0.25rem 0.5rem; word-break: break-all; }',
+      'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; line-height: 175%; padding: 0.25rem 0.5rem; }',
     extended_valid_elements: 'span[class]',
     height: '100%',
     link_title: false,

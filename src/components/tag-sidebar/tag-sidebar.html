@@ -19,9 +19,7 @@
     <span class="tag-summary-copy-spacer"></span>
     <span class="tag-summary-copy-spacer"></span>
     <div class="tag-container" *ngFor="let tag of tags; trackBy: tagTracker">
-      <ion-chip>
-        <ion-label>{{ tag.name }}</ion-label>
-      </ion-chip>
+      <span class="hashtag">{{ tag.name }}</span>
       <span class="tag-summary-copy-spacer"></span>
       <span class="tag-summary-copy-spacer"></span>
       <ul *ngFor="let content of tag.content; trackBy: contentTracker">
