@@ -1,3 +1,4 @@
+/* tslint:disable max-file-line-count */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -42,6 +43,7 @@ export class NoteEditorComponent {
 
   private static readonly AUTOCOMPLETER_ATTRIBUTE_NAME =
     'data-mce-autocompleter';
+  private static readonly HASHTAG_CLASSNAME = 'hashtag';
   private static readonly MAX_SUGGESTED_TAGS = 6;
   private static readonly TAG_REGEX_ENTIRE = /^#[\w-]+$/;
   private static readonly TAG_REGEX_INSIDE = /#[\w-]+/;
@@ -62,117 +64,11 @@ export class NoteEditorComponent {
     },
     menubar: 'modusFile edit insert view format',
     plugins: 'autolink link lists',
-    setup: (editor) => {
-      editor.ui.registry.addMenuItem('modusnewnote', {
-        onAction: () => {
-          this.newNoteButtonClick.emit();
-        },
-        text: 'New note',
-      });
-      editor.ui.registry.addMenuItem('modusdeletenote', {
-        onAction: () => {
-          this.deleteNoteButtonClick.emit(this.note);
-        },
-        text: 'Delete note',
-      });
-      editor.ui.registry.addButton('modustrash', {
-        icon: 'remove',
-        onAction: () => {
-          this.deleteNoteButtonClick.emit(this.note);
-        },
-        tooltip: 'Delete note',
-      });
-      editor.ui.registry.addAutocompleter('hashtag', {
-        ch: '#',
-        fetch: async (pattern: string) => {
-          if (pattern.length === 0) {
-            return this.recentHashtagsProvider.hashtags.map(
-              (hashtag: string): any => ({
-                text: `#${hashtag}`,
-                value: `#${hashtag}`,
-              }),
-            );
-          }
-
-          const lowerCasePattern = pattern.toLocaleLowerCase();
-
-          let patternCount = 0;
-          const noteHashtags = this.getNoteHashtags();
-          noteHashtags.forEach((hashtag: string): void => {
-            if (hashtag === pattern) {
-              patternCount += 1;
-            }
-          });
-          const noteUniqueHashtags = [
-            ...new Set(
-              patternCount === 0
-                ? noteHashtags
-                : noteHashtags.filter(
-                    (hashtag: string): boolean => hashtag !== pattern,
-                  ),
-            ),
-          ].sort();
-
-          const allNoteUniqueHashtags = this.notesProvider.getAllNoteUniqueHashtags(
-            { noteToIgnore: this.note },
-          );
-          noteUniqueHashtags.forEach((hashtag: string): void => {
-            if (!allNoteUniqueHashtags.includes(hashtag)) {
-              allNoteUniqueHashtags.push(hashtag);
-            }
-          });
-          allNoteUniqueHashtags.sort();
-
-          const suggestedTags =
-            pattern.length === 0
-              ? allNoteUniqueHashtags
-              : allNoteUniqueHashtags.filter((hashtag: string): boolean =>
-                  hashtag.toLocaleLowerCase().startsWith(lowerCasePattern),
-                );
-          suggestedTags.length = Math.min(
-            suggestedTags.length,
-            NoteEditorComponent.MAX_SUGGESTED_TAGS,
-          );
-
-          if (suggestedTags.length === 0) {
-            suggestedTags.push(pattern);
-          }
-
-          return Promise.resolve(
-            suggestedTags.map((hashtag: string): any => ({
-              text: `#${hashtag}`,
-              value: `#${hashtag}`,
-            })),
-          );
-        },
-        matches: (_range: Range, text: string): boolean => {
-          const isAMatch = !!text.match(
-            NoteEditorComponent.TAG_REGEX_AUTOCOMPLETE_MATCHER,
-          );
-          this.isAutocompleteVisible = isAMatch;
-
-          return isAMatch;
-        },
-        minChars: 0,
-        onAction: async (
-          autocompleteApi: any,
-          range: any,
-          hashtag: string,
-        ): Promise<void> => {
-          editor.selection.setRng(range);
-          editor.insertContent(hashtag);
-          autocompleteApi.hide();
-
-          this.isAutocompleteVisible = false;
-
-          return this.updateTagElements();
-        },
-      });
-    },
+    setup: this.onTinyMceSetup.bind(this),
     target_list: false,
     toolbar:
       'undo redo | styleselect | link | bold italic | numlist bullist | alignleft aligncenter alignright alignjustify | outdent indent | modustrash',
-    valid_classes: 'hashtag',
+    valid_classes: NoteEditorComponent.HASHTAG_CLASSNAME,
   };
   public tinyMceApiKey = environment.tinyMceApiKey;
 
@@ -181,6 +77,9 @@ export class NoteEditorComponent {
   private _note: Note;
   private _notes: Array<Note>;
   private isAutocompleteVisible = false;
+  private previouslySelectedNode;
+  private previouslySelectedNodeInnerText = '';
+  private isCurrentlyEditingAHashtag = false;
 
   constructor(
     private readonly notesProvider: NotesProvider,
@@ -201,11 +100,32 @@ export class NoteEditorComponent {
     return Promise.resolve();
   }
 
+  public async onKeyUp(event: any): Promise<void> {
+    const currentlySelectedNode = this.editor.selection.getNode();
+    this.isCurrentlyEditingAHashtag =
+      (!!currentlySelectedNode.attributes.getNamedItem(
+        NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+      ) ||
+        currentlySelectedNode.className ===
+          NoteEditorComponent.HASHTAG_CLASSNAME) &&
+      (this.isCurrentlyEditingAHashtag || event.event.code !== 'Backspace');
+
+    return this.onEditorContentChange();
+  }
+
   public async onEditorInit(event: any): Promise<void> {
     this.editor = event.editor;
     this.loadNoteToEditor();
 
     return this.updateTagElements();
+  }
+
+  public onNodeChange(): void {
+    const currentlySelectedNode = this.editor.selection.getNode();
+    if (this.isLastCharacterOfHashtagDeleted({ currentlySelectedNode })) {
+      this.onLastCharacterOfHashtagDeleted({ currentlySelectedNode });
+    }
+    this.afterNodeChange({ currentlySelectedNode });
   }
 
   private loadNoteToEditor(): void {
@@ -277,7 +197,8 @@ export class NoteEditorComponent {
       );
       if (
         match &&
-        textNode.parentElement.className !== 'hashtag' &&
+        textNode.parentElement.className !==
+          NoteEditorComponent.HASHTAG_CLASSNAME &&
         !textNode.parentElement.hasAttribute(
           NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
         )
@@ -287,7 +208,7 @@ export class NoteEditorComponent {
         range.setEnd(textNode, match.index + match[0].length);
 
         const newElement = document.createElement('span');
-        newElement.setAttribute('class', 'hashtag');
+        newElement.setAttribute('class', NoteEditorComponent.HASHTAG_CLASSNAME);
 
         const cursor = this.editor.selection.getBookmark();
         range.surroundContents(newElement);
@@ -299,5 +220,207 @@ export class NoteEditorComponent {
     }
 
     return Promise.resolve();
+  }
+
+  private isLastCharacterOfHashtagDeleted({
+    currentlySelectedNode,
+  }: {
+    currentlySelectedNode: any;
+  }): boolean {
+    return (
+      !this.isCurrentlyEditingAHashtag &&
+      ((!!currentlySelectedNode.attributes.getNamedItem(
+        NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+      ) &&
+        this.previouslySelectedNode.className ===
+          NoteEditorComponent.HASHTAG_CLASSNAME &&
+        currentlySelectedNode.parentNode === this.previouslySelectedNode) ||
+        currentlySelectedNode === this.previouslySelectedNode) &&
+      this.previouslySelectedNodeInnerText.length ===
+        (currentlySelectedNode.innerText.length as number) + 1 &&
+      this.previouslySelectedNodeInnerText.substring(
+        0,
+        currentlySelectedNode.innerText.length,
+      ) === currentlySelectedNode.innerText
+    );
+  }
+
+  private onLastCharacterOfHashtagDeleted({
+    currentlySelectedNode,
+  }: {
+    currentlySelectedNode: any;
+  }): void {
+    const cursor = this.editor.selection.getBookmark();
+    const parentNode = currentlySelectedNode.parentNode;
+    parentNode.removeChild(currentlySelectedNode);
+    parentNode.normalize();
+    this.editor.selection.moveToBookmark(cursor);
+  }
+
+  private afterNodeChange({
+    currentlySelectedNode,
+  }: {
+    currentlySelectedNode: any;
+  }): void {
+    let hashtagChildNode;
+    for (const childNode of currentlySelectedNode.childNodes) {
+      if (childNode.className === NoteEditorComponent.HASHTAG_CLASSNAME) {
+        hashtagChildNode = childNode;
+      }
+    }
+
+    this.previouslySelectedNode = hashtagChildNode
+      ? hashtagChildNode
+      : currentlySelectedNode;
+    this.previouslySelectedNodeInnerText = hashtagChildNode
+      ? hashtagChildNode.innerText
+      : this.previouslySelectedNode.innerText;
+  }
+
+  private onTinyMceSetup(editor: any): void {
+    this.addTinyMceUiItems({ editor });
+    this.addTinyMceAutocompleter({ editor });
+  }
+
+  private addTinyMceUiItems({ editor }: { editor: any }): void {
+    editor.ui.registry.addMenuItem('modusnewnote', {
+      onAction: () => {
+        this.newNoteButtonClick.emit();
+      },
+      text: 'New note',
+    });
+    editor.ui.registry.addMenuItem('modusdeletenote', {
+      onAction: () => {
+        this.deleteNoteButtonClick.emit(this.note);
+      },
+      text: 'Delete note',
+    });
+    editor.ui.registry.addButton('modustrash', {
+      icon: 'remove',
+      onAction: () => {
+        this.deleteNoteButtonClick.emit(this.note);
+      },
+      tooltip: 'Delete note',
+    });
+  }
+
+  private addTinyMceAutocompleter({ editor }: { editor: any }): void {
+    editor.ui.registry.addAutocompleter(NoteEditorComponent.HASHTAG_CLASSNAME, {
+      ch: '#',
+      fetch: this.onTinyMceAutocompleterFetch.bind(this),
+      matches: this.onTinyMceAutocompleterMatches.bind(this),
+      minChars: 0,
+      onAction: this.onTinyMceAutocompleterAction.bind(this),
+    });
+  }
+
+  private async onTinyMceAutocompleterFetch(pattern: string): Promise<any> {
+    if (pattern.length === 0) {
+      return Promise.resolve(
+        this.recentHashtagsProvider.hashtags.map((hashtag: string): any => ({
+          text: `#${hashtag}`,
+          value: `#${hashtag}`,
+        })),
+      );
+    }
+
+    return Promise.resolve(
+      this.getAutocompleterSuggestedHashtags({ pattern }).map(
+        (hashtag: string): any => ({
+          text: `#${hashtag}`,
+          value: `#${hashtag}`,
+        }),
+      ),
+    );
+  }
+
+  private getAutocompleterSuggestedHashtags({
+    pattern,
+  }: {
+    pattern: string;
+  }): Array<string> {
+    const allNoteUniqueHashtags = this.getAllNoteUniqueHashtagsSorted({
+      pattern,
+    });
+
+    const lowerCasePattern = pattern.toLocaleLowerCase();
+    const suggestedHashtags =
+      pattern.length === 0
+        ? allNoteUniqueHashtags
+        : allNoteUniqueHashtags.filter((hashtag: string): boolean =>
+            hashtag.toLocaleLowerCase().startsWith(lowerCasePattern),
+          );
+    suggestedHashtags.length = Math.min(
+      suggestedHashtags.length,
+      NoteEditorComponent.MAX_SUGGESTED_TAGS,
+    );
+
+    if (suggestedHashtags.length === 0) {
+      suggestedHashtags.push(pattern);
+    }
+
+    return suggestedHashtags;
+  }
+
+  /**
+   * It is necessary to use this method rather than the provider method in
+   * order to account for hashtags that are currently being edited
+   */
+  private getAllNoteUniqueHashtagsSorted({
+    pattern,
+  }: {
+    pattern: string;
+  }): Array<string> {
+    let patternCount = 0;
+    const noteHashtags = this.getNoteHashtags();
+    noteHashtags.forEach((hashtag: string): void => {
+      if (hashtag === pattern) {
+        patternCount += 1;
+      }
+    });
+    const noteUniqueHashtags = [
+      ...new Set(
+        patternCount === 0
+          ? noteHashtags
+          : noteHashtags.filter(
+              (hashtag: string): boolean => hashtag !== pattern,
+            ),
+      ),
+    ].sort();
+
+    const allNoteUniqueHashtags = this.notesProvider.getAllNoteUniqueHashtags({
+      noteToIgnore: this.note,
+    });
+    noteUniqueHashtags.forEach((hashtag: string): void => {
+      if (!allNoteUniqueHashtags.includes(hashtag)) {
+        allNoteUniqueHashtags.push(hashtag);
+      }
+    });
+    allNoteUniqueHashtags.sort();
+
+    return allNoteUniqueHashtags;
+  }
+
+  private onTinyMceAutocompleterMatches(_range: Range, text: string): boolean {
+    const isAMatch = !!text.match(
+      NoteEditorComponent.TAG_REGEX_AUTOCOMPLETE_MATCHER,
+    );
+    this.isAutocompleteVisible = isAMatch;
+
+    return isAMatch;
+  }
+
+  private async onTinyMceAutocompleterAction(
+    autocompleteApi: any,
+    range: any,
+    hashtag: string,
+  ): Promise<void> {
+    this.editor.selection.setRng(range);
+    this.editor.insertContent(hashtag);
+    autocompleteApi.hide();
+
+    this.isAutocompleteVisible = false;
+
+    return this.updateTagElements();
   }
 }
