@@ -86,8 +86,8 @@ export class TagSidebarComponent {
     const tagSpans = editor.$('span.hashtag').toArray()
     const uniqueTagLines = [...new Set(tagSpans.map((tagSpan: HTMLElement): HTMLElement => tagSpan.closest("body > *") as HTMLElement))]
     const uniqueTagNames = [...new Set(tagSpans.map((tagSpan: HTMLElement): string => tagSpan.innerText))]
-    const tags = uniqueTagNames.map(
-      (tagName: string): Tag => ({
+    const tags = uniqueTagNames.map((tagName: string): Tag => 
+      ({
         content: uniqueTagLines
           .filter(
             (line: HTMLElement): boolean => 
@@ -97,40 +97,42 @@ export class TagSidebarComponent {
             )
             .includes(tagName)
           )
-          .map((tagLine: HTMLElement): string => {
-            const tagLineNodeCopy = (tagLine.cloneNode(true)) as HTMLElement
-            tagLineNodeCopy.normalize()
-            const tagSpanElements = Array.from(tagLineNodeCopy.querySelectorAll("span.hashtag"))
-            tagSpanElements.filter((element: HTMLElement) => TagSidebarComponent.isLeadingTag(element) || TagSidebarComponent.isTrailingTag(element))
-            .forEach((element: HTMLElement) => {
-              element.remove()
-            })
-            const middleTagSpanElements = Array.from(tagLineNodeCopy.querySelectorAll("span.hashtag"))
-            middleTagSpanElements.forEach((element: HTMLElement) => {
-              element.innerHTML = TagSidebarComponent.sanitizeMiddleHashtag(element.innerText)
-            })
-            const lineElements = Array.from(tagLineNodeCopy.querySelectorAll("*"))
-            const invalidElements = lineElements.filter((element: HTMLElement) => 
-              !TagSidebarComponent.ALLOWED_HTML_TAGS.includes(element.nodeName)
-            )
-            invalidElements.forEach((element : HTMLElement) => {
-              const parentNode = element.parentNode;
-              while (element.firstChild) {
-                parentNode.insertBefore(element.firstChild, element);
-              }
-              parentNode.removeChild(element);  
-              parentNode.normalize();
-            })
-            const filteredHtml = tagLineNodeCopy.innerHTML
-            tagLineNodeCopy.remove()
-
-            return filteredHtml
-          }),
+          .map((tagLine: HTMLElement): string => TagSidebarComponent.filterLineContent(tagLine)),
         name: tagName,
       }),
     )
     
     return tags;
+  }
+
+  private static filterLineContent(tagLine: HTMLElement): string {
+    const tagLineNodeCopy = (tagLine.cloneNode(true)) as HTMLElement
+    tagLineNodeCopy.normalize()
+    const tagSpanElements = Array.from(tagLineNodeCopy.querySelectorAll("span.hashtag"))
+    tagSpanElements.filter((element: HTMLElement) => TagSidebarComponent.isLeadingTag(element) || TagSidebarComponent.isTrailingTag(element))
+    .forEach((element: HTMLElement) => {
+      element.remove()
+    })
+    const middleTagSpanElements = Array.from(tagLineNodeCopy.querySelectorAll("span.hashtag"))
+    middleTagSpanElements.forEach((element: HTMLElement) => {
+      element.innerHTML = TagSidebarComponent.sanitizeMiddleHashtag(element.innerText)
+    })
+    const lineElements = Array.from(tagLineNodeCopy.querySelectorAll("*"))
+    const invalidElements = lineElements.filter((element: HTMLElement) => 
+      !TagSidebarComponent.ALLOWED_HTML_TAGS.includes(element.nodeName)
+    )
+    invalidElements.forEach((element : HTMLElement) => {
+      const parentNode = element.parentNode;
+      while (element.firstChild) {
+        parentNode.insertBefore(element.firstChild, element);
+      }
+      parentNode.removeChild(element);  
+      parentNode.normalize();
+    })
+    const filteredHtml = tagLineNodeCopy.innerHTML
+    tagLineNodeCopy.remove()
+
+    return filteredHtml
   }
 
   private static getTagSummaryText(node: any): string {

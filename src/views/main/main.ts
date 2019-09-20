@@ -16,7 +16,6 @@ export class MainPage implements OnInit, OnDestroy {
   public selectedNoteUpdatedAt: Date;
   public isShowingActiveNotes = true;
   public editor = undefined;
-  public editorContent = undefined;
 
   private activeNotesChangeSubscription: Subscription;
   private trashNotesChangeSubscription: Subscription;
