@@ -52,6 +52,7 @@ export class NoteEditorComponent {
   @Output() public readonly noteEdit = new EventEmitter();
   @Output() public readonly newNoteButtonClick = new EventEmitter();
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
+  @Output() public readonly editorInit = new EventEmitter();
 
   public tinyMceConfig = {
     content_style:
@@ -116,6 +117,7 @@ export class NoteEditorComponent {
   public async onEditorInit(event: any): Promise<void> {
     this.editor = event.editor;
     this.loadNoteToEditor();
+    this.editorInit.emit(this.editor);
 
     return this.updateTagElements();
   }

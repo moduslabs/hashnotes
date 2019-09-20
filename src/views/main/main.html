@@ -14,9 +14,10 @@
       (noteEdit)="onNoteEdit($event)"
       (newNoteButtonClick)="onNewNoteButtonClick($event)"
       (deleteNoteButtonClick)="onDeleteNoteButtonClick($event)"
+      (editorInit)="onEditorInit($event)"
       [notes]="notes"
       [note]="selectedNote"
     ></hn-note-editor>
-    <hn-tag-sidebar [noteContent]="selectedNote?.content"></hn-tag-sidebar>
+    <hn-tag-sidebar [editor]="editor" [noteContent]="selectedNote?.content"></hn-tag-sidebar>
   </div>
 </ion-content>

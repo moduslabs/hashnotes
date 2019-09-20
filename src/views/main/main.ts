@@ -15,6 +15,7 @@ export class MainPage implements OnInit, OnDestroy {
   public selectedNote: Note;
   public selectedNoteUpdatedAt: Date;
   public isShowingActiveNotes = true;
+  public editor = undefined;
 
   private activeNotesChangeSubscription: Subscription;
   private trashNotesChangeSubscription: Subscription;
@@ -104,6 +105,10 @@ export class MainPage implements OnInit, OnDestroy {
         return Promise.resolve();
       },
     );
+  }
+
+  public onEditorInit(event: any): void {
+    this.editor = event;
   }
 
   private showActiveNotes(): void {
