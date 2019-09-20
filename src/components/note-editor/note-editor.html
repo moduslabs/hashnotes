@@ -5,9 +5,10 @@
     [disabled]="isDisabled"
     [init]="tinyMceConfig"
     (onChange)="onEditorContentChange($event)"
-    (onKeyUp)="onEditorContentChange($event)"
     (onInit)="onEditorInit($event)"
-    (onUndo)="onEditorContentChange($event)"
+    (onKeyUp)="onEditorContentChange($event)"
+    (onNodeChange)="onNodeChange($event)"
     (onRedo)="onEditorContentChange($event)"
+    (onUndo)="onEditorContentChange($event)"
   ></editor>
 </div>
