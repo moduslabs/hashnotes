@@ -1,3 +1,4 @@
+/* tslint:disable max-file-line-count */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -78,6 +79,7 @@ export class NoteEditorComponent {
   private isAutocompleteVisible = false;
   private previouslySelectedNode;
   private previouslySelectedNodeInnerText = '';
+  private isCurrentlyEditingAHashtag = false;
 
   constructor(
     private readonly notesProvider: NotesProvider,
@@ -96,6 +98,19 @@ export class NoteEditorComponent {
     }
 
     return Promise.resolve();
+  }
+
+  public async onKeyUp(event: any): Promise<void> {
+    const currentlySelectedNode = this.editor.selection.getNode();
+    this.isCurrentlyEditingAHashtag =
+      (!!currentlySelectedNode.attributes.getNamedItem(
+        NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
+      ) ||
+        currentlySelectedNode.className ===
+          NoteEditorComponent.HASHTAG_CLASSNAME) &&
+      (this.isCurrentlyEditingAHashtag || event.event.code !== 'Backspace');
+
+    return this.onEditorContentChange();
   }
 
   public async onEditorInit(event: any): Promise<void> {
@@ -213,6 +228,7 @@ export class NoteEditorComponent {
     currentlySelectedNode: any;
   }): boolean {
     return (
+      !this.isCurrentlyEditingAHashtag &&
       ((!!currentlySelectedNode.attributes.getNamedItem(
         NoteEditorComponent.AUTOCOMPLETER_ATTRIBUTE_NAME,
       ) &&
@@ -252,6 +268,7 @@ export class NoteEditorComponent {
         hashtagChildNode = childNode;
       }
     }
+
     this.previouslySelectedNode = hashtagChildNode
       ? hashtagChildNode
       : currentlySelectedNode;
@@ -297,13 +314,13 @@ export class NoteEditorComponent {
     });
   }
 
-  private async onTinyMceAutocompleterFetch(pattern: string) {
+  private async onTinyMceAutocompleterFetch(pattern: string): Promise<any> {
     if (pattern.length === 0) {
-      return this.recentHashtagsProvider.hashtags.map(
-        (hashtag: string): any => ({
+      return Promise.resolve(
+        this.recentHashtagsProvider.hashtags.map((hashtag: string): any => ({
           text: `#${hashtag}`,
           value: `#${hashtag}`,
-        }),
+        })),
       );
     }
 
@@ -321,7 +338,7 @@ export class NoteEditorComponent {
     pattern,
   }: {
     pattern: string;
-  }): string[] {
+  }): Array<string> {
     const allNoteUniqueHashtags = this.getAllNoteUniqueHashtagsSorted({
       pattern,
     });
@@ -353,7 +370,7 @@ export class NoteEditorComponent {
     pattern,
   }: {
     pattern: string;
-  }): string[] {
+  }): Array<string> {
     let patternCount = 0;
     const noteHashtags = this.getNoteHashtags();
     noteHashtags.forEach((hashtag: string): void => {
@@ -393,7 +410,7 @@ export class NoteEditorComponent {
     return isAMatch;
   }
 
-  private onTinyMceAutocompleterAction(
+  private async onTinyMceAutocompleterAction(
     autocompleteApi: any,
     range: any,
     hashtag: string,
