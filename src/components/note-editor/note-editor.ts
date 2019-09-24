@@ -57,7 +57,7 @@ export class NoteEditorComponent {
   public tinyMceConfig = {
     content_style:
       'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; line-height: 175%; padding: 0.25rem 0.5rem; }',
-    extended_valid_elements: 'span[class]',
+    extended_valid_elements: 'span[class|style]',
     height: '100%',
     link_title: false,
     menu: {
@@ -143,9 +143,15 @@ export class NoteEditorComponent {
   }
 
   private getNoteHashtags(): Array<string> {
-    return Array.from(this.editor.$('span.hashtag')).map(
-      (element: HTMLElement) => element.textContent.substring(1),
+    return this.getHashtagSpans().map((element: HTMLElement) =>
+      element.textContent.substring(1),
     );
+  }
+
+  private getHashtagSpans(): Array<HTMLElement> {
+    const selector = `span.${NoteEditorComponent.HASHTAG_CLASSNAME}`;
+
+    return Array.from(this.editor.$(selector));
   }
 
   private getNoteUniqueHashtags(): Array<string> {
@@ -159,7 +165,7 @@ export class NoteEditorComponent {
   }
 
   private removeInvalidTagSpans(): void {
-    const elementList = this.editor.$('span').toArray();
+    const elementList = this.getHashtagSpans();
     elementList.forEach((element: HTMLElement): void => {
       if (
         !element.innerText.match(NoteEditorComponent.TAG_REGEX_ENTIRE) &&
@@ -237,7 +243,9 @@ export class NoteEditorComponent {
         this.previouslySelectedNode.className ===
           NoteEditorComponent.HASHTAG_CLASSNAME &&
         currentlySelectedNode.parentNode === this.previouslySelectedNode) ||
-        currentlySelectedNode === this.previouslySelectedNode) &&
+        (currentlySelectedNode === this.previouslySelectedNode &&
+          currentlySelectedNode.className ===
+            NoteEditorComponent.HASHTAG_CLASSNAME)) &&
       this.previouslySelectedNodeInnerText.length ===
         (currentlySelectedNode.innerText.length as number) + 1 &&
       this.previouslySelectedNodeInnerText.substring(
