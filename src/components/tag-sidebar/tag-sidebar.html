@@ -25,7 +25,7 @@
       <ul *ngFor="let content of tag.content; trackBy: contentTracker">
         <li>
           <span class="tag-summary-copy-bullet"></span>
-          <div class="content" [innerHTML]="content"></div>
+          <div class="content" [innerHTML]="content | safeHtml"></div>
           <span class="tag-summary-copy-spacer"></span>
         </li>
       </ul>
