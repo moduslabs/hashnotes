@@ -22,10 +22,10 @@
       <span class="hashtag">{{ tag.name }}</span>
       <span class="tag-summary-copy-spacer"></span>
       <span class="tag-summary-copy-spacer"></span>
-      <ul *ngFor="let content of tag.content; trackBy: contentTracker">
+      <ul *ngFor="let content of tag.safeContent; trackBy: contentTracker">
         <li>
           <span class="tag-summary-copy-bullet"></span>
-          <div class="content" [innerHTML]="content | safeHtml"></div>
+          <div class="content" [innerHTML]="content"></div>
           <span class="tag-summary-copy-spacer"></span>
         </li>
       </ul>
