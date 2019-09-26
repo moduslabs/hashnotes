@@ -59,12 +59,37 @@ export class NoteEditorComponent {
       'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; line-height: 175%; padding: 0.25rem 0.5rem; }',
     extended_valid_elements: 'span[class]',
     height: '100%',
+    help_tabs: [
+      {
+        items: [
+          {
+            cells: [
+              ['Bold', 'Ctrl + B'],
+              ['Italic', 'Ctrl + I'],
+              ['Underline', 'Ctrl + U'],
+              ['Header 1', 'Shift + Alt + 1'],
+              ['Header 2', 'Shift + Alt + 2'],
+              ['Header 3', 'Shift + Alt + 3'],
+              ['Header 4', 'Shift + Alt + 4'],
+              ['Header 5', 'Shift + Alt + 5'],
+              ['Header 6', 'Shift + Alt + 6'],
+              ['Paragraph', 'Shift + Alt + 7'],
+              ['Insert link', 'Ctrl + K'],
+            ],
+            header: ['Action', 'Shortcut'],
+            type: 'table',
+          },
+        ],
+        name: 'shortcuts',
+        title: 'Shortcuts List',
+      },
+    ],
     link_title: false,
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
     },
-    menubar: 'modusFile edit insert view format',
-    plugins: 'autolink link lists',
+    menubar: 'modusFile edit insert view format help',
+    plugins: 'autolink link lists help',
     setup: this.onTinyMceSetup.bind(this),
     target_list: false,
     toolbar:
@@ -81,6 +106,14 @@ export class NoteEditorComponent {
   private previouslySelectedNode;
   private previouslySelectedNodeInnerText = '';
   private isCurrentlyEditingAHashtag = false;
+  private readonly disabledShortcuts = [
+    'alt+f9',
+    'alt+f10',
+    'alt+f11',
+    'ctrl+f9',
+    'ctrl+shift+f',
+    'ctrl+s',
+  ];
 
   constructor(
     private readonly notesProvider: NotesProvider,
@@ -116,6 +149,9 @@ export class NoteEditorComponent {
 
   public async onEditorInit(event: any): Promise<void> {
     this.editor = event.editor;
+    this.disabledShortcuts.forEach((shortcut: string) =>
+      this.editor.shortcuts.remove(shortcut),
+    );
     this.loadNoteToEditor();
     this.editorInit.emit(this.editor);
 
