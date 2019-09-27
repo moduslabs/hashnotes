@@ -35,7 +35,7 @@ export class NoteListComponent {
     return this._searchText;
   }
 
-  public filteredNotes: Array<{
+  public filteredNoteContainers: Array<{
     displayText: string;
     displayTitle: string;
     note: Note;
@@ -53,9 +53,9 @@ export class NoteListComponent {
   }
 
   private updateFilteredNotes(): void {
-    this.filteredNotes.length = 0;
+    this.filteredNoteContainers.length = 0;
     if (this.notes) {
-      this.filteredNotes.push(
+      this.filteredNoteContainers.push(
         ...this.notes
           .filter((note: Note): boolean =>
             this.searchText

@@ -1,7 +1,7 @@
 <div class="note-list">
-  <ion-list *ngIf="filteredNotes.length || !searchText; else noMatchingNotes">
+  <ion-list *ngIf="filteredNoteContainers.length || !searchText; else noMatchingNotes">
     <ion-item
-      *ngFor="let item of filteredNotes; trackBy: tracker"
+      *ngFor="let item of filteredNoteContainers; trackBy: tracker"
       [ngClass]="{ selected: item.note === selectedNote }"
       (click)="onNoteClick(item.note)"
     >
