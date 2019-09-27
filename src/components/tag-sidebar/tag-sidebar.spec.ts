@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { ClipboardModule } from 'ngx-clipboard';
 
-import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { TagSidebarComponent } from './tag-sidebar';
 
 describe('TagSidebarComponent', () => {
@@ -11,7 +10,7 @@ describe('TagSidebarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TagSidebarComponent, SafeHtmlPipe],
+      declarations: [TagSidebarComponent],
       imports: [IonicModule.forRoot(), ClipboardModule],
     }).compileComponents();
 
