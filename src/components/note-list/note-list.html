@@ -6,7 +6,8 @@
       (click)="onNoteClick(item.note)"
     >
       <ion-label>
-        <div class="content" [innerHTML]="item.displayText"></div>
+        <div class="listItemTitle" [innerHTML]="item.displayTitle"></div>
+        <div class="listItemText" [innerHTML]="item.displayText"></div>
         <div class="date">{{ item.note.displayDate }}</div>
       </ion-label>
     </ion-item>

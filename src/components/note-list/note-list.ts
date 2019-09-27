@@ -35,7 +35,11 @@ export class NoteListComponent {
     return this._searchText;
   }
 
-  public filteredNotes: Array<{ displayText: string; note: Note }> = [];
+  public filteredNotes: Array<{
+    displayText: string;
+    displayTitle: string;
+    note: Note;
+  }> = [];
 
   private _searchText = '';
   private _notes: Array<Note> = [];
@@ -63,7 +67,11 @@ export class NoteListComponent {
                 )
               : true,
           )
-          .map((note: Note): { note: Note; displayText: string } => {
+          .map((note: Note): {
+            displayText: string;
+            displayTitle: string;
+            note: Note;
+          } => {
             const noteLines = note.content
               .split('\n', 3)
               .map(
@@ -71,12 +79,11 @@ export class NoteListComponent {
                   new DOMParser().parseFromString(line, 'text/html')
                     .documentElement.textContent,
               );
-            const displayText = `<h1>${noteLines[0] ||
-              ' '}</h1>\n<p>${noteLines[1] || ' '}</p>\n<p>${noteLines[2] ||
-              ' '}</p>`;
 
             return {
-              displayText,
+              displayText: `<p>${noteLines[1] || ' '}</p>\n<p>${noteLines[2] ||
+                ' '}</p>`,
+              displayTitle: noteLines[0] || ' ',
               note,
             };
           }),
