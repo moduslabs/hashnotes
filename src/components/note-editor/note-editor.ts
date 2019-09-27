@@ -388,7 +388,12 @@ export class NoteEditorComponent {
     const allNoteUniqueHashtags = this.getAllNoteUniqueHashtagsSorted({
       pattern,
     });
-
+    this.recentHashtagsProvider.hashtags.forEach((hashtag: string): void => {
+      if (!allNoteUniqueHashtags.includes(hashtag)) {
+        allNoteUniqueHashtags.push(hashtag);
+      }
+    });
+    allNoteUniqueHashtags.sort();
     const lowerCasePattern = pattern.toLocaleLowerCase();
     const suggestedHashtags =
       pattern.length === 0
@@ -438,11 +443,6 @@ export class NoteEditorComponent {
       noteToIgnore: this.note,
     });
     noteUniqueHashtags.forEach((hashtag: string): void => {
-      if (!allNoteUniqueHashtags.includes(hashtag)) {
-        allNoteUniqueHashtags.push(hashtag);
-      }
-    });
-    this.recentHashtagsProvider.hashtags.forEach((hashtag: string): void => {
       if (!allNoteUniqueHashtags.includes(hashtag)) {
         allNoteUniqueHashtags.push(hashtag);
       }
