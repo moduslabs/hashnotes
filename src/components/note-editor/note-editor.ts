@@ -442,6 +442,11 @@ export class NoteEditorComponent {
         allNoteUniqueHashtags.push(hashtag);
       }
     });
+    this.recentHashtagsProvider.hashtags.forEach((hashtag: string): void => {
+      if (!allNoteUniqueHashtags.includes(hashtag)) {
+        allNoteUniqueHashtags.push(hashtag);
+      }
+    });
     allNoteUniqueHashtags.sort();
 
     return allNoteUniqueHashtags;
