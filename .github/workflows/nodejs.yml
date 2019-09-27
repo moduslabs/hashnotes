@@ -29,10 +29,10 @@ jobs:
         run: npm run test.ci
       - name: Test - e2e
         run: npm run e2e
+      - name: Test - gimbal
+        run: npm run gimbal
       - name: Build
         run: npm run build
-      - name: Test - Gimbal
-        uses: ModusCreateOrg/gimbal/action@master
       - name: Netlify
         run: bash ./bin/deploy-to-netlify.sh
         env:
