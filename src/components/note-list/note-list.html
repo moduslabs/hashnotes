@@ -1,13 +1,14 @@
 <div class="note-list">
-  <ion-list *ngIf="filteredNotes.length || !searchText; else noMatchingNotes">
+  <ion-list *ngIf="filteredNoteContainers.length || !searchText; else noMatchingNotes">
     <ion-item
-      *ngFor="let note of filteredNotes; trackBy: tracker"
-      [ngClass]="{ selected: note === selectedNote }"
-      (click)="onNoteClick(note)"
+      *ngFor="let item of filteredNoteContainers; trackBy: tracker"
+      [ngClass]="{ selected: item.note === selectedNote }"
+      (click)="onNoteClick(item.note)"
     >
       <ion-label>
-        <div class="content" [innerHTML]="note.content"></div>
-        <div class="date">{{ note.displayDate }}</div>
+        <div class="listItemTitle" [innerHTML]="item.displayTitle"></div>
+        <div class="listItemText" [innerHTML]="item.displayText"></div>
+        <div class="date">{{ item.note.displayDate }}</div>
       </ion-label>
     </ion-item>
   </ion-list>

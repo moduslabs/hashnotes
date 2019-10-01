@@ -35,7 +35,11 @@ export class NoteListComponent {
     return this._searchText;
   }
 
-  public filteredNotes: Array<Note> = [];
+  public filteredNoteContainers: Array<{
+    displayText: string;
+    displayTitle: string;
+    note: Note;
+  }> = [];
 
   private _searchText = '';
   private _notes: Array<Note> = [];
@@ -49,19 +53,40 @@ export class NoteListComponent {
   }
 
   private updateFilteredNotes(): void {
-    this.filteredNotes.length = 0;
+    this.filteredNoteContainers.length = 0;
     if (this.notes) {
-      this.filteredNotes.push(
-        ...this.notes.filter((note: Note): boolean =>
-          this.searchText
-            ? !!note.content.match(
-                new RegExp(
-                  `(?:[>\\s])${escapeStringRegexp(this.searchText)}`,
-                  'i',
-                ),
-              )
-            : true,
-        ),
+      this.filteredNoteContainers.push(
+        ...this.notes
+          .filter((note: Note): boolean =>
+            this.searchText
+              ? !!note.content.match(
+                  new RegExp(
+                    `(?:[>\\s])${escapeStringRegexp(this.searchText)}`,
+                    'i',
+                  ),
+                )
+              : true,
+          )
+          .map((note: Note): {
+            displayText: string;
+            displayTitle: string;
+            note: Note;
+          } => {
+            const noteLines = note.content
+              .split('\n', 3)
+              .map(
+                (line: string): string =>
+                  new DOMParser().parseFromString(line, 'text/html')
+                    .documentElement.textContent,
+              );
+
+            return {
+              displayText: `<p>${noteLines[1] || ' '}</p>\n<p>${noteLines[2] ||
+                ' '}</p>`,
+              displayTitle: noteLines[0] || ' ',
+              note,
+            };
+          }),
       );
     }
   }
