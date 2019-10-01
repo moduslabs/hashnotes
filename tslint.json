@@ -11,6 +11,7 @@
     "component-selector": [true, "element", "kebab-case"],
     "directive-selector": [true, "attribute", "kebab-case"],
     "i18n": false,
+    "invalid-void": [true, { "allow-generics": ["EventEmitter", "Promise"] }],
     "member-access": true,
     "no-console": [true, "log"],
     "no-submodule-imports": false,
