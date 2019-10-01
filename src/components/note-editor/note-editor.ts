@@ -388,7 +388,12 @@ export class NoteEditorComponent {
     const allNoteUniqueHashtags = this.getAllNoteUniqueHashtagsSorted({
       pattern,
     });
-
+    this.recentHashtagsProvider.hashtags.forEach((hashtag: string): void => {
+      if (!allNoteUniqueHashtags.includes(hashtag)) {
+        allNoteUniqueHashtags.push(hashtag);
+      }
+    });
+    allNoteUniqueHashtags.sort();
     const lowerCasePattern = pattern.toLocaleLowerCase();
     const suggestedHashtags =
       pattern.length === 0
