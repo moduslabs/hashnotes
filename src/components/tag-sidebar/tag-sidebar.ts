@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ClipboardService } from 'ngx-clipboard';
 
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Tag } from '../../interfaces/tag';
 
 @Component({
@@ -110,7 +111,10 @@ export class TagSidebarComponent {
     return isTrailingTag;
   }
 
-  private static findTagsInEditor(editor: any): Array<Tag> {
+  private static findTagsInEditor(
+    editor: any,
+    sanitizer: DomSanitizer,
+  ): Array<Tag> {
     const tagSpans = editor.$('span.hashtag').toArray();
     const uniqueTagLines = [
       ...new Set(
@@ -126,8 +130,8 @@ export class TagSidebarComponent {
       ),
     ];
     const tags = uniqueTagNames.map(
-      (tagName: string): Tag => ({
-        content: uniqueTagLines
+      (tagName: string): Tag => {
+        const content = uniqueTagLines
           .filter((line: HTMLElement): boolean =>
             Array.from(line.querySelectorAll('span.hashtag'))
               .map((tagSpan: HTMLElement): string => tagSpan.innerText)
@@ -135,9 +139,16 @@ export class TagSidebarComponent {
           )
           .map((tagLine: HTMLElement): string =>
             TagSidebarComponent.filterLineContent(tagLine),
+          );
+
+        return {
+          content,
+          name: tagName,
+          safeContent: content.map(
+            (line: string): SafeHtml => sanitizer.bypassSecurityTrustHtml(line),
           ),
-        name: tagName,
-      }),
+        };
+      },
     );
 
     return tags;
@@ -210,14 +221,17 @@ export class TagSidebarComponent {
     return text;
   }
 
-  constructor(private readonly clipboardService: ClipboardService) {}
+  constructor(
+    private readonly clipboardService: ClipboardService,
+    private readonly sanitizer: DomSanitizer,
+  ) {}
 
   public tagTracker(_index: number, tag: Tag): string {
     return `${tag.name}-${tag.content.join('-')}`;
   }
 
-  public contentTracker(_index: number, content: string): string {
-    return content;
+  public contentTracker(_index: number, content: SafeHtml): string {
+    return content.toString();
   }
 
   public onExportButtonClick(): void {
@@ -233,7 +247,9 @@ export class TagSidebarComponent {
   private onNoteContentChange(): void {
     this.tags.length = 0;
     if (this.editor) {
-      this.tags.push(...TagSidebarComponent.findTagsInEditor(this.editor));
+      this.tags.push(
+        ...TagSidebarComponent.findTagsInEditor(this.editor, this.sanitizer),
+      );
     }
   }
 }
