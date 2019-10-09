@@ -54,42 +54,45 @@ export class NoteEditorComponent {
   @Output() public readonly deleteNoteButtonClick = new EventEmitter();
   @Output() public readonly editorInit = new EventEmitter();
 
+  public shortcutListPanel = {
+    body: {
+      items: [
+        {
+          cells: [
+            ['Bold', 'Ctrl + B'],
+            ['Italic', 'Ctrl + I'],
+            ['Underline', 'Ctrl + U'],
+            ['Header 1', 'Shift + Alt + 1'],
+            ['Header 2', 'Shift + Alt + 2'],
+            ['Header 3', 'Shift + Alt + 3'],
+            ['Header 4', 'Shift + Alt + 4'],
+            ['Header 5', 'Shift + Alt + 5'],
+            ['Header 6', 'Shift + Alt + 6'],
+            ['Paragraph', 'Shift + Alt + 7'],
+            ['Insert link', 'Ctrl + K'],
+          ],
+          header: ['Action', 'Shortcut'],
+          type: 'table',
+        },
+      ],
+      type: 'panel',
+    },
+    buttons: [{ text: 'Close', type: 'cancel' }],
+    title: 'Shortcut List',
+  };
+
   public tinyMceConfig = {
     content_style:
       'span.hashtag { background-color: #1b1b1b; border-radius: 13px; color: #ffffff; line-height: 175%; padding: 0.25rem 0.5rem; }',
     extended_valid_elements: 'span[class|style]',
     height: '100%',
-    help_tabs: [
-      {
-        items: [
-          {
-            cells: [
-              ['Bold', 'Ctrl + B'],
-              ['Italic', 'Ctrl + I'],
-              ['Underline', 'Ctrl + U'],
-              ['Header 1', 'Shift + Alt + 1'],
-              ['Header 2', 'Shift + Alt + 2'],
-              ['Header 3', 'Shift + Alt + 3'],
-              ['Header 4', 'Shift + Alt + 4'],
-              ['Header 5', 'Shift + Alt + 5'],
-              ['Header 6', 'Shift + Alt + 6'],
-              ['Paragraph', 'Shift + Alt + 7'],
-              ['Insert link', 'Ctrl + K'],
-            ],
-            header: ['Action', 'Shortcut'],
-            type: 'table',
-          },
-        ],
-        name: 'shortcuts',
-        title: 'Shortcuts List',
-      },
-    ],
     link_title: false,
     menu: {
       modusFile: { title: 'File', items: 'modusnewnote modusdeletenote' },
+      modusHelp: { title: 'Help', items: 'modushelp' },
     },
-    menubar: 'modusFile edit insert view format help',
-    plugins: 'autolink link lists help',
+    menubar: 'modusFile edit insert view format modusHelp',
+    plugins: 'autolink link lists',
     setup: this.onTinyMceSetup.bind(this),
     target_list: false,
     toolbar:
@@ -330,12 +333,14 @@ export class NoteEditorComponent {
 
   private addTinyMceUiItems({ editor }: { editor: any }): void {
     editor.ui.registry.addMenuItem('modusnewnote', {
+      icon: 'new-document',
       onAction: () => {
         this.newNoteButtonClick.emit();
       },
       text: 'New note',
     });
     editor.ui.registry.addMenuItem('modusdeletenote', {
+      icon: 'remove',
       onAction: () => {
         this.deleteNoteButtonClick.emit(this.note);
       },
@@ -347,6 +352,13 @@ export class NoteEditorComponent {
         this.deleteNoteButtonClick.emit(this.note);
       },
       tooltip: 'Delete note',
+    });
+    editor.ui.registry.addMenuItem('modushelp', {
+      icon: 'help',
+      onAction: () => {
+        editor.windowManager.open(this.shortcutListPanel);
+      },
+      text: 'Shortcut list',
     });
   }
 
