@@ -27,5 +27,5 @@ Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
 });
 
 Then (/^Notes that begin with (Note|Lorem) are shown$/, {}, (searchCriteria) => {
-
+    //.....
 });

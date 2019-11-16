@@ -2,7 +2,7 @@
 Feature: Create, delete or search notes
 
     As a User
-    I want to add new notes
+    I want to either add new notes, search for them or see the ones previously deleted
 
     Background:
     Given User navigates to Hashnotes page
@@ -10,7 +10,7 @@ Feature: Create, delete or search notes
 
     @this
     Scenario: User add a note from left panel
-      When User clicks on New note button
+      When User clicks on New Note button
       Then A new note is added
 
     @this
