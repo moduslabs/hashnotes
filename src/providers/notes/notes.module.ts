@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  CUSTOM_ELEMENTS_SCHEMA,
   ModuleWithProviders,
   NgModule,
   Optional,
@@ -13,6 +14,7 @@ import { NotesProvider } from './notes';
   exports: [],
   imports: [CommonModule],
   providers: [NotesProvider],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class NotesModule {
   public static forRoot(): ModuleWithProviders {

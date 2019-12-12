@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  CUSTOM_ELEMENTS_SCHEMA,
   ModuleWithProviders,
   NgModule,
   Optional,
@@ -13,6 +14,7 @@ import { RecentHashtagsProvider } from './recent-hashtags';
   exports: [],
   imports: [CommonModule],
   providers: [RecentHashtagsProvider],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RecentHashtagsModule {
   public static forRoot(): ModuleWithProviders {

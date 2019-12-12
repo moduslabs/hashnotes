@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
 import { NoteListComponent } from './note-list';
@@ -8,5 +8,6 @@ import { NoteListComponent } from './note-list';
   declarations: [NoteListComponent],
   exports: [NoteListComponent],
   imports: [CommonModule, IonicModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class NoteListModule {}

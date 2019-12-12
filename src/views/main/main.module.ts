@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
@@ -24,5 +24,6 @@ import { MainPage } from './main';
     NoteEditorModule,
     TagSidebarModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MainPageModule {}

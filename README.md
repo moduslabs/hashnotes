@@ -31,11 +31,6 @@ Project description - one or two paragraphs. The enemy is dark and creates major
    npm start
    ```
 
-### Installing Motherboard
-```bash
-npm install @moduslabs/motherboard --registry=https://npm.pkg.github.com
-```
-
 ## How it works
 
 {Describe how it works. Include images if possible.}
