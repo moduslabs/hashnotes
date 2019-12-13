@@ -18,7 +18,7 @@ aliases:
 defaults: &defaults
   working_directory: /tmp/hashnotes # need to use full path if using different docker images
   docker:
-    - image: circleci/node:12-browsers
+    - image: moduscreate/hashnotes-circleci-docker:latest
 
 version: 2
 jobs:
