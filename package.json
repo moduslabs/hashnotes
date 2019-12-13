@@ -7,7 +7,7 @@
     "start": "ionic serve",
     "build": "ionic build && cap copy && cap sync",
     "test": "ng test",
-    "test.ci": "ng test --watch=false --browsers=ChromeHeadless",
+    "test.ci": "ng test --watch=false",
     "lint": "ng lint",
     "lint-fix": "prettier \"src/**/*.{js,ts}\" --write && ng lint --fix",
     "lint-check-rules": "tslint-config-prettier-check ./tslint.json",
