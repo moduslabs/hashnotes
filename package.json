@@ -14,7 +14,8 @@
     "e2e": "ng e2e",
     "gimbal": "gimbal",
     "cap-open-electron": "cap open electron",
-    "electron-pack": "cd electron && rimraf dist && electron-builder --config ../electron-builder.config.js"
+    "electron-pack": "cd electron && rimraf dist && electron-builder --config ../electron-builder.config.js",
+    "staged-fix": "lint-staged"
   },
   "private": true,
   "dependencies": {
@@ -43,8 +44,18 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint-fix"
+      "pre-commit": "npm run staged-fix"
     }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "ng lint --fix",
+      "git add"
+    ],
+    "src/**/*.{json,scss,sass,less},**/*.spec.js": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.803.20",
@@ -75,6 +86,7 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "lint-staged": "^9.5.0",
     "netlify-cli": "^2.15.0",
     "prettier": "^1.18.2",
     "protractor": "~5.4.2",
