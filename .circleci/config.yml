@@ -1,0 +1,126 @@
+aliases:
+  - &restore-npm-cache
+    keys:
+      - v1-dependencies-{{ checksum "package-lock.json" }}
+      - v1-dependencies-master
+      - v1-dependencies-
+  - &restore-dist-cache
+    keys:
+      - v1-dist-{{ .Environment.CIRCLE_SHA1 }}
+      - v1-dist-master
+      - v1-dist-
+  - &restore-gimbal-cache
+    keys:
+      - v1-gimbal-diff-{{ .Environment.CIRCLE_SHA1 }}
+      - v1-gimbal-diff-master
+      - v1-gimbal-diff-
+
+defaults: &defaults
+  working_directory: /tmp/hashnotes # need to use full path if using different docker images
+  docker:
+    - image: circleci/node:12-browsers
+
+version: 2
+jobs:
+  install-dependencies:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - restore_cache: *restore-npm-cache
+
+      - run:
+          name: Authenticate with registry
+          command: echo "//npm.pkg.github.com/:_authToken=$NPM_MODUS_LABS_TOKEN" > .npmrc
+
+      - run:
+          name: Install NPM modules
+          command: npm ci
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+  test:
+    <<: *defaults
+
+    steps:
+      - checkout
+      - restore_cache: *restore-npm-cache
+
+      - run:
+          name: Check lint rules
+          command: npm run lint-check-rules
+
+      - run:
+          name: Lint
+          command: npm run lint
+
+      - run:
+          name: Unit tests
+          command: npm test.ci
+
+      - run:
+          name: E2E tests
+          command: npm ee3
+
+      - save_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - www
+            - dist
+
+  gimbal:
+    <<: *defaults
+    docker:
+      - image: moduscreate/gimbal:latest
+    steps:
+      - checkout
+      - restore_cache: *restore-npm-cache
+      - restore_cache: *restore-gimbal-cache
+      - run:
+          name: Run Gimbal
+          command: gimbal
+      - store_artifacts:
+          path: ./artifacts
+      - save_cache:
+          key: v4-gimbal-diff-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - gimbal.db
+
+  build:
+    <<: *defaults
+
+    steps:
+      - checkout
+      - restore_cache: *restore-npm-cache
+
+      - run:
+          name: Build
+          command: npm run build
+
+      - save_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - www
+            - dist
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - install-dependencies
+
+      - test:
+          requires:
+            - install-dependencies
+
+      - build:
+          requires:
+            - install-dependencies
+
+      - gimbal:
+          requires:
+            - build
