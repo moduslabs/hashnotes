@@ -18,12 +18,13 @@ aliases:
 defaults: &defaults
   working_directory: /tmp/hashnotes # need to use full path if using different docker images
   docker:
-    - image: circleci/node:8-browsers
+    - image: circleci/node:12-browsers
 
 version: 2
 jobs:
   install-dependencies:
-    <<: *defaults
+    docker:
+      - image: moduscreate/gimbal:latest
 
     steps:
       - checkout
