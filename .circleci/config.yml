@@ -23,6 +23,7 @@ defaults: &defaults
 version: 2
 jobs:
   install-dependencies:
+    <<: *defaults
     docker:
       - image: moduscreate/gimbal:latest
 
