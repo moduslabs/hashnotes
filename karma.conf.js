@@ -28,8 +28,8 @@ module.exports = function(config) {
     browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
-        base: 'Chrome',
-        flags: ['--no-sandbox'],
+        base: 'ChromiumHeadless',
+        flags: ['--no-sandbox', '--disable-dev-shm-usage'],
       },
     },
     singleRun: false,

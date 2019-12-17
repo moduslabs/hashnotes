@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
@@ -13,6 +14,7 @@ describe('NoteSidebarComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [NoteSidebarComponent],
       imports: [IonicModule.forRoot(), NoteListModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NoteSidebarComponent);
