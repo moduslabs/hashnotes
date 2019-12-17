@@ -111,7 +111,7 @@ export class NoteListComponent {
 
             return {
               displayText: this.sanitizer.bypassSecurityTrustHtml(
-                `<p>${noteLines[1] || ' '}</p>\n<p>${noteLines[2] || ' '}</p>`,
+                `${noteLines[1] || ' '}<br>${noteLines[2] || ' '}`,
               ),
               displayTitle: this.sanitizer.bypassSecurityTrustHtml(
                 noteLines[0] || ' ',

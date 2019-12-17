@@ -1,53 +1,16 @@
 .note-list {
   color: #ffffff;
 
-  ion-list {
+  mds-list {
     background: transparent;
 
-    ion-item {
-      --background: transparent;
-      --color: #ffffff;
-      --padding-bottom: 0.5rem;
-      --padding-start: 1rem;
-      --padding-top: 0.5rem;
+    mds-item {
       cursor: pointer;
 
-      &.selected {
-        --background: #000000;
-        --padding-start: calc(1rem - 3px);
-        border-left: 3px solid #ff5c5d;
-      }
-
-      * {
-        color: #ffffff;
-      }
-
-      .listItemTitle {
-        height: 1.3%;
-        font-size: 16px;
-        font-weight: bold;
-        line-height: 24px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
       .listItemText {
-        height: 38px;
-        font-size: 14px;
-        line-height: 20px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      .date {
-        height: 20px;	
-        width: 168px;	
-        color: #BEBEBE;
-        font-size: 14px;	
-        line-height: 20px;
-        margin-top: 1rem;
       }
     }
   }
