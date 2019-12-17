@@ -64,7 +64,7 @@ jobs:
 
       - run:
           name: E2E tests
-          command: npm ee3
+          command: npm run e2e
 
       - save_cache:
           key: v1-dist-{{ .Environment.CIRCLE_SHA1 }}
