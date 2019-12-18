@@ -14,12 +14,7 @@
 
     .export-button,
     .copy-button {
-      --color: #000000;
-      --color-activated: #000000;
-      --color-focused: #000000;
-      --color-hover: #000000;
       position: relative;
-      text-transform: none;
     }
 
     .export-button {
@@ -32,10 +27,6 @@
         position: absolute;
         right: -3px;
         top: 3px;
-      }
-
-      ion-icon {
-        transform: rotate(180deg);
       }
     }
   }

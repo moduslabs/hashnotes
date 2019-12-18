@@ -7,21 +7,22 @@
     <mds-button
       *ngIf="isShowingActiveNotes; else backToNotesButton"
       class="new-note-button"
-      color="danger"
-      expand="block"
       icon="add-circle-outline"
+      type="primary"
       (click)="onNewNoteButtonClick()"
       >New Note</mds-button
     >
     <ng-template #backToNotesButton>
-      <ion-button
+      <mds-button
         class="back-to-notes-button"
-        fill="clear"
-        expand="block"
+        expand="full"
+        icon="arrow-back"
+        inverse="true"
+        type="link"
         (click)="onBackToNotesButtonClick()"
-        ><ion-icon slot="start" name="arrow-back"></ion-icon>Back to
-        notes</ion-button
       >
+        Back to notes
+      </mds-button>
     </ng-template>
     <hr />
   </div>
@@ -36,14 +37,15 @@
   </div>
   <div *ngIf="isShowingActiveNotes">
     <hr />
-    <ion-button
+    <mds-button
       class="trash-button"
-      fill="clear"
       expand="full"
+      icon="trash"
+      inverse="true"
+      type="link"
       (click)="onTrashButtonClick()"
     >
-      <ion-icon slot="start" name="trash"></ion-icon>
       Trash Folder
-    </ion-button>
+    </mds-button>
   </div>
 </div>

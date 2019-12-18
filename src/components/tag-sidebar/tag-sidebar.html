@@ -1,17 +1,23 @@
 <div class="tag-sidebar">
   <div class="buttons">
-    <ion-button
+    <mds-button
       class="export-button"
       fill="clear"
+      icon="open"
+      type="link"
       (click)="onExportButtonClick()"
     >
-      <ion-icon slot="start" name="code-download"></ion-icon>
       Export Summary
-    </ion-button>
-    <ion-button class="copy-button" fill="clear" (click)="onCopyButtonClick()">
-      <ion-icon slot="start" name="copy"></ion-icon>
+    </mds-button>
+    <mds-button
+      class="copy-button"
+      fill="clear"
+      icon="copy"
+      type="link"
+      (click)="onCopyButtonClick()"
+    >
       Copy
-    </ion-button>
+    </mds-button>
   </div>
   <h1 class="title-screen">Tag Summary</h1>
   <div class="tag-summary" #tagSummary>
