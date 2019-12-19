@@ -5,9 +5,9 @@
       [ngClass]="{ selected: item.note === selectedNote }"
       (click)="onNoteClick(item.note)"
     >
-      <div slot="title" class="listItemTitle" [innerHTML]="item.displayTitle"></div>
-      <div slot="content" class="listItemText" [innerHTML]="item.displayText"></div>
-      <div slot="detail" class="date">{{ item.note.displayDate }}</div>
+      <span slot="title" class="listItemTitle" [innerHTML]="item.displayTitle"></span>
+      <span slot="content" class="listItemText" [innerHTML]="item.displayText"></span>
+      <span slot="detail" class="date">{{ item.note.displayDate }}</span>
     </mds-item>
   </mds-list>
   <ng-template #noMatchingNotes>

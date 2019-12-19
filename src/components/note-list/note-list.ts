@@ -111,7 +111,9 @@ export class NoteListComponent {
 
             return {
               displayText: this.sanitizer.bypassSecurityTrustHtml(
-                `${noteLines[1] || ' '}<br>${noteLines[2] || ' '}`,
+                `<div style="overflow: hidden; text-overflow: ellipsis">
+                  ${noteLines[1] || ' '}<br>${noteLines[2] || ' '}
+                </div>`,
               ),
               displayTitle: this.sanitizer.bypassSecurityTrustHtml(
                 noteLines[0] || ' ',
