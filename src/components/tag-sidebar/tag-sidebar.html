@@ -22,20 +22,13 @@
   <h1 class="title-screen">Tag Summary</h1>
   <div class="tag-summary" #tagSummary>
     <div class="title-print" [innerHTML]="title"></div>
-    <span class="tag-summary-copy-spacer"></span>
-    <span class="tag-summary-copy-spacer"></span>
     <div class="tag-container" *ngFor="let tag of tags; trackBy: tagTracker">
       <span class="hashtag">{{ tag.name }}</span>
-      <span class="tag-summary-copy-spacer"></span>
-      <span class="tag-summary-copy-spacer"></span>
-      <ul *ngFor="let content of tag.safeContent; trackBy: contentTracker">
-        <li>
-          <span class="tag-summary-copy-bullet"></span>
-          <div class="content" [innerHTML]="content"></div>
-          <span class="tag-summary-copy-spacer"></span>
-        </li>
-      </ul>
-      <span class="tag-summary-copy-spacer"></span>
+      <mds-bulleted-list *ngFor="let content of tag.safeContent; trackBy: contentTracker">
+        <mds-bulleted-item>
+          <span class="content" [innerHTML]="content"></span>
+        </mds-bulleted-item>
+      </mds-bulleted-list>
     </div>
   </div>
 </div>
