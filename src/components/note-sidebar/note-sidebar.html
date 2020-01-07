@@ -1,51 +1,22 @@
 <div class="note-sidebar">
-  <div>
-    <ion-searchbar
-      [placeholder]="placeholderText"
-      (ionChange)="onSearchChange($event)"
-    ></ion-searchbar>
-    <mds-button
-      *ngIf="isShowingActiveNotes; else backToNotesButton"
-      class="new-note-button"
-      icon="add-circle-outline"
-      type="primary"
-      (click)="onNewNoteButtonClick()"
-      >New Note</mds-button
-    >
-    <ng-template #backToNotesButton>
-      <mds-button
-        class="back-to-notes-button"
-        expand="full"
-        icon="arrow-back"
-        inverse="true"
-        type="link"
-        (click)="onBackToNotesButtonClick()"
-      >
-        Back to notes
-      </mds-button>
-    </ng-template>
-    <hr />
-  </div>
-  <div>
-    <hn-note-list
-      (noteSelection)="onNoteSelection($event)"
-      [notes]="notes"
-      [searchText]="searchText"
-      [selectedNote]="selectedNote"
-      [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"
-    ></hn-note-list>
-  </div>
-  <div *ngIf="isShowingActiveNotes">
-    <hr />
-    <mds-button
-      class="trash-button"
-      expand="full"
-      icon="trash"
-      inverse="true"
-      type="link"
-      (click)="onTrashButtonClick()"
-    >
-      Trash Folder
-    </mds-button>
-  </div>
+    <div>
+        <mds-searchbar [placeholder]="placeholderText" (ionChange)="onSearchChange($event)">
+        </mds-searchbar>
+        <mds-button *ngIf="isShowingActiveNotes; else backToNotesButton" class="new-note-button" icon="add-circle-outline" type="primary" (click)="onNewNoteButtonClick()">New Note</mds-button>
+        <ng-template #backToNotesButton>
+            <mds-button class="back-to-notes-button" expand="full" icon="arrow-back" inverse="true" type="link" (click)="onBackToNotesButtonClick()">
+                Back to notes
+            </mds-button>
+        </ng-template>
+        <hr />
+    </div>
+    <div>
+        <hn-note-list (noteSelection)="onNoteSelection($event)" [notes]="notes" [searchText]="searchText" [selectedNote]="selectedNote" [selectedNoteUpdatedAt]="selectedNoteUpdatedAt"></hn-note-list>
+    </div>
+    <div *ngIf="isShowingActiveNotes">
+        <hr />
+        <mds-button class="trash-button" expand="full" icon="trash" inverse="true" type="link" (click)="onTrashButtonClick()">
+            Trash Folder
+        </mds-button>
+    </div>
 </div>

@@ -1,26 +1,22 @@
 .note-sidebar {
-  background-color: #1b1b1b;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 240px;
-
-  > div:nth-child(2) {
-    flex-grow: 1;
-    overflow-y: auto;
-  }
-
-  ion-searchbar {
-    background-color: #000000;
-    padding: 1rem;
-  }
-
-  .new-note-button,
-  .back-to-notes-button {
-    margin: 1rem 1rem 0.5rem;
-  }
-
-  .trash-button {
-    margin: 0.5rem 0;
-  }
+    background-color: #1b1b1b;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 240px;
+    >div:nth-child(2) {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    mds-searchbar {
+        background-color: #000000;
+        padding: 1rem;
+    }
+    .new-note-button,
+    .back-to-notes-button {
+        margin: 1rem 1rem 0.5rem;
+    }
+    .trash-button {
+        margin: 0.5rem 0;
+    }
 }
