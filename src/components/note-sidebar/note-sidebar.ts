@@ -26,6 +26,10 @@ export class NoteSidebarComponent {
 
   public searchText = '';
 
+  public get typeControl(): string {
+    return  'text';
+  }
+
   public get placeholderText(): string {
     return this.isShowingActiveNotes ? 'Search Notes' : 'Search Trash';
   }

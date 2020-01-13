@@ -1,6 +1,6 @@
 <div class="note-sidebar">
     <div>
-        <mds-searchbar [placeholder]="placeholderText" (ionChange)="onSearchChange($event)">
+        <mds-searchbar [type]="typeControl" [placeholder]="placeholderText" (ionChange)="onSearchChange($event)">
         </mds-searchbar>
         <mds-button *ngIf="isShowingActiveNotes; else backToNotesButton" class="new-note-button" icon="add-circle-outline" type="primary" (click)="onNewNoteButtonClick()">New Note</mds-button>
         <ng-template #backToNotesButton>
