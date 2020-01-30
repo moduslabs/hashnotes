@@ -1,16 +1,15 @@
 @editor
-Feature: Edit notes
-
+Feature: Edits notes
     As a User
-    I want to edit notes
+    I want to be able to edit notes
 
     Background:
-    Given  User navigates to Hashnotes page
-     Then  User is redirected to Hashnotes page
-     Then  User select a note from the note side Bar
+        Given  User navigates to Hashnotes page
+        Then  User is redirected to Hashnotes page
+        Then  User select a note from the note side Bar
 
     Scenario: User add a note using the file menu
-      When User clicks on File menu
+        When User clicks on File menu
       Then User clicks on new note option
       Then A new note is added
 
