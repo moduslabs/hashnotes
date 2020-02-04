@@ -109,6 +109,12 @@ Project description - one or two paragraphs. The enemy is dark and creates major
 
 See [Contributing Guide](./.github/CONTRIBUTING.md 'Contributing Guide')
 
+E2E testing is brought to you by [BrowserStack](https://browserstack.com).
+
+<p align="left">
+<a href="https://browserstack.com"><img src="./.github/Browserstack-logo.svg" height="60" alt="Browser stack"/></a>
+</p>
+
 ## Modus Create
 
 [Modus Create](https://moduscreate.com 'Modus Create') is a digital product consultancy. We use a distributed team of the best talent in the world to offer a full suite of digital product design-build services; ranging from consumer facing apps, to digital migration, to agile development training, and business transformation.
