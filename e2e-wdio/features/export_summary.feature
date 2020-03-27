@@ -4,24 +4,20 @@ Feature: Export summary
     I want to be able to export the summary
 
     Background:
-        Given  User navigates to Hashnotes page
-        Then  User is redirected to Hashnotes page
-        Given Here is at least one empty note in the list
+        Given the Hashnotes application is opened
+        Given there is one empty note
 
 
     Scenario: Export blank summary
-        When User clicks "Export Summary" button
-        Then Preview screen is displayed
-        When User click "Save" button
-        Then Blank Summary is exported successfully
+        When the user clicks the "Export Summary" button
+        When the user clicks the "Save" button
+        Then a blank Summary is exported successfully
 
     Scenario Outline: Export summary
-        When User create <tag>
-        When User adds <text>
-        When User clicks "Export Summary" button
-        Then Preview screen is displayed
-        When User click "Save" button
-        Then The content of the summary is exported successfully
+        Given a <tag> with <text> are added in note
+        When the user clicks the "Export Summary" button
+        When the user clicks the "Save" button
+        Then the content of the summary is exported successfully
         Examples:
             | tag  | text |
             | #1   | bla  |

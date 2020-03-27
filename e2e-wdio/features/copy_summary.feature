@@ -4,23 +4,18 @@ Feature: Copy tag summary content
     I want to be able to copy the content of the "Tag Summary"
 
     Background:
-        Given  User navigates to Hashnotes page
-        Then  User is redirected to Hashnotes page
-        Given  User selects a note from the side Bar
+        Given the Hashnotes application is opened
+        Given the user has a note selected
 
     Scenario Outline: Copy of "Tag Summary" section content
-        When User creates <tag>
-        Then <tag> is added in the "Tag Summary"
-        When User adds <text> after <tag>
-        Then <text> is added in the "Tag Summary"
-        When User clicks the "Copy" button
-        Then Content of the "Tag Summary" section is copied
-        When Users creates a new note
-        When Users uses the paste command to insert the copied values in the note
-        Then The values are successfully inserted in the new note
+        Given <tag> tag is created with <text> text
+        When the user clicks the "Copy" button
+        When the users creates a new note
+        When the users uses the paste command
+        Then the values are successfully inserted in the new note
         Examples:
             | tag  | text   |
-            | #a   | test   |
+            | #1   | test   |
             | #bla | random |
 
 

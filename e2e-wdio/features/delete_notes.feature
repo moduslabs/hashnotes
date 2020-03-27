@@ -4,40 +4,37 @@ Feature: Delete notes
     I want to be able to delete notes
 
     Background:
-        Given User navigates to Hashnotes page
-        Then User is redirected to Hashnotes page
-        Given Here is at least one note in the list
+        Given the Hashnotes application is opened
+        Given the user has a note selected
+
+    Scenario: Notification displayed when note is deleted
+        When the user clicks the "Delete Note" icon from editor menu
+        Then a notification prompt with "Cancel" and "Dismiss" buttons is displayed
+
+    Scenario: Note is deleted when notification prompt is dismissed
+        When the user clicks the "Delete Note" icon from editor menu while
+        When the user clicks the "Dismiss" button from notification prompt
+        Then note is deleted
+        Then moved to the trash folder
+
+    Scenario: Delete note action is cancelled
+        When the user clicks the "Delete Note" icon from editor menu
+        When the ser clicks the "Cancel" button from notification prompt
+        Then note is restored in notes list
+
+    Scenario: Timestamp not updated after cancelling delete action
+        When the user clicks the "Delete Note" icon from editor menu
+        When the user clicks the "Cancel" button from notification prompt
+        Then note is restored in notes list
+        Then timestamp of note is not updated
 
     Scenario Outline: Note is deleted
-        When User clicks the "Delete Note" icon from <location> while having a note selected
-        When User does not select any option from the notification prompt
-        Then Note is deleted
-        Then Moved to the thrash folder
+        When the user clicks the "Delete Note" icon from <location>
+        Then note is deleted
+        Then moved to the thrash folder
         Examples:
             | location    |
             | editor_menu |
             | list_menu   |
 
-    Scenario: Notification displayed when note is deleted
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification with "Cancel" and "Dismiss" buttons is displayed
 
-    Scenario: Note is deleted when notification prompt is dismissed
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification prompt with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Dismiss" button
-        Then Note is deleted
-        Then Moved to the trash folder
-
-    Scenario: Delete note action is cancelled
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification prompt with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Cancel" button
-        Then Note is restored in notes list
-
-    Scenario: Timestamp not updated after cancelling delete action
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Cancel" button
-        Then Note is restored in notes list
-        Then Timestamp of note is not updated

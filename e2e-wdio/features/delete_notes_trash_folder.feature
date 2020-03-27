@@ -4,43 +4,30 @@ Feature: Delete notes from trash folder
     I want to be able to delete notes from the trash folder
 
     Background:
-        Given User navigates to Hashnotes page
-        Then User is redirected to Hashnotes page
-        When User click on "Trash Folder" button from sidebar
-        Then User is redirected to the thrash folder page
-        Given Here is at least one note in the list
+        Given the Hashnotes application is opened
+        Given the user has a note selected from the "Trash Folder"
 
     Scenario Outline: Note is permanently deleted
-        When User clicks the "Delete Note" icon from <location> while having a note selected
-        When User does not select any option from the notification prompt
-        Then Note is permanently deleted
-        Then Removed from trash folder
+        When the user clicks the "Delete Note" icon from <location>
+        Then note is permanently deleted
         Examples:
             | location    |
             | editor_menu |
             | list_menu   |
 
     Scenario: Notification displayed when note is deleted
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification with "Cancel" and "Dismiss" buttons is displayed
+        When the user clicks the "Delete Note" icon from editor menu
+        Then a notification prompt with "Cancel" and "Dismiss" buttons is displayed
 
     Scenario: Note is permanently deleted when notification prompt is dismissed
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification prompt with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Dismiss" button
-        Then Note is permanently deleted
-        Then Removed from trash folder
+        When the user clicks the "Delete Note" icon from editor menu
+        When the user clicks the "Dismiss" button from the notification prompt
+        Then note is permanently deleted
+        Then removed from trash folder
 
     Scenario: Permanently delete note action is cancelled
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification prompt with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Cancel" button
-        Then Note is restored in trash folder notes list
-
-    Scenario: Timestamp not updated after cancelling delete action
-        When User clicks the "Delete Note" icon from editor menu while having a note selected
-        Then Notification with "Cancel" and "Dismiss" buttons is displayed
-        When User clicks the "Cancel" button
-        Then Note is restored in trash folder notes list
-        Then Timestamp of note is not updated
+        When the user clicks the "Delete Note" icon from editor menu
+        When the user clicks the "Cancel" button from the notification prompt
+        Then note is restored in trash folder notes list
+        Then timestamp of note is not updated
 

@@ -4,22 +4,19 @@ Feature: Edit tags in note
     I want to be able to edit tags
 
     Background:
-        Given  User navigates to Hashnotes page
-        Then  User is redirected to Hashnotes page
-        Given  User selects a note from the side Bar
-        Given User adds a tag in the note
+        Given the Hashnotes application is opened
+        Given the user has selected a note which contains a tag
 
     Scenario: Edit tag
-        When User edits tag
-        Then Tag is updated in the "Tag Summary" section
+        When the user edits tag
+        Then tag is updated in the "Tag Summary" section
 
     Scenario: Delete tag
-        When User deletes tag
-        Then Tag is removed in the "Tag Summary" section
+        When the user deletes tag
+        Then tag is removed in the "Tag Summary" section
 
     Scenario: Bullet point is removed
-        When User uses same tag on three different rows
-        Then Tag is added in "Tag Summary" with three bullet points
-        When User deletes one of the tag from one of the rows
+        Given the initial tag is copied on 2 more rows
+        When User deletes the tag from one of the rows
         Then Only two bullet points are displayed
 

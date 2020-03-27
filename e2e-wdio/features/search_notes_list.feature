@@ -4,13 +4,12 @@ Feature: Search for notes
     I want to be able to search for notes
 
     Background:
-        Given User navigates to Hashnotes page
-        Then User is redirected to Hashnotes page
+        Given the Hashnotes application is opened
 
     Scenario Outline: Search for note
-        Given User adds note with <text>
-        When User enters <text> in "Search Notes" field
-        Then Note with <text> is found
+        Given a note containing <text> is created
+        When the user searches for <text>
+        Then note with <text> is found
         Examples:
             | text                 |
             | bla                  |
@@ -19,8 +18,8 @@ Feature: Search for notes
             | @!%$#^%$& test 12425 |
 
     Scenario Outline: Search for non existent note
-        When User enters <text> in "Search Notes" field
-        Then Error message is displayed
+        When the user searches for <text>
+        Then error message is displayed
         Examples:
             | text            |
             | test            |
