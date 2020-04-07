@@ -1,0 +1,20 @@
+<div class="note-list">
+  <ion-list *ngIf="filteredNoteContainers.length || !searchText; else noMatchingNotes">
+    <ion-item
+      *ngFor="let item of filteredNoteContainers; trackBy: tracker"
+      [ngClass]="{ selected: item.note === selectedNote }"
+      (click)="onNoteClick(item.note)"
+    >
+      <ion-label>
+        <div class="listItemTitle" [innerHTML]="item.displayTitle"></div>
+        <div class="listItemText" [innerHTML]="item.displayText"></div>
+        <div class="date">{{ item.note.displayDate }}</div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ng-template #noMatchingNotes>
+    <p class="no-matching-notes">
+      We didn't find any notes that match your search.
+    </p>
+  </ng-template>
+</div>

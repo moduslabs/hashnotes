@@ -1,0 +1,7 @@
+{
+  "name": "HashNotes",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,62 @@
+audits:
+  - axe
+  - size
+  - lighthouse
+  - heap-snapshot
+  - source-map-explorer
+
+configs:
+  buildDir: www
+  heap-snapshot:
+    threshold:
+      Documents: 20
+      Frames: 10
+      LayoutCount: 20
+      Nodes: 1000
+      RecalcStyleCount: 50
+  lighthouse:
+    threshold:
+      accessibility: 80
+      'best-practices': 80
+      performance: 0
+      pwa: 20
+      seo: 90
+  size:
+    threshold:
+      - path: www
+        maxSize: 20 MB
+      - path: www/main-*.js
+        maxSize: 3 KB
+      - path: www/polyfills-es5.js
+        maxSize: 200 KB
+      - path: www/runtime-*.js
+        maxSize: 1.75 KB
+      - path: www/styles-*.js
+        maxSize: 5.25 KB
+      - path: www/vendor-*.js
+        maxSize: 700 KB
+
+outputs:
+  cli:
+    onlyFailures: true
+  html: artifacts/gimbal.html
+  json: artifacts/gimbal.json
+  markdown: artifacts/gimbal.md
+
+plugins:
+  - plugin: '@modus/gimbal-plugin-axe'
+    thresholds:
+      aria-allowed-attr: critical
+      color-contrast: serious
+      empty-heading: minor
+      landmark-one-main: moderate
+      landmark-complementary-is-top-level: moderate
+      meta-viewport: critical
+      region: moderate
+      page-has-heading-one: moderate
+      scrollable-region-focusable: moderate
+  - plugin: '@modus/gimbal-plugin-source-map-explorer'
+    bundles:
+      - path: '*.js'
+        thresholds:
+          <unmapped>: 5 MB

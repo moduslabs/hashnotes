@@ -1,0 +1,40 @@
+name: CI
+
+on: [push]
+
+jobs:
+  Pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libpcap-dev supervisor netcat-traditional xvfb openjdk-8-jre chromium-browser ffmpeg curl gnupg
+          sudo apt-get clean
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Install npm dependencies
+        run: npm install
+      - name: Check lint rules
+        run: npm run lint-check-rules
+      - name: Lint
+        run: npm run lint
+      - name: Test - unit
+        run: npm run test.ci
+      - name: Test - e2e
+        run: npm run e2e
+      - name: Test - gimbal
+        run: npm run gimbal
+      - name: Build
+        run: npm run build
+      - name: Netlify
+        run: bash ./bin/deploy-to-netlify.sh
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-airbnb",
+    "angular-tslint-rules",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "comment-type": false,
+    "component-class-suffix": [true, "Component", "Page"],
+    "component-selector": [true, "element", "kebab-case"],
+    "directive-selector": [true, "attribute", "kebab-case"],
+    "i18n": false,
+    "invalid-void": [true, { "allow-generics": ["EventEmitter", "Promise"] }],
+    "member-access": true,
+    "no-console": [true, "log"],
+    "no-submodule-imports": false,
+    "no-unnecessary-type-assertion": false,
+    "object-literal-sort-keys": [true, "ignore-case", "locale-compare"],
+    "object-shorthand-properties-first": false,
+    "prefer-array-literal": [true, { "allow-type-parameters": true }],
+    "template-cyclomatic-complexity": false,
+    "template-i18n": false
+  },
+  "rulesDirectory": ["node_modules/codelyzer"]
+}
