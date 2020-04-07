@@ -2,15 +2,17 @@ class NoteEditorCo {
 
     get component() { return $('//hn-note-editor'); }
 
+    get componentMenu() { return $('//div[@role="menu"]');}
+
     get statusBar() { return this.component.$('.//div[@class="tox-statusbar"]'); }
 
     get fileMenu() { return this.component.$('.//span[text()="File"]');}
 
-    get newNoteMenu () {return $('.//div[text()="New note"]');}
+    get newNoteCreate () {return this.componentMenu.$('.//div[text()="New note"]');}
 
 
     addNoteMenu(){
-        this.newNoteMenu.click();
+        this.newNoteCreate.click();
     }
 
     openFileMenu(){

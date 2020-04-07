@@ -19,7 +19,7 @@ When(/^the user clicks the "New Note" button from (.*)/,{}, (location) => {
     if(location === "sidebar"){
             HashNotesPage.getNoteSidebar().addNewNoteSidebar();
             browser.pause(5000);
-    } else if(location === "sidebar") {
+    } else if(location === "file_menu") {
             HashNotesPage.getNoteEditor().openFileMenu();
             browser.pause(5000);
             HashNotesPage.getNoteEditor().addNoteMenu();
