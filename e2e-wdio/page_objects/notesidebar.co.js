@@ -2,7 +2,7 @@ class NoteSidebarCo {
 
     get component() { return $('//hn-note-sidebar'); }
 
-    get backToNotesButton() { return $('//ion-button.back-to-notes-button'); }
+    get backToNotesButton() { return $('ion-button.back-to-notes-button'); }
 
     get newButtonSideBar() { return $('ion-button.new-note-button'); } // $('//ion-button[@class="new-note-button"]'); }
 
@@ -17,8 +17,17 @@ class NoteSidebarCo {
         return $(noteList[0].$('.//div[@class="date"]'));
     }
 
+    get numOfNotes(){
+        return $$('//hn-note-list//ion-list/ion-item');
+        //return noteList.length;
+    }
+
+    getNumberOfNotes(){
+        return this.numOfNotes.length;
+    }
+
     getNoteTime(){
-        console.log(this.lastNoteAdded.getText());
+        return this.lastNoteAdded.getText();
     }
 
     newButtonExists(){
@@ -50,14 +59,14 @@ class NoteSidebarCo {
     }
 
     isTrashFolderLoad(){
-        expect(this.backToNotesButton);
+        this.backToNotesButton.waitForDisplayed();
     }
 
     setSearchBar(searchCriteriaVal) {
         this.searchBar.val = searchCriteriaVal
     }
 
-    trashFolderLoad(){
+    openTrashFolder(){
         this.trashFolder.click();
     }
 }

@@ -8,11 +8,16 @@ class NoteEditorCo {
 
     get fileMenu() { return this.component.$('.//span[text()="File"]');}
 
-    get newNoteCreate () {return this.componentMenu.$('.//div[text()="New note"]');}
+    get newNoteButton () {return this.componentMenu.$('.//div[text()="New note"]');}
 
+    get deleteNoteButton () {return this.componentMenu.$('.//div[text()="Delete note"]');}
 
-    addNoteMenu(){
-        this.newNoteCreate.click();
+    deleteNote(){
+        this.deleteNoteButton.click();
+    }
+
+    addNote(){
+        this.newNoteButton.click();
     }
 
     openFileMenu(){

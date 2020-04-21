@@ -23,9 +23,9 @@ Feature: Create notes
     Scenario: New note is created automatically when the last note from the notes list is deleted
         Given there is only one note in the list
         When the user deletes the note
-        Then a new note is created automatically with current timestamp
+        Then a new note is created automatically with updated timestamp
 
     Scenario: Notes list is displayed when creating new note from trash folder
-        Given a note from the trash folder is selected
+        Given the trash folder is opened
         When the user clicks the "New Note" button from the File menu
         Then the user is redirected to the notes list
