@@ -55,7 +55,16 @@ Then(/^a new note is added at the top of the notes list with updated timestamp$/
 });
 //Create note feature
 Then (/the user is redirected to the notes list$/, {}, () => {
-    browser.pause(3000)
+    browser.pause(2000)
+    HashNotesPage.getNoteSidebar().newButtonExists();
+});
+//Access and exit trash folder feature
+Then (/trash folder is accessed$/, {}, () => {
+    HashNotesPage.getNoteSidebar().backToNotesExists();
+});
+
+Then (/Hashnotes main page is displayed$/, {}, () => {
+    browser.pause(2000)
     HashNotesPage.getNoteSidebar().newButtonExists();
 });
 

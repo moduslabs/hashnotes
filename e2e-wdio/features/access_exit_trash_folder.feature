@@ -11,6 +11,6 @@ Feature: Access and exit trash folder
         Then trash folder is accessed
 
     Scenario: Trash folder is exited
-        Given the trash folder is accessed
+        Given the trash folder is opened
         When the user clicks the "Back to notes" button
         Then Hashnotes main page is displayed

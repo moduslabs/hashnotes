@@ -29,3 +29,6 @@ Feature: Create notes
         Given the trash folder is opened
         When the user creates a new note from the File menu inside the trash folder
         Then the user is redirected to the notes list
+
+
+        # When the user clicks the "New Note" button from the File menu

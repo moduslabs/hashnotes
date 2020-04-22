@@ -22,6 +22,10 @@ class NoteSidebarCo {
         //return noteList.length;
     }
 
+
+    selectNote(){
+        this.lastNoteAdded.click();
+    }
     getNumberOfNotes(){
         return this.numOfNotes.length;
     }
@@ -66,8 +70,20 @@ class NoteSidebarCo {
         this.backToNotesButton.waitForDisplayed();
     }
 
+    backToNotesExists(){
+        this.backToNotesButton.isExisting();
+    }
+
+    backToNotes(){
+        this.backToNotesButton.click();
+    }
+
     setSearchBar(searchCriteriaVal) {
         this.searchBar.val = searchCriteriaVal
+    }
+
+    isTrashButtonLoaded(){
+        this.trashFolder.waitForDisplayed()
     }
 
     openTrashFolder(){

@@ -28,9 +28,28 @@ When(/^the user clicks the "New Note" button from (.*)$/,{}, (location) => {
         throw new Error(`Invalid argument exception ${location}`)
     }
 });
+//Access and exit trash folder feature
+When(/^the user clicks the "Trash Folder" button from sidebar$/, {}, () => {
+    HashNotesPage.getNoteSidebar().isTrashButtonLoaded();
+    HashNotesPage.getNoteSidebar().openTrashFolder();
+    browser.pause(2000);
+});
+//Access and exit trash folder feature
+When(/^the user clicks the "Back to notes" button$/, {}, () => {
+    HashNotesPage.getNoteSidebar().backToNotes();
+    browser.pause(2000);
+});
+
+When(/^the user clicks the "Delete Note" icon from editor menu/, {},() =>{
+    HashNotesPage.getNoteEditor().openFileMenu();
+    browser.pause(2000)
+    HashNotesPage.getNoteEditor().deleteNote()
+});
 
 When(/^User clicks on the search note field/, {},() =>{
     HashNotesPage.getNoteSidebar().isSearchBarFocus();
 });
+
+
 
 

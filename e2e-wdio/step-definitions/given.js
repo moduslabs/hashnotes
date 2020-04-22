@@ -19,9 +19,14 @@ Given(/^there is only one note in the list$/, {}, () => {
     }
     
 });
-//Create note feature
+//Create note feature & //Access and exit trash folder feature
 Given(/^the trash folder is opened$/, {}, () => {
     HashNotesPage.getNoteSidebar().openTrashFolder();
-    browser.pause(3000);
+    browser.pause(2000);
+});
+//Delete notes feature
+Given(/^the user has a note selected$/, {}, () => {
+    HashNotesPage.getNoteSidebar().selectNote();
+    browser.pause(1000);
 });
 
