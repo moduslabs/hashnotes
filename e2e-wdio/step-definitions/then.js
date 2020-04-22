@@ -2,6 +2,7 @@ import { Then } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page'
 import moment from 'moment';
 
+//Create note feature
 Then(/^a new note is created automatically with updated timestamp$/, {}, () => {
     let localTime;
     let formatedLocalTime;
@@ -26,7 +27,7 @@ Then(/^a new note is created automatically with updated timestamp$/, {}, () => {
         throw new Error('Note creation time is not matching the local time');
     }
 });
-
+//Create note feature
 Then(/^a new note is added at the top of the notes list with updated timestamp$/, {}, () => {
     let localTime;
     let formatedLocalTime;
@@ -52,6 +53,11 @@ Then(/^a new note is added at the top of the notes list with updated timestamp$/
     }
     
 });
+//Create note feature
+Then (/the user is redirected to the notes list$/, {}, () => {
+    browser.pause(3000)
+    HashNotesPage.getNoteSidebar().newButtonExists();
+});
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
     switch (searchCriteria) {
@@ -66,7 +72,4 @@ Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
     }
 });
 
-Then (/the user is redirected to the notes list$/, {}, () => {
-    browser.pause(5000)
-    console.log('notes list displayed')
-});
+

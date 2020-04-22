@@ -30,8 +30,12 @@ class NoteSidebarCo {
         return this.lastNoteAdded.getText();
     }
 
-    newButtonExists(){
+    newButtonDisplayed(){
         this.newButtonSideBar.waitForDisplayed();
+    }
+
+    newButtonExists(){
+        this.newButtonSideBar.isExisting();
     }
 
     addNewNoteSidebar(){

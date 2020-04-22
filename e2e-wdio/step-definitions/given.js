@@ -1,10 +1,11 @@
 import { Given } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page'
 
+//Create note feature
 Given(/^the Hashnotes application is opened$/, {}, () => {
     HashNotesPage.open();
 });
-
+//Create note feature
 Given(/^there is only one note in the list$/, {}, () => {
     let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     console.log(numOfNotes);
@@ -18,8 +19,9 @@ Given(/^there is only one note in the list$/, {}, () => {
     }
     
 });
-
+//Create note feature
 Given(/^the trash folder is opened$/, {}, () => {
     HashNotesPage.getNoteSidebar().openTrashFolder();
+    browser.pause(3000);
 });
 

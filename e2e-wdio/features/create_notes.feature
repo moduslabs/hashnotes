@@ -27,5 +27,5 @@ Feature: Create notes
 
     Scenario: Notes list is displayed when creating new note from trash folder
         Given the trash folder is opened
-        When the user clicks the "New Note" button from the File menu
+        When the user creates a new note from the File menu inside the trash folder
         Then the user is redirected to the notes list
