@@ -54,19 +54,45 @@ Then(/^a new note is added at the top of the notes list with updated timestamp$/
     
 });
 //Create note feature
-Then (/the user is redirected to the notes list$/, {}, () => {
+Then (/^the user is redirected to the notes list$/, {}, () => {
     browser.pause(2000)
     HashNotesPage.getNoteSidebar().newButtonExists();
 });
 //Access and exit trash folder feature
-Then (/trash folder is accessed$/, {}, () => {
+Then (/^trash folder is accessed$/, {}, () => {
     HashNotesPage.getNoteSidebar().backToNotesExists();
 });
-
-Then (/Hashnotes main page is displayed$/, {}, () => {
+//Access and exit trash folder feature
+Then (/^Hashnotes main page is displayed$/, {}, () => {
     browser.pause(2000)
     HashNotesPage.getNoteSidebar().newButtonExists();
 });
+//Delete notes feature
+Then (/^a notification prompt with "Cancel" and "Dismiss" buttons is displayed$/, {}, () => {
+    browser.setTimeout({'implicit': 5000 })
+    let promptTxt = HashNotesPage.getPrompt().promptDisplayed();
+    let cancelBtn = HashNotesPage.getPrompt().cancelBtnDisplayed();
+    let dismissBtn = HashNotesPage.getPrompt().dismissBtnDisplayed();
+    promptTxt.toString();
+    if(promptTxt === 'Moved 1 item to the trash.'){
+        if((cancelBtn === 'CANCEL') && (dismissBtn === 'DISMISS')){
+            return true;
+        }else{
+            throw new Error ('Buttons not found')
+        }
+    } else{
+        throw new Error ('Prompt not displayed')
+    }
+});
+
+Then (/^note is restored in notes list$/, {}, () =>{
+    let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    if (numOfNotes === 2){
+        return true;
+    }else {
+        throw new Error('There is less than 2 or more than 2 notes')
+    }
+} )
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
     switch (searchCriteria) {

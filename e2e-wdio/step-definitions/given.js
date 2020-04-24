@@ -25,8 +25,11 @@ Given(/^the trash folder is opened$/, {}, () => {
     browser.pause(2000);
 });
 //Delete notes feature
-Given(/^the user has a note selected$/, {}, () => {
-    HashNotesPage.getNoteSidebar().selectNote();
-    browser.pause(1000);
+Given(/^a new note is created$/, {}, () => {
+    HashNotesPage.getNoteSidebar().newButtonDisplayed();
+    HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+    browser.setTimeout({'implicit': 3000 })
 });
+
+// Given(/^a containing)
 

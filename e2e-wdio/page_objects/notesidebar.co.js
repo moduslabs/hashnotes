@@ -19,7 +19,6 @@ class NoteSidebarCo {
 
     get numOfNotes(){
         return $$('//hn-note-list//ion-list/ion-item');
-        //return noteList.length;
     }
 
 

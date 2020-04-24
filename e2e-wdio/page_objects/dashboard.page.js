@@ -2,6 +2,7 @@ import Page from './page';
 import NoteEditorCo from './noteeditor.co';
 import NoteSidebarCo from './notesidebar.co';
 import TagSidebarCo from './tagsidebar.co';
+import PromptCo from './prompt.co';
 
 class Dashboard extends Page {
 
@@ -15,6 +16,10 @@ class Dashboard extends Page {
 
     getTagSidebar() {
         return TagSidebarCo;
+    }
+
+    getPrompt(){
+        return PromptCo;
     }
 
     isLoaded() {
