@@ -40,18 +40,42 @@ When(/^the user clicks the "Back to notes" button$/, {}, () => {
     browser.pause(2000);
 });
 //Delete notes feature
-When(/^the user clicks the "Delete Note" icon from editor menu$/, {},() =>{
+When(/^the user deletes a note using the "Delete Note" button from File menu$/, {},() =>{
+
+    let numOfNotesBeforeDelete = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    browser.config.ScenarioCtx["numOfNotesBeforeDelete"] = numOfNotesBeforeDelete;
+
     HashNotesPage.getNoteEditor().openFileMenu();
     HashNotesPage.getNoteEditor().deleteNote()
 });
 //Delete notes feature
-When(/^the user clicks the "Cancel" button from notification prompt$/, {},() =>{
-    let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
-    console.log(numOfNotes + 'prima');
-    if (numOfNotes === 1){
+When(/^the user clicks the "Cancel" button from notification prompt$/, {},() =>{   
+    let numOfNotesBeforeCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    browser.config.ScenarioCtx["numOfNotesBeforeCancel"] = numOfNotesBeforeCancel;
+
+    if (numOfNotesBeforeCancel === 1){
         HashNotesPage.getPrompt().cancelBtnClick();
     }else {
         throw new Error('There are more then 1 notes in the list')
+    }
+});
+//Delete notes feature
+When(/^the user clicks the "Dismiss" button from notification prompt$/, {},() =>{
+        HashNotesPage.getPrompt().dismissBtnClick();
+});
+//Delete notes feature
+When(/^the user clicks the "Delete Note" icon from (.*)$/, {},(location) =>{   
+    let numOfNotesBeforeDelete = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    browser.config.ScenarioCtx["numOfNotesBeforeDelete"] = numOfNotesBeforeDelete;
+
+    if(location === "list_menu"){
+            HashNotesPage.getNoteEditor().openFileMenu();
+            HashNotesPage.getNoteEditor().deleteNote();
+    } else if(location === "editor_menu") { 
+            browser.setWindowSize(1600, 1200)
+            HashNotesPage.getNoteEditor().deleteNoteEditor();
+    } else {
+        throw new Error(`Invalid argument exception ${test}`)
     }
 });
 

@@ -8,16 +8,22 @@ class NoteEditorCo {
 
     get fileMenu() { return this.component.$('.//span[text()="File"]');}
 
-    get newNoteButton () {return this.componentMenu.$('.//div[text()="New note"]');}
+    get newNoteBtn () {return this.componentMenu.$('.//div[text()="New note"]');}
 
-    get deleteNoteButton () {return this.componentMenu.$('.//div[text()="Delete note"]');}
+    get delNoteBtnFile () {return this.componentMenu.$('.//div[text()="Delete note"]');}
+
+    get delNoteBtnEditor () {return this.component.$('.//button[@title="Delete note"]');}
 
     deleteNote(){
-        this.deleteNoteButton.click();
+        this.delNoteBtnFile.click();
+    }
+
+    deleteNoteEditor(){
+        this.delNoteBtnEditor.click();
     }
 
     addNote(){
-        this.newNoteButton.click();
+        this.newNoteBtn.click();
     }
 
     openFileMenu(){

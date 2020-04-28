@@ -21,7 +21,6 @@ class NoteSidebarCo {
         return $$('//hn-note-list//ion-list/ion-item');
     }
 
-
     selectNote(){
         this.lastNoteAdded.click();
     }

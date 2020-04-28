@@ -1,6 +1,7 @@
 require('@babel/register');
 
 exports.config = {
+    ScenarioCtx: {},
     //
     // ====================
     // Runner Configuration
@@ -194,8 +195,9 @@ exports.config = {
     /**
      * Runs before a Cucumber scenario
      */
-    // beforeScenario: function (uri, feature, scenario, sourceLocation) {
-    // },
+   beforeScenario: function (uri, feature, scenario, sourceLocation) {
+        browser.config.ScenarioCtx = {};
+    },
     /**
      * Runs before a Cucumber step
      */
