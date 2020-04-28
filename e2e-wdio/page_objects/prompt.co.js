@@ -27,6 +27,5 @@ class PromptCo {
     dismissBtnClick(){
         this.dismissButton.click();
     }
-
 }
 module.exports = new PromptCo();
