@@ -51,11 +51,11 @@ When(/^the user deletes a note using the "Delete Note" button from File menu$/, 
 //Delete notes feature
 When(/^the user clicks the "Cancel" button from notification prompt$/, {},() =>{   
     let numOfNotesBeforeCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
-    browser.config.ScenarioCtx["numOfNotesBeforeCancel"] = numOfNotesBeforeCancel;
+    //browser.config.ScenarioCtx["numOfNotesBeforeCancel"] = numOfNotesBeforeCancel;
 
     if (numOfNotesBeforeCancel === 1){
         HashNotesPage.getPrompt().cancelBtnClick();
-    }else {
+    }else{
         throw new Error('There are more then 1 notes in the list')
     }
 });
@@ -76,6 +76,28 @@ When(/^the user clicks the "Delete Note" icon from (.*)$/, {},(location) =>{
             HashNotesPage.getNoteEditor().deleteNoteEditor();
     } else {
         throw new Error(`Invalid argument exception ${test}`)
+    }
+});
+//Delete notes from trash folder
+When(/^the user deletes note using the "Delete Note" icon from editor menu$/, {},() =>{
+
+    let numOfNotesBeforeDelete = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    browser.config.ScenarioCtx["numOfNotesBeforeDelete"] = numOfNotesBeforeDelete;
+
+    browser.setWindowSize(1600, 1200)
+    HashNotesPage.getNoteEditor().deleteNoteEditor();
+    //HashNotesPage.getPrompt().dismissBtnClick();
+    browser.setTimeout({implicit: 2000});
+});
+
+When(/^the user cancels the delete note action$/, {},() =>{   
+    let numOfNotesBeforeCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    //browser.config.ScenarioCtx["numOfNotesBeforeCancel"] = numOfNotesBeforeCancel;
+    if (numOfNotesBeforeCancel === 1){
+
+        HashNotesPage.getPrompt().cancelBtnClick();
+    }else{
+        throw new Error('There are more then 1 notes in the list')
     }
 });
 

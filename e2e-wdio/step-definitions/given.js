@@ -5,6 +5,8 @@ import moment from 'moment';
 //Create note feature
 Given(/^the Hashnotes application is opened$/, {}, () => {
     HashNotesPage.open();
+    HashNotesPage.getPrompt().waitForTiny();
+    HashNotesPage.getPrompt().closeBtnClickTiny();
 });
 //Create note feature
 Given(/^there is only one note in the list$/, {}, () => {
@@ -48,28 +50,72 @@ Given(/^the trash folder is empty$/, {}, () => {
     
 });
 // Delete notes feature
-Given(/^a new note with specific timestamp is added$/, {}, () => {
-    let localTime;
-    let formatedLocalTime;
-    let localHour = moment().format('hh');
+Given(/^a new note is added$/, {}, () => {
+    let timeOfNote;
+    let localSecond = parseInt(moment().format('ss'));
+    let waitTimeNoteCreate;
+     if( localSecond >= 1 && localSecond <= 59){
+         waitTimeNoteCreate = (60 - localSecond) + 3;
+         if ( waitTimeNoteCreate >=1 && waitTimeNoteCreate<= 9){
+             HashNotesPage.getNoteSidebar().newButtonDisplayed();
+             HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+             timeOfNote = HashNotesPage.getNoteSidebar().getNoteTime();
+             timeOfNote = timeOfNote.toString()
+             browser.pause(waitTimeNoteCreate * 1000)
+         }else{
+             HashNotesPage.getNoteSidebar().newButtonDisplayed();
+             HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+             timeOfNote = HashNotesPage.getNoteSidebar().getNoteTime();
+             timeOfNote = timeOfNote.toString()
+             browser.pause(waitTimeNoteCreate * 1000)
+         }
+     }
 
-    HashNotesPage.getNoteSidebar().newButtonDisplayed();
-    HashNotesPage.getNoteSidebar().addNewNoteSidebar();
-
-    let formatTime = function () {
-        if (localHour === '12'){
-    localTime ='Today, ' + '00' + moment().format(":mm a")
-        }else {
-        localTime = 'Today, ' + moment().format("hh:mm a");
-        }
-        return localTime
-    }
-
-    formatedLocalTime = formatTime();
-    browser.config.ScenarioCtx["formatedLocalTime"] = formatedLocalTime;
-    //Other way to store the value of formatedLocalTime to ScenarioCtx
-    // browser.config.ScenarioCtx = {
-    //     formatedLocalTime
-    // };
+    
+    browser.config.ScenarioCtx["timeOfNote"] = timeOfNote;
       
 });
+// Delete notes from trash folder
+Given(/^there is a note in the "Trash Folder"$/, {}, () => {
+    HashNotesPage.getNoteEditor().openFileMenu()
+    HashNotesPage.getNoteEditor().deleteNote()
+    HashNotesPage.getPrompt().dismissBtnClick();
+    HashNotesPage.getNoteSidebar().openTrashFolder()
+    HashNotesPage.getNoteSidebar().isTrashFolderLoad()
+    HashNotesPage.getPrompt().waitForTiny();
+    HashNotesPage.getPrompt().closeBtnClickTiny();
+});
+
+Given(/^a new note is added in the trash folder$/, {}, () => {
+    
+    let timeOfNote;
+    let localSecond = parseInt(moment().format('ss'));
+    let waitTimeNoteCreate;
+
+    HashNotesPage.getNoteSidebar().isTrashFolderLoad();
+    HashNotesPage.getNoteSidebar().backToNotes();
+    HashNotesPage.getNoteSidebar().newButtonDisplayed();
+    HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+    HashNotesPage.getNoteEditor().openFileMenu();
+    HashNotesPage.getNoteEditor().deleteNote()
+    HashNotesPage.getPrompt().dismissBtnClick()
+    HashNotesPage.getNoteSidebar().openTrashFolder();
+
+    if( localSecond >= 1 && localSecond <= 59){
+        waitTimeNoteCreate = (60 - localSecond) + 3;
+        if ( waitTimeNoteCreate >=1 && waitTimeNoteCreate<= 9){
+            timeOfNote = HashNotesPage.getNoteSidebar().getNoteTime();
+            timeOfNote = timeOfNote.toString()
+            browser.pause(waitTimeNoteCreate * 1000)
+        }else{
+            timeOfNote = HashNotesPage.getNoteSidebar().getNoteTime();
+            timeOfNote = timeOfNote.toString()
+            browser.pause(waitTimeNoteCreate * 1000)
+        }
+    }
+    
+    browser.config.ScenarioCtx["timeOfNote"] = timeOfNote;
+      
+});
+
+

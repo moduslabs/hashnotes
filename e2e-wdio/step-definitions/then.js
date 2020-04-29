@@ -70,7 +70,7 @@ Then (/^Hashnotes main page is displayed$/, {}, () => {
 });
 //Delete notes feature
 Then (/^a notification prompt with "Cancel" and "Dismiss" buttons is displayed$/, {}, () => {
-    browser.setTimeout({'implicit': 2000 })
+    browser.setTimeout({'implicit': 3000 })
     let promptTxt = HashNotesPage.getPrompt().promptDisplayed();
     let cancelBtn = HashNotesPage.getPrompt().cancelBtnDisplayed();
     let dismissBtn = HashNotesPage.getPrompt().dismissBtnDisplayed();
@@ -82,7 +82,13 @@ Then (/^a notification prompt with "Cancel" and "Dismiss" buttons is displayed$/
         }else{
             throw new Error ('Buttons not found')
         }
-    } else{
+    } else if(promptTxt === 'Permanently deleted 1 item.'){
+        if((cancelBtn === 'CANCEL') && (dismissBtn === 'DISMISS')){
+            return true;
+        }else{
+            throw new Error ('Buttons not found')
+        }
+    }else {
         throw new Error ('Prompt not displayed')
     }
 });
@@ -90,8 +96,8 @@ Then (/^a notification prompt with "Cancel" and "Dismiss" buttons is displayed$/
 Then (/^note is restored in notes list$/, {}, () =>{
 
     let numOfNotesAfterCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
-    let numOfNotesBeforeCancel = parseInt(browser.config.ScenarioCtx["numOfNotesBeforeCancel"], 10);
-    if (numOfNotesAfterCancel === (numOfNotesBeforeCancel + 1)){
+    let numOfNotesBeforeDelete = parseInt(browser.config.ScenarioCtx["numOfNotesBeforeDelete"], 10);
+    if (numOfNotesAfterCancel === (numOfNotesBeforeDelete)){
         return true;
     }else {
         throw new Error('There is less than 2 or more than 2 notes')
@@ -120,15 +126,55 @@ Then (/^moved to the trash folder$/, {}, () =>{
         throw new Error ('There are more than 1 notes in the Trash Folder!!!')
     }
 });
-
+//Delete notes feature
 Then (/^timestamp of note is not updated$/, {}, () =>{
-    let localTimeAtCreation;
-    let noteTime = HashNotesPage.getNoteSidebar().getNoteTime();
-    noteTime = noteTime.toString();
+    let localTime;
+    let localTimeAfterWaiting;
+    let timeOfNote;
+    let localHour = moment().format('hh');
 
-   localTimeAtCreation = browser.config.ScenarioCtx["formatedLocalTime"];
-    console.log('Second', localTimeAtCreation);
+    let noteTimeAfterDelete = HashNotesPage.getNoteSidebar().getNoteTime();
+    noteTimeAfterDelete = noteTimeAfterDelete.toString();
 
+    let formatTime = function () {
+        if (localHour === '12'){
+    localTime ='Today, ' + '00' + moment().format(":mm a")
+        }else {
+        localTime = 'Today, ' + moment().format("hh:mm a");
+        }
+        return localTime
+    }
+
+    localTimeAfterWaiting = formatTime();
+
+    timeOfNote = browser.config.ScenarioCtx["timeOfNote"];
+
+    if ((noteTimeAfterDelete !== localTimeAfterWaiting) && (noteTimeAfterDelete === timeOfNote)){
+        return true;
+    }else {
+        throw new Error ('The timestamp of the note has changed')
+    }
+ });
+
+ Then (/^note is permanently deleted$/, {}, () => {
+    let numOfNotes = parseInt(HashNotesPage.getNoteSidebar().getNumberOfNotes());
+
+    if (numOfNotes === 0){
+        return true;
+    }else {
+        throw new Error ('There note is still present in the trash folder')
+    }
+});
+//Delete notes from trash folder
+Then (/^note is restored in trash folder notes list$/, {}, () =>{
+
+    let numOfNotesAfterCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    let numOfNotesBeforeDelete = parseInt(browser.config.ScenarioCtx["numOfNotesBeforeDelete"], 10);
+    if (numOfNotesAfterCancel === (numOfNotesBeforeDelete)){
+        return true;
+    }else {
+        throw new Error('There is less than 2 or more than 2 notes')
+    }
 });
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
@@ -143,5 +189,3 @@ Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
             break;
     }
 });
-
-
