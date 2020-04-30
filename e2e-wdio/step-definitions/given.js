@@ -85,7 +85,7 @@ Given(/^there is a note in the "Trash Folder"$/, {}, () => {
     HashNotesPage.getPrompt().waitForTiny();
     HashNotesPage.getPrompt().closeBtnClickTiny();
 });
-
+// Delete notes from trash folder
 Given(/^a new note is added in the trash folder$/, {}, () => {
     
     let timeOfNote;
@@ -116,6 +116,19 @@ Given(/^a new note is added in the trash folder$/, {}, () => {
     
     browser.config.ScenarioCtx["timeOfNote"] = timeOfNote;
       
+});
+// Notes editor
+Given(/^(.*) is added to the note$/, {},(text) =>{   
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame); 
+    
+    if (text === "Food"){
+        HashNotesPage.getNoteEditor().addAreaText(text);
+    }else if (text === "How you ever been"){
+        HashNotesPage.getNoteEditor().addAreaText(text);
+    }else {
+        throw new Error('Something went wrong')
+    }
 });
 
 

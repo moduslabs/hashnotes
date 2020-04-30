@@ -89,7 +89,7 @@ When(/^the user deletes note using the "Delete Note" icon from editor menu$/, {}
     //HashNotesPage.getPrompt().dismissBtnClick();
     browser.setTimeout({implicit: 2000});
 });
-
+//Delete notes from trash folder
 When(/^the user cancels the delete note action$/, {},() =>{   
     let numOfNotesBeforeCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     //browser.config.ScenarioCtx["numOfNotesBeforeCancel"] = numOfNotesBeforeCancel;
@@ -100,7 +100,20 @@ When(/^the user cancels the delete note action$/, {},() =>{
         throw new Error('There are more then 1 notes in the list')
     }
 });
-
+// Notes editor
+When(/^the user clicks the "Undo" button from (.*)$/, {},(location) =>{  
+    browser.switchToFrame(null);
+    if(location === "edit_menu"){
+            HashNotesPage.getNoteEditor().clickEditBtn();
+            browser.pause(3000)
+            HashNotesPage.getNoteEditor().clickUndoBtn();
+    } else if(location === "edit_bar") { 
+            browser.setWindowSize(1600, 1200)
+            HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
+    } else {
+        throw new Error('Button not found')
+    }
+});
 When(/^User clicks on the search note field/, {},() =>{
     HashNotesPage.getNoteSidebar().isSearchBarFocus();
 });

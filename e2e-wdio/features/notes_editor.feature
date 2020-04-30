@@ -5,7 +5,7 @@ Feature: Edits notes
 
     Background:
         Given the Hashnotes application is opened
-        Given the user has a note selected
+       # Given the user has a note selected
 
     Scenario Outline: Undo change
         Given <text> is added to the note
@@ -16,81 +16,81 @@ Feature: Edits notes
             | Food              | edit_menu |
             | How you ever been | edit_bar  |
 
-    Scenario Outline: Redo change
-        Given <text> is added to the note
-        Given <text> is deleted from the note
-        When  the user clicks the "Redo" button from <location>
-        Then  delete action is reverted
-        Examples:
-            | text              | location  |
-            | a                 | edit_menu |
-            | How you ever been | edit_bar  |
+    # Scenario Outline: Redo change
+    #     Given <text> is added to the note
+    #     Given <text> is deleted from the note
+    #     When  the user clicks the "Redo" button from <location>
+    #     Then  delete action is reverted
+    #     Examples:
+    #         | text              | location  |
+    #         | a                 | edit_menu |
+    #         | How you ever been | edit_bar  |
 
 
-    Scenario Outline: Copy and Paste text
-        Given <text> is added to the note
-        When the user copies <text> using "Copy" button from edit_menu
-        When the user pastes the <text> in the note using "Paste" button from edit_menu
-        Then <text> is successfully pasted
-        Examples:
-            | text      |
-            | test      |
-            | #@#^&$%*$ |
+    # Scenario Outline: Copy and Paste text
+    #     Given <text> is added to the note
+    #     When the user copies <text> using "Copy" button from edit_menu
+    #     When the user pastes the <text> in the note using "Paste" button from edit_menu
+    #     Then <text> is successfully pasted
+    #     Examples:
+    #         | text      |
+    #         | test      |
+    #         | #@#^&$%*$ |
 
-    Scenario: Insert link
-        Given "random" text is added to the note
-        When  User selects <text>
-        When  User clicks on "Insert" menu
-        When  User selects "Link" option
-        Then  A "Insert/Edit Link" modal is open
-        When  User enters <link> into the "URL" field
-        Then  "Text to display" field is autocompleted with the selected text
-        When  User clicks on the "Save" button
-        Then  Link is inserted in the note text field
-        Examples:
-            | text   | link                    |
-            | random | https://www.google.com/ |
-
-
-    Scenario Outline: Text format
-        Given <text> is added to the note
-        Given <text> is selected
-        When  the user selects the <format> format
-        Then  text format is changed to <format>
-        Examples:
-            | text        | format      |
-            | Food        | Bold        |
-            | Hello there | Underline   |
-            | format      | Superscript |
-            | random      | Code        |
+    # Scenario: Insert link
+    #     Given "random" text is added to the note
+    #     When  User selects <text>
+    #     When  User clicks on "Insert" menu
+    #     When  User selects "Link" option
+    #     Then  A "Insert/Edit Link" modal is open
+    #     When  User enters <link> into the "URL" field
+    #     Then  "Text to display" field is autocompleted with the selected text
+    #     When  User clicks on the "Save" button
+    #     Then  Link is inserted in the note text field
+    #     Examples:
+    #         | text   | link                    |
+    #         | random | https://www.google.com/ |
 
 
-    Scenario: Shorcut list
-        When  the user selects the "Shortcut list" option from "Help" menu
-        Then  Shorcut list is displayed
+    # Scenario Outline: Text format
+    #     Given <text> is added to the note
+    #     Given <text> is selected
+    #     When  the user selects the <format> format
+    #     Then  text format is changed to <format>
+    #     Examples:
+    #         | text        | format      |
+    #         | Food        | Bold        |
+    #         | Hello there | Underline   |
+    #         | format      | Superscript |
+    #         | random      | Code        |
 
 
-    Scenario Outline: List creation
-        Given <text1> is added to the note
-        Given <text2> is added on the second row of the note
-        Given <text3> is added on the third row of the note
-        Given <text1>, <text2>, <text3> are selected
-        When  the user clicks on the <list_type> button from editor menu
-        Then  texts are listed by <list_type>
-        Examples:
-            | text1 | text2  | text3 | list_type     |
-            | first | second | third | numbered_list |
-            | 1     | 2      | 3     | bullet_list   |
+    # Scenario: Shorcut list
+    #     When  the user selects the "Shortcut list" option from "Help" menu
+    #     Then  Shorcut list is displayed
 
-    Scenario Outline: Text alignment
-        Given <text> is added to the note
-        Given <text> is selected
-        When  the user selects <align> icon
-        Then  text is align to the <position>
-        Examples:
-            | text        | align        | position |
-            | Food        | align_right  | right    |
-            | 12345678    | justify      | left     |
-            | Test text   | align_center | center   |
-            | Hello there | align_left   | left     |
+
+    # Scenario Outline: List creation
+    #     Given <text1> is added to the note
+    #     Given <text2> is added on the second row of the note
+    #     Given <text3> is added on the third row of the note
+    #     Given <text1>, <text2>, <text3> are selected
+    #     When  the user clicks on the <list_type> button from editor menu
+    #     Then  texts are listed by <list_type>
+    #     Examples:
+    #         | text1 | text2  | text3 | list_type     |
+    #         | first | second | third | numbered_list |
+    #         | 1     | 2      | 3     | bullet_list   |
+
+    # Scenario Outline: Text alignment
+    #     Given <text> is added to the note
+    #     Given <text> is selected
+    #     When  the user selects <align> icon
+    #     Then  text is align to the <position>
+    #     Examples:
+    #         | text        | align        | position |
+    #         | Food        | align_right  | right    |
+    #         | 12345678    | justify      | left     |
+    #         | Test text   | align_center | center   |
+    #         | Hello there | align_left   | left     |
 

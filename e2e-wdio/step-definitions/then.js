@@ -176,6 +176,17 @@ Then (/^note is restored in trash folder notes list$/, {}, () =>{
         throw new Error('There is less than 2 or more than 2 notes')
     }
 });
+// Notes editor
+Then (/^note is restored in trash folder notes list$/, {}, () =>{
+
+    let numOfNotesAfterCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+    let numOfNotesBeforeDelete = parseInt(browser.config.ScenarioCtx["numOfNotesBeforeDelete"], 10);
+    if (numOfNotesAfterCancel === (numOfNotesBeforeDelete)){
+        return true;
+    }else {
+        throw new Error('There is less than 2 or more than 2 notes')
+    }
+});
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
     switch (searchCriteria) {
