@@ -102,10 +102,10 @@ When(/^the user cancels the delete note action$/, {},() =>{
 });
 // Notes editor
 When(/^the user clicks the "Undo" button from (.*)$/, {},(location) =>{  
+    
     browser.switchToFrame(null);
     if(location === "edit_menu"){
             HashNotesPage.getNoteEditor().clickEditBtn();
-            browser.pause(3000)
             HashNotesPage.getNoteEditor().clickUndoBtn();
     } else if(location === "edit_bar") { 
             browser.setWindowSize(1600, 1200)
@@ -113,6 +113,24 @@ When(/^the user clicks the "Undo" button from (.*)$/, {},(location) =>{
     } else {
         throw new Error('Button not found')
     }
+});
+When(/^the user clicks the "Redo" button from (.*)$/, {},(location) =>{  
+
+    if(location === "edit_menu"){
+            HashNotesPage.getNoteEditor().clickEditBtn();
+            HashNotesPage.getNoteEditor().clickRedoBtn();
+    } else if(location === "edit_bar") { 
+            browser.setWindowSize(1600, 1200)
+            HashNotesPage.getNoteEditor().clickRedoBtnEditBar();
+    } else {
+        throw new Error('Button not found')
+    }
+});
+
+
+When(/^the user copies the text added using "Copy" button from edit_menu$/, {},() =>{  
+    browser.keys(['Meta', 'a']);
+    browser.pause(7000);
 });
 When(/^User clicks on the search note field/, {},() =>{
     HashNotesPage.getNoteSidebar().isSearchBarFocus();

@@ -188,6 +188,36 @@ Then (/^note is restored in trash folder notes list$/, {}, () =>{
     }
 });
 
+Then (/^(.*) is removed$/, {}, (text) =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+    
+    let textArea = HashNotesPage.getNoteEditor().getHeadAreaText();
+    
+    if (text !== textArea){
+        return true;
+    }else {
+        throw new Error('The text is still present')
+    }
+});
+
+Then (/^delete action of (.*) text is reverted$/, {}, (text) =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+    
+    let textArea = HashNotesPage.getNoteEditor().getHeadAreaText();
+
+    if (text === textArea){
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
+        return true;
+    }else {
+        throw new Error('The text is not reverted')
+    }
+
+    
+});
+
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
     switch (searchCriteria) {
         case 'Note':

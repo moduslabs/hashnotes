@@ -4,7 +4,7 @@ class NoteEditorCo {
 
     get componentMenu() { return $('//div[@role="menu"]');}
 
-    get textArea() { return $('#tinymce > h1');}
+    get textHeadArea() { return $('#tinymce > h1');}
 
     get statusBar() { return this.component.$('.//div[@class="tox-statusbar"]'); }
 
@@ -22,6 +22,25 @@ class NoteEditorCo {
 
     get undoBtnEditBar() {return this.component.$('.//button[@title="Undo"]');}
 
+    get redoBtnEditMenu() {return this.componentMenu.$('.//div[@title="Redo"]');}
+
+    get redoBtnEditBar() {return this.component.$('.//button[@title="Redo"]');}
+
+    clickRedoBtnEditBar(){
+        this.redoBtnEditBar.click();
+    }
+
+    clickRedoBtn(){
+        this.redoBtnEditMenu.click();
+    }
+
+    deleteHeadAreaText(){
+        this.textHeadArea.clearValue();
+    }
+
+    getHeadAreaText(){
+        return this.textHeadArea.getText();
+    }
     
     clickUndoBtnEditBar(){
         this.undoBtnEditBar.click();
@@ -35,8 +54,8 @@ class NoteEditorCo {
         this.editMenu.click();
     }
 
-    addAreaText(anyText){
-        this.textArea.addValue(anyText);
+    addHeadAreaText(anyText){
+        this.textHeadArea.addValue(anyText);
     }
 
     deleteNote(){

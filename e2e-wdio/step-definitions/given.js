@@ -118,17 +118,28 @@ Given(/^a new note is added in the trash folder$/, {}, () => {
       
 });
 // Notes editor
-Given(/^(.*) is added to the note$/, {},(text) =>{   
+Given(/^(.*) text is added to the note$/, {},(text) =>{   
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
     
     if (text === "Food"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
+        HashNotesPage.getNoteEditor().addHeadAreaText(text);
     }else if (text === "How you ever been"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
+        HashNotesPage.getNoteEditor().addHeadAreaText(text);
     }else {
         throw new Error('Something went wrong')
     }
 });
 
+Given(/^(.*) text is removed from the note using the "Undo" button$/, {},(text) =>{   
+
+    browser.switchToFrame(null);
+    if (text === "Food"){
+        HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
+    }else if (text === "How you ever been"){
+        HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
+    }else {
+        throw new Error('Something went wrong')
+    }
+});
 

@@ -5,37 +5,36 @@ Feature: Edits notes
 
     Background:
         Given the Hashnotes application is opened
-       # Given the user has a note selected
 
-    Scenario Outline: Undo change
-        Given <text> is added to the note
-        When  the user clicks the "Undo" button from <location>
-        Then  <text> is removed
-        Examples:
-            | text              | location  |
-            | Food              | edit_menu |
-            | How you ever been | edit_bar  |
-
-    # Scenario Outline: Redo change
-    #     Given <text> is added to the note
-    #     Given <text> is deleted from the note
-    #     When  the user clicks the "Redo" button from <location>
-    #     Then  delete action is reverted
+    # Scenario Outline: Undo change
+    #     Given <text> text is added to the note
+    #     When  the user clicks the "Undo" button from <location>
+    #     Then  <text> text is removed
     #     Examples:
     #         | text              | location  |
-    #         | a                 | edit_menu |
+    #         | Food              | edit_menu |
+    #         | How you ever been | edit_bar  |
+
+    # Scenario Outline: Redo change
+    #     Given <text> text is added to the note
+    #     Given <text> text is removed from the note using the "Undo" button
+    #     When the user clicks the "Redo" button from <location>
+    #     Then delete action of <text> text is reverted
+    #     Examples:
+    #         | text              | location  |
+    #         | Food              | edit_menu |
     #         | How you ever been | edit_bar  |
 
 
-    # Scenario Outline: Copy and Paste text
-    #     Given <text> is added to the note
-    #     When the user copies <text> using "Copy" button from edit_menu
-    #     When the user pastes the <text> in the note using "Paste" button from edit_menu
-    #     Then <text> is successfully pasted
-    #     Examples:
-    #         | text      |
-    #         | test      |
-    #         | #@#^&$%*$ |
+    Scenario Outline: Copy and Paste text
+        Given <text> text is added to the note
+        When the user copies the text added using "Copy" button from edit_menu
+        When the user pastes the <text> in the note using "Paste" button from edit_menu
+        Then <text> is successfully pasted
+        Examples:
+            | text              |
+            | Food              |
+            | How you ever been |
 
     # Scenario: Insert link
     #     Given "random" text is added to the note
