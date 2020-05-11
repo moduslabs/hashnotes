@@ -187,12 +187,12 @@ Then (/^note is restored in trash folder notes list$/, {}, () =>{
         throw new Error('There is less than 2 or more than 2 notes')
     }
 });
-
+// Notes editor
 Then (/^(.*) is removed$/, {}, (text) =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame);
     
-    let textArea = HashNotesPage.getNoteEditor().getHeadAreaText();
+    let textArea = HashNotesPage.getNoteEditor().getAreaText();
     
     if (text !== textArea){
         return true;
@@ -200,22 +200,125 @@ Then (/^(.*) is removed$/, {}, (text) =>{
         throw new Error('The text is still present')
     }
 });
-
+// Notes editor
 Then (/^delete action of (.*) text is reverted$/, {}, (text) =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame);
     
-    let textArea = HashNotesPage.getNoteEditor().getHeadAreaText();
-
+    let textArea = HashNotesPage.getNoteEditor().getAreaText();
+    console.log(textArea);
     if (text === textArea){
+        HashNotesPage.getNoteEditor().deleteAreaText();
         browser.switchToFrame(null)
-        HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
+        // Added the click Bold button step here, since the clear value action from above is not
+        // fully completed, and in order to that a random action must be performed
+        HashNotesPage.getNoteEditor().clickBoldBtn();
         return true;
     }else {
         throw new Error('The text is not reverted')
-    }
+    } 
+});
+// Notes editor
+Then (/^(.*) is successfully pasted$/, {}, (text) =>{
+   
+    let textBeforeDelete = browser.config.ScenarioCtx['textBeforeDelete']
 
-    
+    if (textBeforeDelete === text){
+        HashNotesPage.getNoteEditor().deleteAreaText();
+        // Added the click Bold button step here, since the clear value action from above is not
+        // fully completed, and in order to that a random action must be performed
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickBoldBtn();
+        return true;
+    }else {
+        throw new Error('The text is not reverted')
+    }  
+});
+// Notes editor
+Then (/^text format is changed to (.*)$/, {}, (format) =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+
+    if (format === 'Bold'){
+        browser.switchToFrame(switchFrame); 
+
+        browser.keys(['Meta','a']);
+
+        browser.switchToFrame(null);
+        let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
+
+        if (formatApplied = "Bold"){
+            browser.switchToFrame(switchFrame); 
+            HashNotesPage.getNoteEditor().deleteAreaText();
+
+            browser.switchToFrame(null);
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+            
+        }
+    }else if(format === 'Underline'){
+        browser.switchToFrame(switchFrame); 
+
+        browser.keys(['Meta','a']);
+
+        browser.switchToFrame(null);
+        let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
+
+        if (formatApplied = "Underline"){
+            browser.switchToFrame(switchFrame); 
+            HashNotesPage.getNoteEditor().deleteAreaText();
+
+            browser.switchToFrame(null);
+            HashNotesPage.getNoteEditor().clickFormatBtn();
+            HashNotesPage.getNoteEditor().clickUnderlineBtn();
+        }         
+    }else if(format === 'Superscript'){
+        browser.switchToFrame(switchFrame); 
+
+        browser.keys(['Meta','a']);
+
+        browser.switchToFrame(null);
+        let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
+
+        if (formatApplied = "Superscript"){
+            browser.switchToFrame(switchFrame); 
+            HashNotesPage.getNoteEditor().deleteAreaText();
+
+            browser.switchToFrame(null);
+            HashNotesPage.getNoteEditor().clickFormatBtn();
+            HashNotesPage.getNoteEditor().clickSuperscriptBtn();
+        }      
+    }else if(format === 'Code'){
+        browser.switchToFrame(switchFrame); 
+
+        browser.keys(['Meta','a']);
+
+        browser.switchToFrame(null);
+        let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
+
+        if (formatApplied = "Code"){
+            browser.switchToFrame(switchFrame); 
+            HashNotesPage.getNoteEditor().deleteAreaText();
+
+            browser.switchToFrame(null);
+            HashNotesPage.getNoteEditor().clickFormatBtn();
+            HashNotesPage.getNoteEditor().clickCodeBtn();
+        }  
+    }else {
+        throw new Error('Incorrect formatting')
+    }
+});
+// Notes editor
+Then (/^Shorcut list is displayed$/, {}, () => {
+    let shortcutPrompt = HashNotesPage.getNoteEditor().shortcutListDisplayed();
+
+    if (shortcutPrompt === true){
+        return true;
+    }else {
+        throw new Error('Shortcut prompt not displayed');
+        }
+});
+
+Then (/^texts are listed by (.*))$/, {}, (listType) => {
+    let numListDisplayed = 
 });
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {

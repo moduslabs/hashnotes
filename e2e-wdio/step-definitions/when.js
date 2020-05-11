@@ -108,30 +108,84 @@ When(/^the user clicks the "Undo" button from (.*)$/, {},(location) =>{
             HashNotesPage.getNoteEditor().clickEditBtn();
             HashNotesPage.getNoteEditor().clickUndoBtn();
     } else if(location === "edit_bar") { 
-            browser.setWindowSize(1600, 1200)
+            //browser.setWindowSize(1600, 1200)
             HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
     } else {
         throw new Error('Button not found')
     }
 });
+// Notes editor
 When(/^the user clicks the "Redo" button from (.*)$/, {},(location) =>{  
 
     if(location === "edit_menu"){
             HashNotesPage.getNoteEditor().clickEditBtn();
             HashNotesPage.getNoteEditor().clickRedoBtn();
     } else if(location === "edit_bar") { 
-            browser.setWindowSize(1600, 1200)
+           // browser.setWindowSize(1600, 1200)
             HashNotesPage.getNoteEditor().clickRedoBtnEditBar();
     } else {
         throw new Error('Button not found')
     }
 });
-
-
-When(/^the user copies the text added using "Copy" button from edit_menu$/, {},() =>{  
+// Notes editor
+When(/^the user copies the text added using copy combination of keys$/, {},() =>{  
     browser.keys(['Meta', 'a']);
-    browser.pause(7000);
+    browser.keys(['Meta', 'c']);
+    
+    let textBeforeDelete = HashNotesPage.getNoteEditor().getAreaText()
+    browser.config.ScenarioCtx["textBeforeDelete"] = textBeforeDelete;
 });
+// Notes editor
+When(/^the user clears the text$/, {},() =>{
+    
+    HashNotesPage.getNoteEditor().deleteAreaText()
+});
+// Notes editor
+When(/^the user pastes the text in the note using paste combination of keys$/, {},() =>{
+    browser.keys(['Meta', 'v']);
+});
+// Notes editor
+When(/^the user selects the (.*) format$/, {},(format) =>{
+    browser.switchToFrame(null)
+
+    if (format === 'Bold'){
+        HashNotesPage.getNoteEditor().clickBoldBtn()
+         
+    }else if(format === 'Underline'){
+        HashNotesPage.getNoteEditor().clickFormatBtn();
+        HashNotesPage.getNoteEditor().clickUnderlineBtn();
+          
+    }else if(format === 'Superscript'){
+        HashNotesPage.getNoteEditor().clickFormatBtn();
+        HashNotesPage.getNoteEditor().clickSuperscriptBtn()
+       
+    }else if(format === 'Code'){
+        HashNotesPage.getNoteEditor().clickFormatBtn();
+        HashNotesPage.getNoteEditor().clickCodeBtn();
+       
+    }else {
+        throw new Error('Button not found')
+    }
+});
+// Notes editor
+When(/^the user selects the "Shortcut list" option from "Help" menu$/, {}, () => {
+    HashNotesPage.getNoteEditor().clickHelpBtn();
+    HashNotesPage.getNoteEditor().clickShorcutListBtn();
+});
+
+When(/^the user clicks on the (.*) button from editor menu/, {},(button) =>{
+    browser.switchToFrame(null);
+
+    if (button === 'numbered_list'){
+        HashNotesPage.getNoteEditor().clickNumListBtn()
+    }else if (button === 'bullet_list'){
+        HashNotesPage.getNoteEditor().clickBulletListBtn()
+    }else {
+        throw new Error ('Text is not listed by any list type')
+    }
+    browser.debug();
+});
+
 When(/^User clicks on the search note field/, {},() =>{
     HashNotesPage.getNoteSidebar().isSearchBarFocus();
 });

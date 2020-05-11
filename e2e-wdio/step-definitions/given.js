@@ -1,10 +1,12 @@
 import { Given } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page';
 import moment from 'moment';
+import { connect } from 'http2';
 
 //Create note feature
 Given(/^the Hashnotes application is opened$/, {}, () => {
     HashNotesPage.open();
+    browser.setWindowSize(1600, 1200)
     HashNotesPage.getPrompt().waitForTiny();
     HashNotesPage.getPrompt().closeBtnClickTiny();
 });
@@ -118,22 +120,30 @@ Given(/^a new note is added in the trash folder$/, {}, () => {
       
 });
 // Notes editor
-Given(/^(.*) text is added to the note$/, {},(text) =>{   
+Given(/^(.*) text is added to the note$/, {},(text) =>{  
+
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
     
     if (text === "Food"){
-        HashNotesPage.getNoteEditor().addHeadAreaText(text);
+        HashNotesPage.getNoteEditor().addAreaText(text);
     }else if (text === "How you ever been"){
-        HashNotesPage.getNoteEditor().addHeadAreaText(text);
+        HashNotesPage.getNoteEditor().addAreaText(text);
+    }else if (text === "Hello there"){
+        HashNotesPage.getNoteEditor().addAreaText(text);
+    }else if (text === "format"){
+        HashNotesPage.getNoteEditor().addAreaText(text);
+    }else if (text === "random"){
+        HashNotesPage.getNoteEditor().addAreaText(text);
     }else {
         throw new Error('Something went wrong')
     }
 });
-
+// Notes editor
 Given(/^(.*) text is removed from the note using the "Undo" button$/, {},(text) =>{   
 
     browser.switchToFrame(null);
+
     if (text === "Food"){
         HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
     }else if (text === "How you ever been"){
@@ -142,4 +152,43 @@ Given(/^(.*) text is removed from the note using the "Undo" button$/, {},(text) 
         throw new Error('Something went wrong')
     }
 });
+
+Given(/^text is selected$/, {},() =>{   
+
+    browser.keys(['Meta', 'a']);
+
+});
+// Notes editor
+Given(/^(.*) text is added on the second row of the note$/, {},(text2) =>{   
+
+    browser.keys('Enter');
+
+    let secondRow = $('#tinymce p:nth-child(2)').getText();
+    console.log(secondRow);
+    if (secondRow === ''){
+        console.log('bla ---------------------------------')
+        $('#tinymce p:nth-child(2)').addValue(text2);
+    }else{
+        throw new Error('Row was not added')
+    }
+});
+// Notes editor
+Given(/^(.*) text is added on the third row of the note$/, {},(text3) =>{   
+    
+    browser.keys('Enter');
+
+    let thirdRow = $('#tinymce p:nth-child(3)').getText();
+    console.log(thirdRow);
+    if (thirdRow === ''){
+        console.log('bla ---------------------------------')
+        $('#tinymce p:nth-child(3)').addValue(text3);
+    }else{
+        throw new Error('Row was not added')
+    }
+});
+
+Given(/^added texts are selected$/, {},() =>{   
+    browser.keys(['Meta', 'a']);
+});
+
 

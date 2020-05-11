@@ -2,9 +2,11 @@ class NoteEditorCo {
 
     get component() { return $('//hn-note-editor'); }
 
-    get componentMenu() { return $('//div[@role="menu"]');}
+    get componentMenu() { return $('//div[@class="tox-menubar"]');}
 
-    get textHeadArea() { return $('#tinymce > h1');}
+    get toolbarMenu() {return $('//div[@class="tox-toolbar__primary"]');}
+
+    get textArea() { return $('#tinymce h1:first-child');}
 
     get statusBar() { return this.component.$('.//div[@class="tox-statusbar"]'); }
 
@@ -18,13 +20,90 @@ class NoteEditorCo {
 
     get editMenu() { return this.component.$('.//span[text()="Edit"]');} 
 
-    get undoBtnEditMenu() {return this.componentMenu.$('.//div[@title="Undo"]');}
+    get undoBtnEditMenu() {return this.componentMenu.$('//div[@title="Undo"]');}
 
     get undoBtnEditBar() {return this.component.$('.//button[@title="Undo"]');}
 
-    get redoBtnEditMenu() {return this.componentMenu.$('.//div[@title="Redo"]');}
+    get redoBtnEditMenu() {return this.componentMenu.$('//div[@title="Redo"]');}
 
     get redoBtnEditBar() {return this.component.$('.//button[@title="Redo"]');}
+
+    get boldBtnEditBar() {return this.component.$('.//button[@title="Bold"]');}
+
+    get copyBtnEditMenu() {return this.componentMenu.$('.//div[@title="Copy"]');}
+
+    get pasteBtnEditMenu() {return this.componentMenu.$('.//div[@title="Paste"]');}
+
+    get formatMenu() {return this.component.$('.//span[text()="Format"]');}
+
+    get underlineBtn() {return this.componentMenu.$('//div[@title="Underline"]')};
+
+    get superscriptBtn() {return this.componentMenu.$('//div[@title="Superscript"]')};
+
+    get codeBtn() {return this.componentMenu.$('//div[@title="Code"]')};
+
+    get formatingApplied() {return this.toolbarMenu.$('//span[@class="tox-tbtn__select-label"]');}
+
+    get helpBtn() { return this.component.$('.//span[text()="Help"]');}
+
+    get shorcutListBtn() { return $('//div[text()="Shortcut list"]');}
+
+    get shortcutListPrompt() { return $('//div[@class="tox-dialog"]');}
+
+    get numListBtn() {return this.component.$('.//button[@title="Numbered list"]');}
+
+    get bulletListBtn() {return this.component.$('.//button[@title="Bullet list"]');}
+
+    clickBulletListBtn(){
+        this.bulletListBtn.click();
+    }
+
+    clickNumListBtn() {
+        this.numListBtn.click()
+    }
+
+    shortcutListDisplayed(){
+        return this.shortcutListPrompt.isDisplayed();
+    }
+
+    clickShorcutListBtn(){
+        this.shorcutListBtn.click();
+    }
+
+    clickHelpBtn() {
+        this.helpBtn.click();
+    }
+
+    getFormatingApplied(){
+        return this.formatingApplied.getText();
+    }
+    clickCodeBtn(){
+        this.codeBtn.click()
+    }
+
+    clickSuperscriptBtn(){
+        this.superscriptBtn.click()
+    }
+
+    clickUnderlineBtn(){
+        this.underlineBtn.click()
+    }
+
+    clickFormatBtn(){
+        this.formatMenu.click();
+    }
+
+    clickBtnCopy(){
+        this.copyBtnEditMenu.click();
+    }
+
+    clickBtnPaste(){
+        this.pasteBtnEditMenu.click();
+    }
+
+    clickBoldBtn() {
+        this.boldBtnEditBar.click();
+    }
 
     clickRedoBtnEditBar(){
         this.redoBtnEditBar.click();
@@ -34,12 +113,12 @@ class NoteEditorCo {
         this.redoBtnEditMenu.click();
     }
 
-    deleteHeadAreaText(){
-        this.textHeadArea.clearValue();
+    deleteAreaText(){
+        this.textArea.clearValue();
     }
 
-    getHeadAreaText(){
-        return this.textHeadArea.getText();
+    getAreaText(){
+        return this.textArea.getText();
     }
     
     clickUndoBtnEditBar(){
@@ -54,8 +133,8 @@ class NoteEditorCo {
         this.editMenu.click();
     }
 
-    addHeadAreaText(anyText){
-        this.textHeadArea.addValue(anyText);
+    addAreaText(anyText){
+        this.textArea.addValue(anyText);
     }
 
     deleteNote(){
