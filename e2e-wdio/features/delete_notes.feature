@@ -24,7 +24,7 @@ Feature: Delete notes
         When the user deletes a note using the "Delete Note" button from File menu
         When the user clicks the "Cancel" button from notification prompt
         Then note is restored in notes list
-    #In progress
+    #Done
     Scenario: Timestamp not updated after cancelling delete action
         Given a new note is added
         When the user deletes a note using the "Delete Note" button from File menu

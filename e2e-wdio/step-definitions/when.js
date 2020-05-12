@@ -4,14 +4,12 @@ import HashNotesPage from '../page_objects/dashboard.page'
 //Create note feature
 When(/^the user deletes the note$/, {}, () => {
     HashNotesPage.getNoteEditor().openFileMenu();
-    browser.pause(1000)
     HashNotesPage.getNoteEditor().deleteNote()
 });
 //Create note feature
 When(/^the user creates a new note from the File menu inside the trash folder$/, {},() =>{
     HashNotesPage.getNoteSidebar().isTrashFolderLoad();
     HashNotesPage.getNoteEditor().openFileMenu();
-    browser.pause(2000)
     HashNotesPage.getNoteEditor().addNote();
 });
 //Create note feature
@@ -19,10 +17,8 @@ When(/^the user clicks the "New Note" button from (.*)$/,{}, (location) => {
     HashNotesPage.getNoteSidebar().newButtonDisplayed();
     if(location === "sidebar"){
             HashNotesPage.getNoteSidebar().addNewNoteSidebar();
-            browser.pause(2000);
     } else if(location === "file_menu") {
             HashNotesPage.getNoteEditor().openFileMenu();
-            browser.pause(2000);
             HashNotesPage.getNoteEditor().addNote();
     } else {
         throw new Error(`Invalid argument exception ${location}`)
@@ -32,12 +28,10 @@ When(/^the user clicks the "New Note" button from (.*)$/,{}, (location) => {
 When(/^the user clicks the "Trash Folder" button from sidebar$/, {}, () => {
     HashNotesPage.getNoteSidebar().isTrashButtonLoaded();
     HashNotesPage.getNoteSidebar().openTrashFolder();
-    browser.pause(2000);
 });
 //Access and exit trash folder feature
 When(/^the user clicks the "Back to notes" button$/, {}, () => {
     HashNotesPage.getNoteSidebar().backToNotes();
-    browser.pause(2000);
 });
 //Delete notes feature
 When(/^the user deletes a note using the "Delete Note" button from File menu$/, {},() =>{
@@ -72,7 +66,6 @@ When(/^the user clicks the "Delete Note" icon from (.*)$/, {},(location) =>{
             HashNotesPage.getNoteEditor().openFileMenu();
             HashNotesPage.getNoteEditor().deleteNote();
     } else if(location === "editor_menu") { 
-            browser.setWindowSize(1600, 1200)
             HashNotesPage.getNoteEditor().deleteNoteEditor();
     } else {
         throw new Error(`Invalid argument exception ${test}`)
@@ -84,7 +77,6 @@ When(/^the user deletes note using the "Delete Note" icon from editor menu$/, {}
     let numOfNotesBeforeDelete = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     browser.config.ScenarioCtx["numOfNotesBeforeDelete"] = numOfNotesBeforeDelete;
 
-    browser.setWindowSize(1600, 1200)
     HashNotesPage.getNoteEditor().deleteNoteEditor();
     //HashNotesPage.getPrompt().dismissBtnClick();
     browser.setTimeout({implicit: 2000});
@@ -108,7 +100,6 @@ When(/^the user clicks the "Undo" button from (.*)$/, {},(location) =>{
             HashNotesPage.getNoteEditor().clickEditBtn();
             HashNotesPage.getNoteEditor().clickUndoBtn();
     } else if(location === "edit_bar") { 
-            //browser.setWindowSize(1600, 1200)
             HashNotesPage.getNoteEditor().clickUndoBtnEditBar();
     } else {
         throw new Error('Button not found')
@@ -121,7 +112,6 @@ When(/^the user clicks the "Redo" button from (.*)$/, {},(location) =>{
             HashNotesPage.getNoteEditor().clickEditBtn();
             HashNotesPage.getNoteEditor().clickRedoBtn();
     } else if(location === "edit_bar") { 
-           // browser.setWindowSize(1600, 1200)
             HashNotesPage.getNoteEditor().clickRedoBtnEditBar();
     } else {
         throw new Error('Button not found')
@@ -172,8 +162,8 @@ When(/^the user selects the "Shortcut list" option from "Help" menu$/, {}, () =>
     HashNotesPage.getNoteEditor().clickHelpBtn();
     HashNotesPage.getNoteEditor().clickShorcutListBtn();
 });
-
-When(/^the user clicks on the (.*) button from editor menu/, {},(button) =>{
+// Notes editor
+When(/^the user clicks on the (.*) button from editor menu$/, {},(button) =>{
     browser.switchToFrame(null);
 
     if (button === 'numbered_list'){
@@ -183,7 +173,36 @@ When(/^the user clicks on the (.*) button from editor menu/, {},(button) =>{
     }else {
         throw new Error ('Text is not listed by any list type')
     }
-    browser.debug();
+});
+// Notes editor
+When(/^the user selects (.*) icon$/, {},(align) =>{
+    browser.switchToFrame(null)
+
+    if (align === 'align_right'){
+        HashNotesPage.getNoteEditor().clickAlignRightBtn();
+    }else if (align === 'justify'){
+        HashNotesPage.getNoteEditor().clickJustifyBtn();
+    }else if (align === 'align_center'){
+        HashNotesPage.getNoteEditor().clickAlignCenterBtn();
+    }else if (align === 'align_left'){
+        HashNotesPage.getNoteEditor().clickAlignLeftBtn();
+    }else{
+        throw new Error ('Text is misaligned')
+    }
+});
+// Notes editor
+When(/^the user selects the "Link" option from the "Insert" menu$/, {},() =>{
+    browser.switchToFrame(null)
+    HashNotesPage.getNoteEditor().clickInsertBtn();
+    HashNotesPage.getNoteEditor().clickLinkBtn();
+});
+// Notes editor
+When(/^the user adds the "google homepage" link to the "URL" field$/, {},() =>{
+    HashNotesPage.getNoteEditor().addUrl('https://www.google.com/');
+});
+// Notes editor
+When(/^the user clicks on the "Save" button/, {},() =>{
+    HashNotesPage.getNoteEditor().clickSaveLinkBtn();
 });
 
 When(/^User clicks on the search note field/, {},() =>{

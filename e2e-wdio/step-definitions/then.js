@@ -56,7 +56,6 @@ Then(/^a new note is added at the top of the notes list with updated timestamp$/
 });
 //Create note feature
 Then (/^the user is redirected to the notes list$/, {}, () => {
-    browser.pause(2000)
     HashNotesPage.getNoteSidebar().newButtonExists();
 });
 //Access and exit trash folder feature
@@ -65,7 +64,6 @@ Then (/^trash folder is accessed$/, {}, () => {
 });
 //Access and exit trash folder feature
 Then (/^Hashnotes main page is displayed$/, {}, () => {
-    browser.pause(2000)
     HashNotesPage.getNoteSidebar().newButtonExists();
 });
 //Delete notes feature
@@ -155,7 +153,7 @@ Then (/^timestamp of note is not updated$/, {}, () =>{
         throw new Error ('The timestamp of the note has changed')
     }
  });
-
+//Delete notes feature
  Then (/^note is permanently deleted$/, {}, () => {
     let numOfNotes = parseInt(HashNotesPage.getNoteSidebar().getNumberOfNotes());
 
@@ -267,8 +265,8 @@ Then (/^text format is changed to (.*)$/, {}, (format) =>{
             HashNotesPage.getNoteEditor().deleteAreaText();
 
             browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickFormatBtn();
-            HashNotesPage.getNoteEditor().clickUnderlineBtn();
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+
         }         
     }else if(format === 'Superscript'){
         browser.switchToFrame(switchFrame); 
@@ -283,8 +281,8 @@ Then (/^text format is changed to (.*)$/, {}, (format) =>{
             HashNotesPage.getNoteEditor().deleteAreaText();
 
             browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickFormatBtn();
-            HashNotesPage.getNoteEditor().clickSuperscriptBtn();
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+
         }      
     }else if(format === 'Code'){
         browser.switchToFrame(switchFrame); 
@@ -299,8 +297,8 @@ Then (/^text format is changed to (.*)$/, {}, (format) =>{
             HashNotesPage.getNoteEditor().deleteAreaText();
 
             browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickFormatBtn();
-            HashNotesPage.getNoteEditor().clickCodeBtn();
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+
         }  
     }else {
         throw new Error('Incorrect formatting')
@@ -316,9 +314,119 @@ Then (/^Shorcut list is displayed$/, {}, () => {
         throw new Error('Shortcut prompt not displayed');
         }
 });
+// Notes editor
+Then (/^texts are listed by (.*)$/, {}, (list) => {
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
 
-Then (/^texts are listed by (.*))$/, {}, (listType) => {
-    let numListDisplayed = 
+    if (list === 'numbered_list'){
+        let numListBtnState = HashNotesPage.getNoteEditor().isNumListBtnPressed();
+        if(numListBtnState === 'true'){
+            browser.switchToFrame(switchFrame); 
+            let textAsNumList = $$('#tinymce ol>li').length;
+            if (textAsNumList === 3){
+                browser.keys(['Meta', 'a']);
+                browser.keys('Backspace');
+                return true;
+            }else {
+                throw new Error ('Text is not listed a numbered list')
+            }
+        }else {
+            throw new Error ('The numbered list button is not pressed')
+        }
+    }else if ( list === 'bullet_list'){
+        let bulletListBtnState = HashNotesPage.getNoteEditor().isBulletListBtnPressed();
+        if(bulletListBtnState === 'true'){
+            browser.switchToFrame(switchFrame); 
+            let textAsNumList = $$('#tinymce ul>li').length;
+            if (textAsNumList === 3){
+                browser.keys(['Meta', 'a']);
+                browser.keys('Backspace');
+                return true;
+            }else {
+                throw new Error ('Text is not listed a bullet list')
+            }
+        }else {
+            throw new Error ('The bullet list button is not pressed')
+        }
+    }else {
+        throw new Error ('Text is not listed as neither list')
+    }
+});
+// Notes editor
+Then (/^text is align to the (.*)$/, {}, (position) => {
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame); 
+
+    let textPosition = HashNotesPage.getNoteEditor().textAlignment()
+    console.log(textPosition, '-------------------------')
+   if(position === 'right'){
+
+       if (textPosition === 'text-align: right;'){
+            browser.keys(['Meta', 'a']);
+            HashNotesPage.getNoteEditor().deleteAreaText();
+            browser.switchToFrame(null)
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+            return true
+       }else {
+           throw new Error('Text is not aligned correct')
+        }
+   }else if(position === 'justify'){
+
+       if(textPosition === 'text-align: justify;'){
+            browser.keys(['Meta', 'a']);
+            HashNotesPage.getNoteEditor().deleteAreaText();
+            browser.switchToFrame(null)
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+            return true
+       }else {
+            throw new Error('Text is not aligned correct')
+        }
+   }else if(position === 'center'){
+
+    if(textPosition === 'text-align: center;'){
+            browser.keys(['Meta', 'a']);
+            HashNotesPage.getNoteEditor().deleteAreaText();
+            browser.switchToFrame(null)
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+            return true
+       }else {
+            throw new Error('Text is not aligned correct')
+        }
+   }else if(position === 'left'){
+
+    if(textPosition === 'text-align: left;'){
+            browser.keys(['Meta', 'a']);    
+            HashNotesPage.getNoteEditor().deleteAreaText();
+            browser.switchToFrame(null)
+            HashNotesPage.getNoteEditor().clickBoldBtn();
+            return true
+       }else {
+            throw new Error('Text is not aligned correct')
+        }
+   }else{
+       throw new Error('Incorrect alignement of text')
+   }
+});
+// Notes editor
+Then (/^the "google homepage" is linked to the "linkText" text$/, {}, () => {
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let textAdded = HashNotesPage.getNoteEditor().getAreaText()
+    if(textAdded = 'linkText'){
+        let linkAdded = $('.//a[text()="linkText"]').getAttribute('href')
+        if(linkAdded === 'https://www.google.com/'){
+                browser.keys(['Meta', 'a']);
+                HashNotesPage.getNoteEditor().deleteAreaText();
+                browser.switchToFrame(null)
+                HashNotesPage.getNoteEditor().clickBoldBtn();
+                return true;
+        }else{
+            throw new Error('Link wasn\'t successfully added to the text')
+        }
+    }else{
+        throw new Error('Text wasn\'s added')
+    }
 });
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {

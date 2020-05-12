@@ -17,9 +17,8 @@ Given(/^there is only one note in the list$/, {}, () => {
     if (numOfNotes > 1){
         for(let i = 1; i < numOfNotes; i++ ){
             HashNotesPage.getNoteEditor().openFileMenu();
-            browser.pause(2000)
             HashNotesPage.getNoteEditor().deleteNote()
-            browser.pause(2000)
+            HashNotesPage.getPrompt().dismissBtnClick();
         }
     }
     
@@ -27,7 +26,6 @@ Given(/^there is only one note in the list$/, {}, () => {
 //Create note feature & //Access and exit trash folder feature
 Given(/^the trash folder is opened$/, {}, () => {
     HashNotesPage.getNoteSidebar().openTrashFolder();
-    browser.pause(2000);
 });
 //Delete notes feature
 Given(/^a new note is created$/, {}, () => {
@@ -121,22 +119,47 @@ Given(/^a new note is added in the trash folder$/, {}, () => {
 });
 // Notes editor
 Given(/^(.*) text is added to the note$/, {},(text) =>{  
-
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
-    
-    if (text === "Food"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
-    }else if (text === "How you ever been"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
-    }else if (text === "Hello there"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
-    }else if (text === "format"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
-    }else if (text === "random"){
-        HashNotesPage.getNoteEditor().addAreaText(text);
-    }else {
-        throw new Error('Something went wrong')
+
+    let  headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        if (text === "Food"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "How you ever been"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "Hello there"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "format"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "random"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else {
+            throw new Error('Something went wrong')
+        }
+    }else if (headingExists === 0){
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+        if (text === "Food"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "How you ever been"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "Hello there"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "format"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else if (text === "random"){
+            HashNotesPage.getNoteEditor().addAreaText(text);
+        }else {
+            throw new Error('Something went wrong')
+        }
+    }else{
+        throw new Error ('Something went wrong')
     }
 });
 // Notes editor
@@ -152,11 +175,10 @@ Given(/^(.*) text is removed from the note using the "Undo" button$/, {},(text) 
         throw new Error('Something went wrong')
     }
 });
-
+// Notes editor
 Given(/^text is selected$/, {},() =>{   
 
     browser.keys(['Meta', 'a']);
-
 });
 // Notes editor
 Given(/^(.*) text is added on the second row of the note$/, {},(text2) =>{   
@@ -186,9 +208,15 @@ Given(/^(.*) text is added on the third row of the note$/, {},(text3) =>{
         throw new Error('Row was not added')
     }
 });
-
+// Notes editor
 Given(/^added texts are selected$/, {},() =>{   
     browser.keys(['Meta', 'a']);
 });
+// Notes editor
+Given(/^"linkText" text is already added to the note$/, {},() =>{  
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame); 
 
+    HashNotesPage.getNoteEditor().addAreaText('linkText');
+});
 
