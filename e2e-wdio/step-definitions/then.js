@@ -2,6 +2,7 @@ import { Then } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page'
 import moment from 'moment';
 import { get } from 'http';
+import { connect } from 'http2';
 
 //Create note feature
 Then(/^a new note is created automatically with updated timestamp$/, {}, () => {
@@ -175,17 +176,6 @@ Then (/^note is restored in trash folder notes list$/, {}, () =>{
     }
 });
 // Notes editor
-Then (/^note is restored in trash folder notes list$/, {}, () =>{
-
-    let numOfNotesAfterCancel = HashNotesPage.getNoteSidebar().getNumberOfNotes();
-    let numOfNotesBeforeDelete = parseInt(browser.config.ScenarioCtx["numOfNotesBeforeDelete"], 10);
-    if (numOfNotesAfterCancel === (numOfNotesBeforeDelete)){
-        return true;
-    }else {
-        throw new Error('There is less than 2 or more than 2 notes')
-    }
-});
-// Notes editor
 Then (/^(.*) is removed$/, {}, (text) =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame);
@@ -206,11 +196,8 @@ Then (/^delete action of (.*) text is reverted$/, {}, (text) =>{
     let textArea = HashNotesPage.getNoteEditor().getAreaText();
     console.log(textArea);
     if (text === textArea){
-        HashNotesPage.getNoteEditor().deleteAreaText();
-        browser.switchToFrame(null)
-        // Added the click Bold button step here, since the clear value action from above is not
-        // fully completed, and in order to that a random action must be performed
-        HashNotesPage.getNoteEditor().clickBoldBtn();
+        browser.keys(['Meta','a']);
+        browser.keys('Backspace');
         return true;
     }else {
         throw new Error('The text is not reverted')
@@ -222,11 +209,7 @@ Then (/^(.*) is successfully pasted$/, {}, (text) =>{
     let textBeforeDelete = browser.config.ScenarioCtx['textBeforeDelete']
 
     if (textBeforeDelete === text){
-        HashNotesPage.getNoteEditor().deleteAreaText();
-        // Added the click Bold button step here, since the clear value action from above is not
-        // fully completed, and in order to that a random action must be performed
-        browser.switchToFrame(null)
-        HashNotesPage.getNoteEditor().clickBoldBtn();
+        browser.keys('Backspace');
         return true;
     }else {
         throw new Error('The text is not reverted')
@@ -237,68 +220,42 @@ Then (/^text format is changed to (.*)$/, {}, (format) =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
 
     if (format === 'Bold'){
-        browser.switchToFrame(switchFrame); 
-
-        browser.keys(['Meta','a']);
 
         browser.switchToFrame(null);
         let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
 
         if (formatApplied = "Bold"){
-            browser.switchToFrame(switchFrame); 
-            HashNotesPage.getNoteEditor().deleteAreaText();
-
-            browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickBoldBtn();
-            
+            browser.switchToFrame(switchFrame);
+            browser.keys('Backspace');
         }
     }else if(format === 'Underline'){
-        browser.switchToFrame(switchFrame); 
-
-        browser.keys(['Meta','a']);
 
         browser.switchToFrame(null);
         let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
 
         if (formatApplied = "Underline"){
             browser.switchToFrame(switchFrame); 
-            HashNotesPage.getNoteEditor().deleteAreaText();
-
-            browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.keys('Backspace');
 
         }         
     }else if(format === 'Superscript'){
-        browser.switchToFrame(switchFrame); 
-
-        browser.keys(['Meta','a']);
 
         browser.switchToFrame(null);
         let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
 
         if (formatApplied = "Superscript"){
-            browser.switchToFrame(switchFrame); 
-            HashNotesPage.getNoteEditor().deleteAreaText();
-
-            browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.switchToFrame(switchFrame);
+            browser.keys('Backspace');
 
         }      
     }else if(format === 'Code'){
-        browser.switchToFrame(switchFrame); 
-
-        browser.keys(['Meta','a']);
 
         browser.switchToFrame(null);
         let formatApplied = HashNotesPage.getNoteEditor().getFormatingApplied();
 
         if (formatApplied = "Code"){
             browser.switchToFrame(switchFrame); 
-            HashNotesPage.getNoteEditor().deleteAreaText();
-
-            browser.switchToFrame(null);
-            HashNotesPage.getNoteEditor().clickBoldBtn();
-
+            browser.keys('Backspace');
         }  
     }else {
         throw new Error('Incorrect formatting')
@@ -324,7 +281,6 @@ Then (/^texts are listed by (.*)$/, {}, (list) => {
             browser.switchToFrame(switchFrame); 
             let textAsNumList = $$('#tinymce ol>li').length;
             if (textAsNumList === 3){
-                browser.keys(['Meta', 'a']);
                 browser.keys('Backspace');
                 return true;
             }else {
@@ -339,7 +295,6 @@ Then (/^texts are listed by (.*)$/, {}, (list) => {
             browser.switchToFrame(switchFrame); 
             let textAsNumList = $$('#tinymce ul>li').length;
             if (textAsNumList === 3){
-                browser.keys(['Meta', 'a']);
                 browser.keys('Backspace');
                 return true;
             }else {
@@ -357,15 +312,12 @@ Then (/^text is align to the (.*)$/, {}, (position) => {
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
 
-    let textPosition = HashNotesPage.getNoteEditor().textAlignment()
+    let textPosition = HashNotesPage.getNoteEditor().textAttribute("style")
     console.log(textPosition, '-------------------------')
    if(position === 'right'){
 
        if (textPosition === 'text-align: right;'){
-            browser.keys(['Meta', 'a']);
-            HashNotesPage.getNoteEditor().deleteAreaText();
-            browser.switchToFrame(null)
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.keys('Backspace');
             return true
        }else {
            throw new Error('Text is not aligned correct')
@@ -373,10 +325,7 @@ Then (/^text is align to the (.*)$/, {}, (position) => {
    }else if(position === 'justify'){
 
        if(textPosition === 'text-align: justify;'){
-            browser.keys(['Meta', 'a']);
-            HashNotesPage.getNoteEditor().deleteAreaText();
-            browser.switchToFrame(null)
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.keys('Backspace');
             return true
        }else {
             throw new Error('Text is not aligned correct')
@@ -384,10 +333,7 @@ Then (/^text is align to the (.*)$/, {}, (position) => {
    }else if(position === 'center'){
 
     if(textPosition === 'text-align: center;'){
-            browser.keys(['Meta', 'a']);
-            HashNotesPage.getNoteEditor().deleteAreaText();
-            browser.switchToFrame(null)
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.keys('Backspace');
             return true
        }else {
             throw new Error('Text is not aligned correct')
@@ -395,10 +341,7 @@ Then (/^text is align to the (.*)$/, {}, (position) => {
    }else if(position === 'left'){
 
     if(textPosition === 'text-align: left;'){
-            browser.keys(['Meta', 'a']);    
-            HashNotesPage.getNoteEditor().deleteAreaText();
-            browser.switchToFrame(null)
-            HashNotesPage.getNoteEditor().clickBoldBtn();
+            browser.keys('Backspace');
             return true
        }else {
             throw new Error('Text is not aligned correct')
@@ -416,10 +359,7 @@ Then (/^the "google homepage" is linked to the "linkText" text$/, {}, () => {
     if(textAdded = 'linkText'){
         let linkAdded = $('.//a[text()="linkText"]').getAttribute('href')
         if(linkAdded === 'https://www.google.com/'){
-                browser.keys(['Meta', 'a']);
-                HashNotesPage.getNoteEditor().deleteAreaText();
-                browser.switchToFrame(null)
-                HashNotesPage.getNoteEditor().clickBoldBtn();
+                browser.keys('Backspace');
                 return true;
         }else{
             throw new Error('Link wasn\'t successfully added to the text')
@@ -427,6 +367,128 @@ Then (/^the "google homepage" is linked to the "linkText" text$/, {}, () => {
     }else{
         throw new Error('Text wasn\'s added')
     }
+});
+// Create tag summary
+Then (/^'#bla' tag is created$/, {}, () => {
+    let tagName = HashNotesPage.getNoteEditor().getAreaText()
+
+    if (tagName === '#bla'){
+        let tagCreated = $('//span[text()="#bla"]').getAttribute('class')
+        if (tagCreated === 'hashtag'){
+            return true
+        }else {
+            throw new Error('Tag was not created')
+        }
+    }else {
+        throw new Error('Tag name was not found')
+    }
+});
+// Create tag summary
+Then (/^displayed in the "Tag Summary" section$/, {}, () => {
+    browser.switchToFrame(null)
+    let tagSumDisplayed = HashNotesPage.getTagSidebar().isTagDisplayed();
+    console.log(tagSumDisplayed)
+    if (tagSumDisplayed === '#bla'){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else {
+        throw new Error('Tag is not displayed in Tag Summary');
+    }
+});
+// Create tag summary
+Then (/^tag is added once to "Tag Summary" with one bullet point$/, {}, () => {
+    browser.switchToFrame(null)
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+    if (numOfTags === 1 && numOfBullets === 1){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else {
+        throw new Error('There is more than 1 tag in the Tag Summary')
+    }
+});
+// Create tag summary
+Then (/^tag is added once to "Tag Summary" with two bullet points$/, {}, () => {
+    browser.switchToFrame(null)
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+    if (numOfTags === 1 && numOfBullets === 2){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else {
+        throw new Error('There is more than 1 tag in the Tag Summary')
+    }
+});
+// Create tag summary
+Then (/^"test" text is displayed only next to the second bullet$/, {}, () => {
+    browser.switchToFrame(null)
+    let textBullet;
+    let numOfBullets = $$('//div[@class="content"]').length;
+    let bulletPosition = $$('//div[@class="content"]');
+
+    for(let i = 0; i < numOfBullets; i++){
+        textBullet = bulletPosition[i].getText();    
+    }
+
+    if (textBullet === 'test'){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else{
+        throw new Error('Text is not displayed next second bullet')
+    }
+});
+// Create tag summary
+Then (/^three separate tags are created in the "Tag Summary" section$/, {}, () => {
+    browser.switchToFrame(null)
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
+
+    if (numOfTags === 3){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else {
+        throw new Error('The number of tags displayed in the Tag Summary is not 3')
+    }
+});
+
+Then (/^"test" text is displayed after each tag in the "Tag Summary" section$/, {}, () => {
+    browser.switchToFrame(null);
+    let tagName;
+    let textBullet
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum()
+    //let numOfBullets = $$('//div[@class="content"]').length;
+    ////div[@class="tag-container"
+    let tagPosition = $$('//hn-tag-sidebar//div[2]//div/span[1]');
+    let bulletPosition = $$('//div[@class="content"]');
+
+    for(let i = 0; i < numOfTags; i++){
+        tagName = tagPosition[i].getText();
+        textBullet = bulletPosition[i].getText();
+
+        if(tagName === '#1' && textBullet === 'test'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else if(tagName === '#2' && textBullet === 'test'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else if(tagName === '#3' && textBullet === 'test'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else if(tagName === '#4' && textBullet === 'test'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else if(tagName === '#5' && textBullet === 'test'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else{
+            throw new Error(`The text for tag ${tagName} is not correct  `)
+        }
+
+    }
+
+    browser.keys(['Meta', 'a']);
+    browser.keys('Backspace')
+    return true;
+
 });
 
 Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {

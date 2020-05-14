@@ -186,9 +186,7 @@ Given(/^(.*) text is added on the second row of the note$/, {},(text2) =>{
     browser.keys('Enter');
 
     let secondRow = $('#tinymce p:nth-child(2)').getText();
-    console.log(secondRow);
     if (secondRow === ''){
-        console.log('bla ---------------------------------')
         $('#tinymce p:nth-child(2)').addValue(text2);
     }else{
         throw new Error('Row was not added')
@@ -200,9 +198,7 @@ Given(/^(.*) text is added on the third row of the note$/, {},(text3) =>{
     browser.keys('Enter');
 
     let thirdRow = $('#tinymce p:nth-child(3)').getText();
-    console.log(thirdRow);
     if (thirdRow === ''){
-        console.log('bla ---------------------------------')
         $('#tinymce p:nth-child(3)').addValue(text3);
     }else{
         throw new Error('Row was not added')
@@ -217,6 +213,73 @@ Given(/^"linkText" text is already added to the note$/, {},() =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
 
-    HashNotesPage.getNoteEditor().addAreaText('linkText');
+    let  headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('linkText');
+    }else if (headingExists === 0){
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('linkText');
+    }else {
+        throw new Error('Something went wrong')
+    }
 });
+// Create tag summary
+Given(/^"#1" tag is created$/, {},() =>{  
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#1')
+    }else if (headingExists === 0) {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#1')
+    }else{
+        throw new Error ('Something went wrong')
+    }
+});
+// Create tag summary
+Given(/^"#1" tag is created on the next row$/, {},() =>{  
+    browser.keys('Enter');
+    
+    let secondRow = $('#tinymce p:nth-child(2)').getText();
+    if (secondRow === ''){
+        $('#tinymce p:nth-child(2)').addValue('#1');
+    }else{
+        throw new Error('Row was not added')
+    }
+});
+// Create tag summary
+Given(/^"#1#2#3#4#5" tags are created$/, {},() =>{  
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#1#2#3#4#5')
+    }else if (headingExists === 0) {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#1#2#3#4#5')
+    }else{
+        throw new Error ('Something went wrong')
+    }
+});
+
+
 

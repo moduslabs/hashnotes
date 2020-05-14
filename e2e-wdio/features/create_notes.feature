@@ -5,13 +5,6 @@ Feature: Create notes
     Background:
         Given the Hashnotes application is opened
 
-#    Scenario: Empty note is created in the Hashnotes page when accessed for the first time
-#        Then Empty note is created by default
-
-    # Scenario: Create new note
-    #     When the user clicks the "New Note" button
-    #     Then a new note is added at the top of the notes list with updated timestamp
-
     Scenario Outline: Create new note
         When the user clicks the "New Note" button from <location>
         Then a new note is added at the top of the notes list with updated timestamp
@@ -29,6 +22,3 @@ Feature: Create notes
         Given the trash folder is opened
         When the user creates a new note from the File menu inside the trash folder
         Then the user is redirected to the notes list
-
-
-        # When the user clicks the "New Note" button from the File menu

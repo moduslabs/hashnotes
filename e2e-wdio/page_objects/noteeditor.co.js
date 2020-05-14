@@ -94,8 +94,8 @@ class NoteEditorCo {
         this.insertBtn.click();
     }
 
-    textAlignment(){
-        return this.textArea.getAttribute("style")
+    textAttribute(attribute){
+        return this.textArea.getAttribute(attribute)
     }
 
     clickAlignLeftBtn(){

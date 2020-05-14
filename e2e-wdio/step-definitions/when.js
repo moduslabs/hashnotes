@@ -201,11 +201,100 @@ When(/^the user adds the "google homepage" link to the "URL" field$/, {},() =>{
     HashNotesPage.getNoteEditor().addUrl('https://www.google.com/');
 });
 // Notes editor
-When(/^the user clicks on the "Save" button/, {},() =>{
+When(/^the user clicks on the "Save" button$/, {},() =>{
     HashNotesPage.getNoteEditor().clickSaveLinkBtn();
 });
+// Create tag summary
+When(/^the user creates '#bla' tag$/, {},() =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
 
-When(/^User clicks on the search note field/, {},() =>{
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#bla');
+        browser.debug()
+    }else {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#bla');
+        browser.debug()
+    }
+});
+// Create tag summary
+When(/^the user creates the '#1234' tag twice on the same row$/, {},() =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#1234');
+        HashNotesPage.getNoteEditor().addAreaText('#1234');
+    }else {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#1234');
+        HashNotesPage.getNoteEditor().addAreaText('#1234');
+    }
+});
+// Create tag summary
+When(/^the user creates '#bla' tag on the following row$/, {},() =>{
+    browser.keys('Enter');
+    
+    let secondRow = $('#tinymce p:nth-child(2)').getText();
+    if (secondRow === ''){
+        $('#tinymce p:nth-child(2)').addValue('#bla');
+    }else{
+        throw new Error('Row was not added')
+    }
+});
+// Create tag summary
+When(/^the user adds "test" after second tag added$/, {},() =>{
+    
+    let secondRow = $('#tinymce p:nth-child(2)').getText();
+
+    if (secondRow === "#1"){
+        browser.keys('Space');
+        $('#tinymce p:nth-child(2)').addValue('test');
+    }else{
+        throw new Error('Row was not added')
+    }
+});
+// Create tag summary
+When(/^the user creates "#1214#abc#tag" tags$/, {},() =>{
+    
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#1214#abc#tag');
+    }else {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#1214#abc#tag');
+    }
+});
+// Create tag summary
+When(/^the user enter "test" text after tags in the text editor$/, {},() =>{
+    browser.keys('Space');
+    HashNotesPage.getNoteEditor().addAreaText('test')
+});
+When(/^User clicks on the search note field$/, {},() =>{
     HashNotesPage.getNoteSidebar().isSearchBarFocus();
 });
 
