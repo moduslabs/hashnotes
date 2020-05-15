@@ -3,7 +3,7 @@ import HashNotesPage from '../page_objects/dashboard.page';
 import moment from 'moment';
 import { connect } from 'http2';
 
-//Create note feature
+
 Given(/^the Hashnotes application is opened$/, {}, () => {
     HashNotesPage.open();
     browser.setWindowSize(1600, 1200)
@@ -279,6 +279,11 @@ Given(/^"#1#2#3#4#5" tags are created$/, {},() =>{
     }else{
         throw new Error ('Something went wrong')
     }
+});
+// Create tag summary
+Given(/^"random" text is added after "#1" tag$/, {},() =>{  
+   browser.keys('Space');
+   HashNotesPage.getNoteEditor().addAreaText('random')
 });
 
 

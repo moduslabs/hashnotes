@@ -78,6 +78,12 @@ class NoteEditorCo {
 
     get saveLinkBtn() {return this.insertLinkComponent.$('.//button[@title="Save"]')}
 
+    get tagCreated() {return this.textArea.$('//span[@class="hashtag"]');}
+
+    isTagCreated(){
+        return this.tagCreated.isExisting();
+    }
+
     clickSaveLinkBtn(){
         this.saveLinkBtn.click();
     }

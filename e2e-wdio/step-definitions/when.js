@@ -212,8 +212,7 @@ When(/^the user creates '#bla' tag$/, {},() =>{
     let headingExists = $$('#tinymce h1').length;
 
     if (headingExists === 1){
-        HashNotesPage.getNoteEditor().addAreaText('#bla');
-        browser.debug()
+        HashNotesPage.getNoteEditor().addAreaText('#bla');      
     }else {
         browser.switchToFrame(null)
         HashNotesPage.getNoteEditor().clickFormatDropDown();
@@ -221,8 +220,7 @@ When(/^the user creates '#bla' tag$/, {},() =>{
         HashNotesPage.getNoteEditor().clickheadingOneOpt();
 
         browser.switchToFrame(switchFrame);
-        HashNotesPage.getNoteEditor().addAreaText('#bla');
-        browser.debug()
+        HashNotesPage.getNoteEditor().addAreaText('#bla')
     }
 });
 // Create tag summary
@@ -294,8 +292,70 @@ When(/^the user enter "test" text after tags in the text editor$/, {},() =>{
     browser.keys('Space');
     HashNotesPage.getNoteEditor().addAreaText('test')
 });
-When(/^User clicks on the search note field$/, {},() =>{
-    HashNotesPage.getNoteSidebar().isSearchBarFocus();
+// Create tag summary
+When(/^the user clicks on "Space Bar" key$/, {},() =>{
+    browser.keys("Space")
+});
+// Create tag summary
+When(/^the user enters (.*) tag$/, {},(tag) =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        if (tag === '#%'){
+            HashNotesPage.getNoteEditor().addAreaText(tag);   
+        }else if (tag === '#@'){
+            HashNotesPage.getNoteEditor().addAreaText(tag);
+        }else if (tag === '#='){
+            HashNotesPage.getNoteEditor().addAreaText(tag);
+        }else {
+            throw new Error ('Neither of the tags match the criteria')
+        }
+           
+    }else {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+
+        browser.switchToFrame(switchFrame);
+
+        if (tag === '#%'){
+            HashNotesPage.getNoteEditor().addAreaText(tag);   
+        }else if (tag === '#@'){
+            HashNotesPage.getNoteEditor().addAreaText(tag);
+        }else if (tag === '#='){
+            HashNotesPage.getNoteEditor().addAreaText(tag);
+        }else {
+            throw new Error ('Neither of the tags match the criteria')
+        }
+    }
+});
+// Create tag summary
+When(/^the user clicks on "Enter" key$/, {},() =>{
+    browser.keys("Enter");
+});
+// Create tag summary
+When(/^the user adds a "#first" tag after text$/, {},() =>{
+    browser.keys("Space");
+    HashNotesPage.getNoteEditor().addAreaText('#first')
+});
+// Create tag summary
+When(/^the user adds "#2" tag after the "random" text$/, {},() =>{
+    HashNotesPage.getNoteEditor().addAreaText('#2')
+});
+// Create tag summary
+When(/^the user adds "automation" text on different row than the tag$/, {},() =>{
+    browser.keys('Enter');
+
+    let secondRow = $('#tinymce p:nth-child(2)').getText();
+    if (secondRow === ''){
+        $('#tinymce p:nth-child(2)').addValue('automation');
+    }else{
+        throw new Error('Row was not added')
+    }
 });
 
 

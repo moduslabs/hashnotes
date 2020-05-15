@@ -6,7 +6,8 @@ class TagSidebarCo {
 
     get numOfTags() {return this.component.$$('//div[@class="tag-container"]');}
 
-    get numOfBullets() {return this.component.$$('.tag-container ul');}
+    get numOfBullets() {return this.component.$$('//div[@class="content"]');}
+
 
     numOfBulletsSum(){
         return this.numOfBullets.length;

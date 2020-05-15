@@ -16,7 +16,7 @@ Feature: Edit tags in note
         Then tag is removed in the "Tag Summary" section
 
     Scenario: Bullet point is removed
-        Given the initial tag is copied on 2 more rows
-        When User deletes the tag from one of the rows
-        Then Only two bullet points are displayed
+        Given the initial tag is copied on the next 2  rows
+        When the yser deletes the tag from one of the rows
+        Then only two bullet points are displayed in the "Tag Summary" section
 

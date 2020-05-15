@@ -426,7 +426,7 @@ Then (/^tag is added once to "Tag Summary" with two bullet points$/, {}, () => {
 Then (/^"test" text is displayed only next to the second bullet$/, {}, () => {
     browser.switchToFrame(null)
     let textBullet;
-    let numOfBullets = $$('//div[@class="content"]').length;
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
     let bulletPosition = $$('//div[@class="content"]');
 
     for(let i = 0; i < numOfBullets; i++){
@@ -454,14 +454,12 @@ Then (/^three separate tags are created in the "Tag Summary" section$/, {}, () =
         throw new Error('The number of tags displayed in the Tag Summary is not 3')
     }
 });
-
+// Create tag summary
 Then (/^"test" text is displayed after each tag in the "Tag Summary" section$/, {}, () => {
     browser.switchToFrame(null);
     let tagName;
     let textBullet
     let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum()
-    //let numOfBullets = $$('//div[@class="content"]').length;
-    ////div[@class="tag-container"
     let tagPosition = $$('//hn-tag-sidebar//div[2]//div/span[1]');
     let bulletPosition = $$('//div[@class="content"]');
 
@@ -490,16 +488,105 @@ Then (/^"test" text is displayed after each tag in the "Tag Summary" section$/, 
     return true;
 
 });
+// Create tag summary
+Then (/^"#tag" is created automatically with no space$/, {}, () => {
+    browser.switchToFrame(null);
+    let hashTagName = HashNotesPage.getTagSidebar().isTagDisplayed();
 
-Then (/^User types (Note|Lorem)$/, {}, (searchCriteria) => {
-    switch (searchCriteria) {
-        case 'Note':
-            HashNotesPage.getNoteSidebar().setSearchBar("Note");
-            break;
-        case 'Lorem':
-            HashNotesPage.getNoteSidebar().setSearchBar("Lorem");
-            break;
-        default:
-            break;
+    let splitHashtag = hashTagName.split("")
+    for (let i = 0; i < splitHashtag.length; i++){
+        if (splitHashtag[i] !== ""){
+            browser.keys(['Meta', 'a']);
+            browser.keys('Backspace')
+            return true;
+        }else {
+            throw new Error("Tag contains a space");
+        }
     }
+
+});
+// Create tag summary
+Then (/^(.*) tag is not created$/, {}, (tag) => {
+
+    let tagExists = HashNotesPage.getNoteEditor().isTagCreated()
+    let textAdded = HashNotesPage.getNoteEditor().getAreaText()
+    if (tag === textAdded && tagExists === false){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace');
+        return true;
+    }else {
+        throw new Error ('Tag is created using special characters')
+    }
+
+
+});
+// Create tag summary
+Then (/^text is displayed in "Tag Summary" next to the bullet point$/, {}, () => {
+    browser.switchToFrame(null)
+    let textBullet;
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+    let bulletPosition = $$('//div[@class="content"]');
+
+    for(let i = 0; i < numOfBullets; i++){
+        textBullet = bulletPosition[i].getText();    
+    }
+
+    if (textBullet === 'linkText'){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+        return true;
+    }else{
+        throw new Error('Text is not displayed next second bullet')
+    }
+
+});
+// Create tag summary
+Then (/^text is displayed after the bullet points of each tag in "Tag Summary"$/, {}, () => {
+    browser.switchToFrame(null);
+    let tagName;
+    let textBullet
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum()
+    let tagPosition = $$('//hn-tag-sidebar//div[2]//div/span[1]');
+    let bulletPosition = $$('//div[@class="content"]');
+
+    for(let i = 0; i < numOfTags; i++){
+        tagName = tagPosition[i].getText();
+        textBullet = bulletPosition[i].getText();
+
+        if(tagName === '#1' && textBullet === 'random'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else if(tagName === '#2' && textBullet === 'random'){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else{
+            throw new Error(`The text for tag ${tagName} is not correct  `)
+        }
+    }
+
+    browser.keys(['Meta', 'a']);
+    browser.keys('Backspace')
+    return true;
+});
+// Create tag summary
+Then (/^text is not displayed in "Tag Summary" next to the bullet of tag "#1"$/, {}, () => {
+    browser.switchToFrame(null);
+    let tagName;
+    let textBullet
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum()
+    let tagPosition = $$('//hn-tag-sidebar//div[2]//div/span[1]');
+    let bulletPosition = $$('//div[@class="content"]');
+
+    for(let i = 0; i < numOfTags; i++){
+        tagName = tagPosition[i].getText();
+        textBullet = bulletPosition[i].getText();
+
+        if(tagName === '#1' && textBullet === ''){
+            console.log(`Tag name:${tagName} and bullet value:${textBullet}`)
+        }else{
+            throw new Error(`The text for tag ${tagName} is not correct  `)
+        }
+    }
+
+    browser.keys(['Meta', 'a']);
+    browser.keys('Backspace')
+    return true;
 });
