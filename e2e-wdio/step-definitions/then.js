@@ -590,3 +590,40 @@ Then (/^text is not displayed in "Tag Summary" next to the bullet of tag "#1"$/,
     browser.keys('Backspace')
     return true;
 });
+// Edit tag summary
+Then (/^tag is updated in the "Tag Summary" section$/, {}, () => {
+    let initTagSummary = browser.config.ScenarioCtx["initTagSummary"];
+    let editTagSummary = browser.config.ScenarioCtx["editTagSummary"];
+
+    if (initTagSummary !== editTagSummary && editTagSummary === "#testEdit"){
+        console.log(editTagSummary);
+        browser.keys(['Meta','a']);
+        browser.keys('Backspace');
+    }else {
+        throw new Error ('Tag was not updated');
+    }
+});
+// Edit tag summary
+Then (/^tag is removed in the "Tag Summary" section$/, {}, () => {
+    let tagCreated = browser.config.ScenarioCtx["tagCreated"];
+
+    let tagExists = HashNotesPage.getNoteEditor().getAreaText();
+    console.log(tagExists);
+
+    if (tagCreated !== tagExists && tagExists === ''){
+        console.log(tagExists);
+    }else {
+        throw new Error('Tag is not removed from the "Tag Summary" section')
+    }
+});
+// Edit tag summary
+Then (/^only two bullet points are displayed in the "Tag Summary" section$/, {}, () => {
+    browser.switchToFrame(null)
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+
+    if (numOfBullets === 2){
+        return true;
+    }else {
+        throw new Error('There are more than two bullet present in the "Tag Summary" section');
+    }
+});

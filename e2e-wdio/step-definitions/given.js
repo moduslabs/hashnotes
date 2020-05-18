@@ -285,6 +285,36 @@ Given(/^"random" text is added after "#1" tag$/, {},() =>{
    browser.keys('Space');
    HashNotesPage.getNoteEditor().addAreaText('random')
 });
+// Edit tag summary
+Given(/^the user has a note which contains a tag$/, {},() =>{  
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText('#testTag')
+    }else if (headingExists === 0) {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText('#testTag')
+    }else{
+        throw new Error ('Something went wrong')
+    }
+    
+ });
+// Edit tag summary
+ Given(/^the initial tag is copied on the next 2 rows$/, {},() =>{  
+    let initialTag = HashNotesPage .getNoteEditor().getAreaText()
+
+    for (let i = 2; i <= 3; i++){
+        browser.keys('Enter');
+        $(`#tinymce p:nth-child(${i})`).addValue(initialTag);
+    }
+ });
 
 
 

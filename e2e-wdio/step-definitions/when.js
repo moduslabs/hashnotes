@@ -357,6 +357,82 @@ When(/^the user adds "automation" text on different row than the tag$/, {},() =>
         throw new Error('Row was not added')
     }
 });
+// Edit tag summary
+When(/^the user updates the tag$/, {},() =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    
+    browser.switchToFrame(null);
+    let initTagSummary = HashNotesPage.getTagSidebar().isTagDisplayed();
+    browser.config.ScenarioCtx["initTagSummary"] = initTagSummary;
+    
+    let editTagSummary = initTagSummary.replace(/Tag/g, 'Edit');
+    browser.config.ScenarioCtx["editTagSummary"] = editTagSummary;
+
+    browser.switchToFrame(switchFrame);
+    browser.keys(['Meta', 'a']);
+    browser.keys('Backspace');
+
+    let headingExists = $$('#tinymce h1').length;
+
+    if (headingExists === 1){
+        HashNotesPage.getNoteEditor().addAreaText(editTagSummary);
+    }else if (headingExists === 0) {
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteEditor().clickFormatDropDown();
+        HashNotesPage.getNoteEditor().clickHeadingOpt()
+        HashNotesPage.getNoteEditor().clickheadingOneOpt();
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText(editTagSummary);
+    }else{
+        throw new Error ('Something went wrong')
+    }
+
+});
+// Edit tag summary
+When(/^the user deletes the tag$/, {},() =>{
+    let tagCreated = HashNotesPage.getNoteEditor().getAreaText();
+    browser.config.ScenarioCtx["tagCreated"] = tagCreated;
+    if(tagCreated){
+        browser.keys(['Meta', 'a']);
+        browser.keys('Backspace')
+    }else {
+        throw new Error ('Tag does not exist')
+    }
+
+});
+// Edit tag summary
+When(/^the user deletes the tag from one of the rows$/, {},() =>{
+    browser.switchToFrame(null)
+    let numOfBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+    
+    if (numOfBullets === 3){
+        let deleteBullets = Math.floor(Math.random() * 2);
+        
+        if (deleteBullets === 0){
+
+            let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]');
+            browser.switchToFrame(switchFrame);
+
+            HashNotesPage.getNoteEditor().deleteAreaText();
+
+            browser.keys('Enter')
+
+        }else if (deleteBullets === 1){
+
+            let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]');
+            let randomBullet = Math.floor((Math.random() * 2) + 2);
+
+            browser.switchToFrame(switchFrame);
+            
+            $(`#tinymce p:nth-child(${randomBullet})`).clearValue();
+
+            browser.keys('Enter');
+        }else {
+            throw new Error('Unable to delete of the tags')
+        }
+    }
+
+});
 
 
 
