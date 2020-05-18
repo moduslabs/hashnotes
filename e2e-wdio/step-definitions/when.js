@@ -359,7 +359,7 @@ When(/^the user adds "automation" text on different row than the tag$/, {},() =>
 });
 // Edit tag summary
 When(/^the user updates the tag$/, {},() =>{
-    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+
     
     browser.switchToFrame(null);
     let initTagSummary = HashNotesPage.getTagSidebar().isTagDisplayed();
@@ -367,7 +367,8 @@ When(/^the user updates the tag$/, {},() =>{
     
     let editTagSummary = initTagSummary.replace(/Tag/g, 'Edit');
     browser.config.ScenarioCtx["editTagSummary"] = editTagSummary;
-
+    
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]');
     browser.switchToFrame(switchFrame);
     browser.keys(['Meta', 'a']);
     browser.keys('Backspace');
