@@ -367,7 +367,7 @@ When(/^the user updates the tag$/, {},() =>{
     
     let editTagSummary = initTagSummary.replace(/Tag/g, 'Edit');
     browser.config.ScenarioCtx["editTagSummary"] = editTagSummary;
-    
+
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]');
     browser.switchToFrame(switchFrame);
     browser.keys(['Meta', 'a']);
@@ -434,7 +434,25 @@ When(/^the user deletes the tag from one of the rows$/, {},() =>{
     }
 
 });
+ // Search notes list
+When(/^the user searches for a note with (.*) text$/, {},(text) =>{
+    browser.switchToFrame(null);
+    HashNotesPage.getNoteSidebar().searchText(text);
 
+});
+ // Search notes list
+When(/^the user searches for "home" text$/, {},() =>{
+    browser.switchToFrame(null);
+    HashNotesPage.getNoteSidebar().searchText("home");
 
+});
+// Search notes trash folder
+When(/^the user searches for the note with (.*) text in the "Trash Folder"$/, {},(text) =>{
+    HashNotesPage.getNoteSidebar().openTrashFolder();
+    HashNotesPage.getNoteSidebar().isTrashFolderLoad();
+
+    HashNotesPage.getNoteSidebar().searchText(text);
+    
+});
 
 

@@ -5,29 +5,22 @@ Feature: Search for notes in thrash folder
 
     Background:
         Given the Hashnotes application is opened
-
+    #Done
     Scenario Outline: Search for note
-        Given a note containing <text> exists in "Trash Folder"
-        Given the user has accessed the "Trash Folder"
-        When the user searches for <text>
+        Given several notes with random text are in the "Trash Folder"
+        Given a note containing <text> text is added in the "Trash Folder"
+        When the user searches for the note with <text> text in the "Trash Folder"
         Then note with <text> is found
         Examples:
-            | text                 |
-            | bla                  |
-            | 1234                 |
-            | !@#$%^&*()_+}{":<>?  |
-            | @!%$#^%$& test 12425 |
-
-    Scenario Outline: Search for non existent note
-        Given the "Trash Folder" is accessed
-        When the user searches for <text>
+            | text  |
+            | bla   |
+            | 1234  |
+            | #tag |
+    #Done
+    Scenario: Search for non existent note
+        Given the trash folder is opened
+        When the user searches for "home" text
         Then error message is displayed
-        Examples:
-            | text            |
-            | test            |
-            | 51251           |
-            | #&*$%848        |
-            | test 336 ^#$&*( |
 
 
 

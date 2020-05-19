@@ -315,6 +315,57 @@ Given(/^the user has a note which contains a tag$/, {},() =>{
         $(`#tinymce p:nth-child(${i})`).addValue(initialTag);
     }
  });
+ // Search notes list
+ Given(/^several notes are created with random text$/, {},() =>{ 
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
 
+    HashNotesPage.getNoteSidebar().newButtonDisplayed();
+    let textWords = ['test','random', 'word', 'simple', 'another', 'word']
 
+    for (let  i = 0; i < 4; i++){
+        let randomWord = textWords[Math.floor(Math.random() * textWords.length)]
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText(randomWord);
 
+        browser.switchToFrame(null);
+        HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+    }
+ });
+ // Search notes list
+ Given(/^a note containing text (.*) is created$/, {},(text) =>{ 
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+    HashNotesPage.getNoteEditor().addAreaText(text);
+ });
+// Search notes trash folder
+ Given(/^several notes with random text are in the "Trash Folder"$/, {},() =>{ 
+    
+
+    HashNotesPage.getNoteSidebar().newButtonDisplayed();
+    let textWords = ['test','random', 'word', 'simple', 'another', 'word']
+
+    for (let  i = 0; i < 4; i++){
+        let randomWord = textWords[Math.floor(Math.random() * textWords.length)]
+
+        let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+        browser.switchToFrame(switchFrame);
+
+        HashNotesPage.getNoteEditor().addAreaText(randomWord);
+
+        browser.switchToFrame(null);
+        HashNotesPage.getNoteEditor().deleteNoteEditor();
+
+    }
+
+});
+// Search notes trash folder
+Given(/^a note containing (.*) text is added in the "Trash Folder"$/, {},(text) =>{ 
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    HashNotesPage.getNoteEditor().addAreaText(text)
+
+    browser.switchToFrame(null);
+    HashNotesPage.getNoteEditor().deleteNoteEditor();
+
+});

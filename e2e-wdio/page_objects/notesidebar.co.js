@@ -21,6 +21,22 @@ class NoteSidebarCo {
         return $$('//hn-note-list//ion-list/ion-item');
     }
 
+    get textOfSearchedNote() { return $('//div[@class="listItemTitle"]');}
+
+    get errorMessage() { return this.component.$('//p[@class="no-matching-notes"]')}
+
+    isErrorDisplayed () {
+        return this.errorMessage.getText();
+    }
+
+    textSearchedNote() {
+       return this.textOfSearchedNote.getText()
+    }
+
+    searchText(search){
+        this.searchBar.addValue(search);
+    }
+
     selectNote(){
         this.lastNoteAdded.click();
     }
@@ -74,10 +90,6 @@ class NoteSidebarCo {
 
     backToNotes(){
         this.backToNotesButton.click();
-    }
-
-    setSearchBar(searchCriteriaVal) {
-        this.searchBar.val = searchCriteriaVal
     }
 
     isTrashButtonLoaded(){

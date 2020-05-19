@@ -6,7 +6,7 @@ Feature: Scroll bar is displayed
 
     Background:
         Given the Hashnotes application is opened
-        Given the user has selected a note containing text on different rows
+        Given the user has a note containing text on different rows
 
     Scenario: Scroll bar displayed for notes list
         When the user changes the viewport of the Hashnotes page until the note details don't fit the screen

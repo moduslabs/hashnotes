@@ -627,3 +627,39 @@ Then (/^only two bullet points are displayed in the "Tag Summary" section$/, {},
         throw new Error('There are more than two bullet present in the "Tag Summary" section');
     }
 });
+ // Search notes list
+Then (/^only the note with (.*) text is found$/, {}, (text) => {
+    browser.pause(1000);
+    let numOfNotes = parseInt(HashNotesPage.getNoteSidebar().getNumberOfNotes());
+    let searchedNote = HashNotesPage.getNoteSidebar().textSearchedNote();
+
+    if (numOfNotes === 1 && searchedNote === text){
+        return true;
+    }else {
+        throw new Error("The note with 'bla' text is not found")
+    }
+});
+ // Search notes list
+Then (/^error message is displayed$/, {}, () => {
+    browser.pause(1000);
+    let errorMessageDisplayed = HashNotesPage.getNoteSidebar().isErrorDisplayed()
+    console.log(errorMessageDisplayed);
+    if (errorMessageDisplayed === "We didn't find any notes that match your search."){
+        return true;
+    }else {
+        throw new Error ("Error message is not displayed");
+    }
+});
+// Search notes trash folder
+Then (/^note with (.*) is found$/, {}, (text) => {
+    browser.pause(1000);
+    let numOfNotes = parseInt(HashNotesPage.getNoteSidebar().getNumberOfNotes());
+    let searchedNote = HashNotesPage.getNoteSidebar().textSearchedNote();
+
+    if (numOfNotes === 1 && searchedNote === text){
+        return true;
+    }else {
+        throw new Error(`The note with ${text} text is not found`)
+    }
+});
+
