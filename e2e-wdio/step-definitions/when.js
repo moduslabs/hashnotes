@@ -1,5 +1,6 @@
 import { When } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page'
+import { connect } from 'http2';
 
 //Create note feature
 When(/^the user deletes the note$/, {}, () => {
@@ -454,5 +455,22 @@ When(/^the user searches for the note with (.*) text in the "Trash Folder"$/, {}
     HashNotesPage.getNoteSidebar().searchText(text);
     
 });
+
+When(/^the user selects the first note added$/, {},() =>{
+
+let listBeforeScroll = HashNotesPage.getNoteSidebar().listOnYAxis();
+browser.config.ScenarioCtx["listBeforeScroll"] = listBeforeScroll;
+
+let listSize = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+let firstNoteDisplayed = HashNotesPage.getNoteSidebar().displayedInViewPort(listSize);
+
+if (firstNoteDisplayed === false){
+    HashNotesPage.getNoteSidebar().scrollIntoViewNote(listSize);
+}else {
+    throw new Error ('Note is already displayed in view port')
+}
+    
+});
+
 
 

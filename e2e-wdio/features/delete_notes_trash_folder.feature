@@ -23,7 +23,7 @@ Feature: Delete notes from trash folder
         When the user deletes note using the "Delete Note" icon from editor menu
         When the user clicks the "Dismiss" button from notification prompt
         Then note is permanently deleted
-
+    #Done
     Scenario: Permanently delete note action is cancelled
         Given a new note is added in the trash folder
         When the user deletes note using the "Delete Note" icon from editor menu

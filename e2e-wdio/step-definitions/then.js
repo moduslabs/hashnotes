@@ -663,3 +663,31 @@ Then (/^note with (.*) is found$/, {}, (text) => {
     }
 });
 
+Then (/^note displayed view port$/, {}, () => {
+    let listSize = HashNotesPage.getNoteSidebar().getNumberOfNotes();
+
+    let firstNoteDisplayed = HashNotesPage.getNoteSidebar().displayedInViewPort(listSize);
+    if(firstNoteDisplayed === true){
+        return true
+    }else {
+        throw new Error('Note is not displayed in view port')
+    }
+
+});
+
+Then (/^list note is scrollable$/, {}, () => {
+    let listBeforeScroll = browser.config.ScenarioCtx["listBeforeScroll"];
+
+    let listAfterScroll = HashNotesPage.getNoteSidebar().listOnYAxis();
+
+    let lastNoteDisplayed = HashNotesPage.getNoteSidebar().displayedInViewPort(1);
+
+    if (listBeforeScroll !== listAfterScroll && lastNoteDisplayed === false){
+        return true;
+    }else {
+        throw new Error('List note is not scrollable')
+    }
+
+});
+
+

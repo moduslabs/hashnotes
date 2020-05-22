@@ -369,3 +369,40 @@ Given(/^a note containing (.*) text is added in the "Trash Folder"$/, {},(text) 
     HashNotesPage.getNoteEditor().deleteNoteEditor();
 
 });
+Given(/^"test" text is added after "#1" tag$/, {},() =>{ 
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+
+    HashNotesPage.getNoteEditor().addAreaText('#1')
+    browser.keys('Space')
+    HashNotesPage.getNoteEditor().addAreaText('test')
+});
+// Viewport changes
+Given(/^there are several notes added$/, {},() =>{ 
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+
+    HashNotesPage.getNoteSidebar().newButtonDisplayed();
+
+    for (let  i = 0; i < 6; i++){
+        // Scroll bar is displayed in full screen(screen size 1920 * 1080) only if seven notes are added. 
+        browser.switchToFrame(switchFrame);
+        HashNotesPage.getNoteEditor().addAreaText(`Note ${i}`)
+
+        browser.switchToFrame(null)
+        HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+
+    }
+});
+// Viewport changes
+Given(/^there is a note with text added on multiple rows$/, {},() =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+    HashNotesPage.getNoteEditor().addAreaText('#bla');
+    browser.keys('Enter');
+
+    
+    HashNotesPage.getNoteEditor().addParagraf(2, 'bla')
+
+    browser.debug()
+});
+

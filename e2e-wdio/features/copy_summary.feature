@@ -5,18 +5,12 @@ Feature: Copy tag summary content
 
     Background:
         Given the Hashnotes application is opened
-        Given the user has a note selected
 
-    Scenario Outline: Copy of "Tag Summary" section content
-        Given <tag> tag is created with <text> text
-        When the user clicks the "Copy" button
-        When the users creates a new note
-        When the users uses the paste command
-        Then the values are successfully inserted in the new note
-        Examples:
-            | tag  | text   |
-            | #1   | test   |
-            | #bla | random |
+    Scenario: Copy of "Tag Summary" section content
+        Given "test" text is added after "#1" tag
+        Given the "Copy" button from "Tag Summary" is clicked
+        When the users uses the paste command in a new note
+        Then the values copied are successfully inserted in the new note
 
 
 

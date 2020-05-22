@@ -80,6 +80,10 @@ class NoteEditorCo {
 
     get tagCreated() {return this.textArea.$('//span[@class="hashtag"]');}
 
+    addParagraf(row, text ){
+        $(`#tinymce p:nth-child(${row})`).addValue(text)
+    }
+
     isTagCreated(){
         return this.tagCreated.isExisting();
     }

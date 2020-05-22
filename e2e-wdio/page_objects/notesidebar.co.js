@@ -25,6 +25,19 @@ class NoteSidebarCo {
 
     get errorMessage() { return this.component.$('//p[@class="no-matching-notes"]')}
 
+    get listLocOnYAxis() {return $('//div[@class="note-list"]/ion-list');}
+
+    displayedInViewPort(note) {
+        return $(`ion-item:nth-child(${note})`).isDisplayedInViewport();
+    }
+    scrollIntoViewNote(test) {
+        $(`ion-item:nth-child(${test})`).scrollIntoView();
+    }
+
+    listOnYAxis(){
+        return this.listLocOnYAxis.getLocation('y')
+    }
+
     isErrorDisplayed () {
         return this.errorMessage.getText();
     }

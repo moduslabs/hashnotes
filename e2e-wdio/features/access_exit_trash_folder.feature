@@ -5,11 +5,11 @@ Feature: Access and exit trash folder
 
     Background:
         Given the Hashnotes application is opened
-
+    #Done   
     Scenario: Trash folder is accessed
         When the user clicks the "Trash Folder" button from sidebar
         Then trash folder is accessed
-
+    #Done
     Scenario: Trash folder is exited
         Given the trash folder is opened
         When the user clicks the "Back to notes" button
