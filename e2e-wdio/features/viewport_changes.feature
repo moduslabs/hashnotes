@@ -10,15 +10,18 @@ Feature: Scroll bar is displayed
     Scenario: List note is scrollable
         Given there are several notes added
         When the user selects the first note added
-        Then note displayed view port
+        Then note displayed viewport
         Then list note is scrollable
 
-    Scenario: Scroll bar displayed for text editor
+    Scenario: Text area is scrollable      
         Given there is a note with text added on multiple rows
-        When the user changes the viewport of the Hashnotes page until the text does not fit the screen of the text editor
-        Then 
+        When the user selects the first row of the note which is not displayed in viewport
+        Then first row is displayed in viewport
+        Then text area is scrollable
 
-    # Scenario: Scroll bar displayed for "Tag Summary"
-    #     Given there is a note with tags are added on different rows
-    #     When the user changes the viewport of the Hashnotes page until the tags don't fit the screen
-    #     Then 
+    Scenario: Tag Summary is scrollable
+        Given ther is a note with different tags added on multiple rows
+        When the user selects the last tag added which is not displayed in viewport
+        Then tag is displayed in viewport
+        Then "Tag Summary" is scrollable
+

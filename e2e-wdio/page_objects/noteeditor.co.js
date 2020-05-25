@@ -80,6 +80,26 @@ class NoteEditorCo {
 
     get tagCreated() {return this.textArea.$('//span[@class="hashtag"]');}
 
+    get textLocOnYAxis () {return $('//body[@id="tinymce"]')}
+
+    get numberOfParagrafs() {return $$('//body[@id="tinymce"]/p');}
+
+    paragrafInViewPort(parag){
+        return $(`#tinymce p:nth-child(${parag})`).isDisplayedInViewport()
+    }
+
+    numOfParagrafs(){
+        return this.numberOfParagrafs.length;
+    }
+
+    scrollIntoViewFirstRow(){
+        this.textArea.scrollIntoView()
+    }
+
+    headingInViewPort(){
+        return this.textArea.isDisplayedInViewport()
+    }
+
     addParagraf(row, text ){
         $(`#tinymce p:nth-child(${row})`).addValue(text)
     }

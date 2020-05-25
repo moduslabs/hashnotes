@@ -455,7 +455,7 @@ When(/^the user searches for the note with (.*) text in the "Trash Folder"$/, {}
     HashNotesPage.getNoteSidebar().searchText(text);
     
 });
-
+// Viewport changes
 When(/^the user selects the first note added$/, {},() =>{
 
 let listBeforeScroll = HashNotesPage.getNoteSidebar().listOnYAxis();
@@ -469,7 +469,28 @@ if (firstNoteDisplayed === false){
 }else {
     throw new Error ('Note is already displayed in view port')
 }
-    
+
+});
+// Viewport changes
+When(/^the user selects the first row of the note which is not displayed in viewport$/, {},() =>{
+    let headingInViewPort = HashNotesPage.getNoteEditor().headingInViewPort()
+    if (headingInViewPort === false){
+        HashNotesPage.getNoteEditor().scrollIntoViewFirstRow()
+    }else {
+        throw new Error('First row is already displayed in view port')
+    }
+        
+});
+
+When(/^the user selects the last tag added which is not displayed in viewport$/, {},() =>{
+    browser.switchToFrame(null);
+
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
+    let tagListBeforeScroll = HashNotesPage.getTagSidebar().tagSumYAxis();
+
+    browser.config.ScenarioCtx["tagListBeforeScroll"] = tagListBeforeScroll;
+
+    HashNotesPage.getTagSidebar().scrollIntoViewTag(numOfTags);
 });
 
 

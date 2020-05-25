@@ -13,7 +13,6 @@ Given(/^the Hashnotes application is opened$/, {}, () => {
 //Create note feature
 Given(/^there is only one note in the list$/, {}, () => {
     let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
-    // console.log(numOfNotes);
     if (numOfNotes > 1){
         for(let i = 1; i < numOfNotes; i++ ){
             HashNotesPage.getNoteEditor().openFileMenu();
@@ -395,14 +394,52 @@ Given(/^there are several notes added$/, {},() =>{
 });
 // Viewport changes
 Given(/^there is a note with text added on multiple rows$/, {},() =>{
+    let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    if (numOfNotes > 1){
+        for(let i = 1; i < numOfNotes; i++ ){
+            HashNotesPage.getNoteEditor().openFileMenu();
+            HashNotesPage.getNoteEditor().deleteNote()
+            HashNotesPage.getPrompt().dismissBtnClick();
+        }
+    }
+    
+    browser.switchToFrame(switchFrame);
+    HashNotesPage.getNoteEditor().addAreaText('test');
+    browser.keys('Enter');
+
+    for (let i = 2; i < 25; i++){
+        let headingInViewPort = HashNotesPage.getNoteEditor().headingInViewPort()
+        if(headingInViewPort !== false){
+            browser.keys('Enter');
+            HashNotesPage.getNoteEditor().addParagraf(i, `${i}`)
+
+        }else{
+            break;
+        }
+    }
+
+    let numOfParagrafs = HashNotesPage.getNoteEditor().numOfParagrafs();
+    browser.config.ScenarioCtx["numOfParagrafs"] = numOfParagrafs;
+    let lastPagrafBeforeScroll = HashNotesPage.getNoteEditor().paragrafInViewPort(numOfParagrafs)
+
+    browser.config.ScenarioCtx["lastPagrafBeforeScroll"] = lastPagrafBeforeScroll;
+});
+
+Given(/^ther is a note with different tags added on multiple rows$/, {},() =>{
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+
+    HashNotesPage.getNoteSidebar().addNewNoteSidebar();
+    
     browser.switchToFrame(switchFrame);
     HashNotesPage.getNoteEditor().addAreaText('#bla');
     browser.keys('Enter');
 
-    
-    HashNotesPage.getNoteEditor().addParagraf(2, 'bla')
+    for (let i = 2; i < 11; i++){
+        
+            browser.keys('Enter');
+            HashNotesPage.getNoteEditor().addParagraf(i, `#${i}`)
 
-    browser.debug()
+    }
 });
 

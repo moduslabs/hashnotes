@@ -8,6 +8,19 @@ class TagSidebarCo {
 
     get numOfBullets() {return this.component.$$('//div[@class="content"]');}
 
+    get tagSumLocYAxis() {return $('//div[@class="tag-summary"]')}
+
+    tagDisplayedInViewPort(displayed){
+        return $(`.tag-container:nth-child(${3 + displayed} )`).isDisplayedInViewport();
+    }
+
+    scrollIntoViewTag(tag) {
+        $(`.tag-container:nth-child(${3 + tag} )`).scrollIntoView();
+    }
+
+    tagSumYAxis(){
+        return this.tagSumLocYAxis.getLocation('y');
+    }
 
     numOfBulletsSum(){
         return this.numOfBullets.length;

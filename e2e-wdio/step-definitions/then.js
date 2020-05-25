@@ -3,6 +3,7 @@ import HashNotesPage from '../page_objects/dashboard.page'
 import moment from 'moment';
 import { get } from 'http';
 import { connect } from 'http2';
+import { truncate } from 'fs';
 
 //Create note feature
 Then(/^a new note is created automatically with updated timestamp$/, {}, () => {
@@ -662,8 +663,8 @@ Then (/^note with (.*) is found$/, {}, (text) => {
         throw new Error(`The note with ${text} text is not found`)
     }
 });
-
-Then (/^note displayed view port$/, {}, () => {
+// Viewport changes
+Then (/^note displayed viewport$/, {}, () => {
     let listSize = HashNotesPage.getNoteSidebar().getNumberOfNotes();
 
     let firstNoteDisplayed = HashNotesPage.getNoteSidebar().displayedInViewPort(listSize);
@@ -674,7 +675,7 @@ Then (/^note displayed view port$/, {}, () => {
     }
 
 });
-
+// Viewport changes
 Then (/^list note is scrollable$/, {}, () => {
     let listBeforeScroll = browser.config.ScenarioCtx["listBeforeScroll"];
 
@@ -683,11 +684,68 @@ Then (/^list note is scrollable$/, {}, () => {
     let lastNoteDisplayed = HashNotesPage.getNoteSidebar().displayedInViewPort(1);
 
     if (listBeforeScroll !== listAfterScroll && lastNoteDisplayed === false){
+
         return true;
     }else {
-        throw new Error('List note is not scrollable')
+        throw new Error('List note is not scrollable');
     }
 
 });
+// Viewport changes
+Then (/^first row is displayed in viewport$/, {}, () => {
+    
+    let headingInViewPort = HashNotesPage.getNoteEditor().headingInViewPort()
+
+    if(headingInViewPort === true){
+        return true;
+    }else {
+        throw new Error('First row is not displayed in viewport')
+    }
+
+});
+// Viewport changes
+Then (/^text area is scrollable$/, {}, () => {
+    
+    let numOfParagrafs = browser.config.ScenarioCtx["numOfParagrafs"]
+    let lastPagrafBeforeScroll = browser.config.ScenarioCtx["lastPagrafBeforeScroll"]
+    let lastPagrafAfterScroll = HashNotesPage.getNoteEditor().paragrafInViewPort(numOfParagrafs)
+
+    if (lastPagrafAfterScroll !== lastPagrafBeforeScroll){
+        return true;
+    }else {
+        throw new Error('Text area is not scrollable')
+    }
+});
+
+Then (/^tag is displayed in viewport$/, {}, () => {
+    let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
+
+    let lastTagDisplayedInViewPort = HashNotesPage.getTagSidebar().tagDisplayedInViewPort(numOfTags);
+
+    if (lastTagDisplayedInViewPort === true){
+        return true;
+    }else {
+        throw new Error ('Last tag is not displayed in viewport')
+    }
+});
+
+Then (/^"Tag Summary" is scrollable$/, {}, () => {
+
+    let tagListBeforeScroll = browser.config.ScenarioCtx["tagListBeforeScroll"]
+
+    let tagListAfterScroll = HashNotesPage.getTagSidebar().tagSumYAxis();
+
+    let firstTagDisplayedInViewPort = HashNotesPage.getTagSidebar().tagDisplayedInViewPort(1);
+
+    if (tagListBeforeScroll !== tagListAfterScroll && firstTagDisplayedInViewPort === false){
+        return true;
+    }else{
+        throw new Error("'Tag Summary' is not scrollable");
+    }
+});
+
+
+
+
 
 
