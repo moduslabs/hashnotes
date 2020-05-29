@@ -14,7 +14,7 @@ class NoteEditorCo {
 
     get statusBar() { return this.component.$('.//div[@class="tox-statusbar"]'); }
 
-    get fileMenu() { return this.component.$('.//span[text()="File"]');}
+    get fileMenu() { return this.component.$('//span[text()="File"]');}
 
     get newNoteBtn () {return this.componentMenu.$('//div[@title="New note"]');}
 

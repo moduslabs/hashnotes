@@ -10,6 +10,17 @@ class TagSidebarCo {
 
     get tagSumLocYAxis() {return $('//div[@class="tag-summary"]')}
 
+    get exportBtnSummary() { return $('ion-button.export-button');}
+
+    get copyBtnSummary() {return $('ion-button.copy-button');}
+
+    clickCopySummary() {
+        this.copyBtnSummary.click();
+    }
+
+    clickExportSummary(){
+        this.exportBtnSummary.click();
+    }
     tagDisplayedInViewPort(displayed){
         return $(`.tag-container:nth-child(${3 + displayed} )`).isDisplayedInViewport();
     }
@@ -30,7 +41,7 @@ class TagSidebarCo {
         return this.numOfTags.length;
     }
 
-    isTagDisplayed(){
+    tagText(){
         return this.tagSumText.getText();
     }
 

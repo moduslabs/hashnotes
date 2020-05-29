@@ -66,7 +66,7 @@ class NoteSidebarCo {
     }
 
     newButtonExists(){
-        this.newButtonSideBar.isExisting();
+        return this.newButtonSideBar.isExisting();
     }
 
     addNewNoteSidebar(){

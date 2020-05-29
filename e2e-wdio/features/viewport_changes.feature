@@ -20,7 +20,7 @@ Feature: Scroll bar is displayed
         Then text area is scrollable
 
     Scenario: Tag Summary is scrollable
-        Given ther is a note with different tags added on multiple rows
+        Given there is a note with different tags added on multiple rows
         When the user selects the last tag added which is not displayed in viewport
         Then tag is displayed in viewport
         Then "Tag Summary" is scrollable

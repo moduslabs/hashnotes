@@ -4,6 +4,7 @@ import moment from 'moment';
 import { get } from 'http';
 import { connect } from 'http2';
 import { truncate } from 'fs';
+import { compileFunction } from 'vm';
 
 //Create note feature
 Then(/^a new note is created automatically with updated timestamp$/, {}, () => {
@@ -387,7 +388,7 @@ Then (/^'#bla' tag is created$/, {}, () => {
 // Create tag summary
 Then (/^displayed in the "Tag Summary" section$/, {}, () => {
     browser.switchToFrame(null)
-    let tagSumDisplayed = HashNotesPage.getTagSidebar().isTagDisplayed();
+    let tagSumDisplayed = HashNotesPage.getTagSidebar().tagText();
     console.log(tagSumDisplayed)
     if (tagSumDisplayed === '#bla'){
         browser.keys(['Meta', 'a']);
@@ -492,7 +493,7 @@ Then (/^"test" text is displayed after each tag in the "Tag Summary" section$/, 
 // Create tag summary
 Then (/^"#tag" is created automatically with no space$/, {}, () => {
     browser.switchToFrame(null);
-    let hashTagName = HashNotesPage.getTagSidebar().isTagDisplayed();
+    let hashTagName = HashNotesPage.getTagSidebar().tagText();
 
     let splitHashtag = hashTagName.split("")
     for (let i = 0; i < splitHashtag.length; i++){
@@ -716,7 +717,7 @@ Then (/^text area is scrollable$/, {}, () => {
         throw new Error('Text area is not scrollable')
     }
 });
-
+// Viewport changes
 Then (/^tag is displayed in viewport$/, {}, () => {
     let numOfTags = HashNotesPage.getTagSidebar().numOfTagsSum();
 
@@ -728,7 +729,7 @@ Then (/^tag is displayed in viewport$/, {}, () => {
         throw new Error ('Last tag is not displayed in viewport')
     }
 });
-
+// Viewport changes
 Then (/^"Tag Summary" is scrollable$/, {}, () => {
 
     let tagListBeforeScroll = browser.config.ScenarioCtx["tagListBeforeScroll"]
@@ -743,6 +744,23 @@ Then (/^"Tag Summary" is scrollable$/, {}, () => {
         throw new Error("'Tag Summary' is not scrollable");
     }
 });
+// Copy Summary
+Then (/^only one tag with one bullet is displayed in "Tag Summary"$/, {}, () => {
+    browser.switchToFrame(null);
+    
+    let numBullets = HashNotesPage.getTagSidebar().numOfBulletsSum();
+    let numTags = HashNotesPage.getTagSidebar().numOfTagsSum(); 
+
+    if (numTags === 1 && numBullets === 1){
+        console.log('bla')
+        return true;
+    }else {
+        throw new Error(`Number of Tags: ${numTags} and Number of Bullets: ${numBullets}`);
+    }
+
+    
+});
+
 
 
 

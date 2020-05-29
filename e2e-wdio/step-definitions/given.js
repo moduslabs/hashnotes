@@ -1,17 +1,18 @@
 import { Given } from 'cucumber';
 import HashNotesPage from '../page_objects/dashboard.page';
 import moment from 'moment';
-import { connect } from 'http2';
 
 
 Given(/^the Hashnotes application is opened$/, {}, () => {
     HashNotesPage.open();
-    browser.setWindowSize(1600, 1200)
     HashNotesPage.getPrompt().waitForTiny();
     HashNotesPage.getPrompt().closeBtnClickTiny();
 });
 //Create note feature
 Given(/^there is only one note in the list$/, {}, () => {
+
+    browser.setWindowSize(1600, 1200)
+    
     let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     if (numOfNotes > 1){
         for(let i = 1; i < numOfNotes; i++ ){
@@ -76,6 +77,8 @@ Given(/^a new note is added$/, {}, () => {
 });
 // Delete notes from trash folder
 Given(/^there is a note in the "Trash Folder"$/, {}, () => {
+    browser.setWindowSize(1600, 1200)
+
     HashNotesPage.getNoteEditor().openFileMenu()
     HashNotesPage.getNoteEditor().deleteNote()
     HashNotesPage.getPrompt().dismissBtnClick();
@@ -117,7 +120,10 @@ Given(/^a new note is added in the trash folder$/, {}, () => {
       
 });
 // Notes editor
-Given(/^(.*) text is added to the note$/, {},(text) =>{  
+Given(/^(.*) text is added to the note$/, {},(text) =>{
+
+    browser.setWindowSize(1600, 1200)
+
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame); 
 
@@ -338,7 +344,7 @@ Given(/^the user has a note which contains a tag$/, {},() =>{
  });
 // Search notes trash folder
  Given(/^several notes with random text are in the "Trash Folder"$/, {},() =>{ 
-    
+     browser.setWindowSize(1600, 1200)
 
     HashNotesPage.getNoteSidebar().newButtonDisplayed();
     let textWords = ['test','random', 'word', 'simple', 'another', 'word']
@@ -368,13 +374,22 @@ Given(/^a note containing (.*) text is added in the "Trash Folder"$/, {},(text) 
     HashNotesPage.getNoteEditor().deleteNoteEditor();
 
 });
+//Copy Summary
 Given(/^"test" text is added after "#1" tag$/, {},() =>{ 
+    browser.maximizeWindow();
+
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
     browser.switchToFrame(switchFrame);
 
     HashNotesPage.getNoteEditor().addAreaText('#1')
     browser.keys('Space')
     HashNotesPage.getNoteEditor().addAreaText('test')
+});
+//Copy Summary
+Given(/^the "Copy" button from "Tag Summary" is clicked$/, {},() =>{
+    browser.switchToFrame(null)
+    let copyBtn = $('ion-button.copy-button');
+    browser.execute("arguments[0].click();", copyBtn);
 });
 // Viewport changes
 Given(/^there are several notes added$/, {},() =>{ 
@@ -425,8 +440,8 @@ Given(/^there is a note with text added on multiple rows$/, {},() =>{
 
     browser.config.ScenarioCtx["lastPagrafBeforeScroll"] = lastPagrafBeforeScroll;
 });
-
-Given(/^ther is a note with different tags added on multiple rows$/, {},() =>{
+// Viewport changes
+Given(/^there is a note with different tags added on multiple rows$/, {},() =>{
     let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
 
     HashNotesPage.getNoteSidebar().addNewNoteSidebar();

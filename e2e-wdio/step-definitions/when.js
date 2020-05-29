@@ -363,7 +363,7 @@ When(/^the user updates the tag$/, {},() =>{
 
     
     browser.switchToFrame(null);
-    let initTagSummary = HashNotesPage.getTagSidebar().isTagDisplayed();
+    let initTagSummary = HashNotesPage.getTagSidebar().tagText();
     browser.config.ScenarioCtx["initTagSummary"] = initTagSummary;
     
     let editTagSummary = initTagSummary.replace(/Tag/g, 'Edit');
@@ -481,7 +481,7 @@ When(/^the user selects the first row of the note which is not displayed in view
     }
         
 });
-
+// Viewport changes
 When(/^the user selects the last tag added which is not displayed in viewport$/, {},() =>{
     browser.switchToFrame(null);
 
@@ -491,6 +491,31 @@ When(/^the user selects the last tag added which is not displayed in viewport$/,
     browser.config.ScenarioCtx["tagListBeforeScroll"] = tagListBeforeScroll;
 
     HashNotesPage.getTagSidebar().scrollIntoViewTag(numOfTags);
+});
+// Copy Summary
+When(/^the users uses the paste command in a new note$/, {},() =>{
+    browser.switchToFrame(null)
+    let newBtn = $('ion-button.new-note-button');
+    browser.execute("arguments[0].click();", newBtn);
+
+    let switchFrame = $('//iframe[@class="tox-edit-area__iframe"]')
+    browser.switchToFrame(switchFrame);
+    
+    browser.keys(['Meta', 'v']);
+});
+When(/^the user clicks the "Export Summary" button$/, {},() =>{
+    browser.acceptAlert()
+    HashNotesPage.getTagSidebar().clickExportSummary();
+   let windowHandles = browser.getWindowHandle()
+   let windowTitle = browser.getTitle();
+
+    console.log(windowTitle)
+    console.log(windowHandles)
+ 
+    browser.switchToWindow(windowHandles);
+    browser.acceptAlert()
+    $('//cr-button[@class="action-button"]').click()
+    
 });
 
 
