@@ -12,7 +12,7 @@ Given(/^the Hashnotes application is opened$/, {}, () => {
 Given(/^there is only one note in the list$/, {}, () => {
 
     browser.setWindowSize(1600, 1200)
-    
+
     let numOfNotes = HashNotesPage.getNoteSidebar().getNumberOfNotes();
     if (numOfNotes > 1){
         for(let i = 1; i < numOfNotes; i++ ){
@@ -397,7 +397,7 @@ Given(/^there are several notes added$/, {},() =>{
 
     HashNotesPage.getNoteSidebar().newButtonDisplayed();
 
-    for (let  i = 0; i < 6; i++){
+    for (let  i = 0; i < 10; i++){
         // Scroll bar is displayed in full screen(screen size 1920 * 1080) only if seven notes are added. 
         browser.switchToFrame(switchFrame);
         HashNotesPage.getNoteEditor().addAreaText(`Note ${i}`)
@@ -423,7 +423,7 @@ Given(/^there is a note with text added on multiple rows$/, {},() =>{
     HashNotesPage.getNoteEditor().addAreaText('test');
     browser.keys('Enter');
 
-    for (let i = 2; i < 25; i++){
+    for (let i = 2; i < 35; i++){
         let headingInViewPort = HashNotesPage.getNoteEditor().headingInViewPort()
         if(headingInViewPort !== false){
             browser.keys('Enter');
@@ -450,7 +450,7 @@ Given(/^there is a note with different tags added on multiple rows$/, {},() =>{
     HashNotesPage.getNoteEditor().addAreaText('#bla');
     browser.keys('Enter');
 
-    for (let i = 2; i < 11; i++){
+    for (let i = 2; i < 15; i++){
         
             browser.keys('Enter');
             HashNotesPage.getNoteEditor().addParagraf(i, `#${i}`)

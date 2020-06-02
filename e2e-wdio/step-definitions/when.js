@@ -504,8 +504,9 @@ When(/^the users uses the paste command in a new note$/, {},() =>{
     browser.keys(['Meta', 'v']);
 });
 When(/^the user clicks the "Export Summary" button$/, {},() =>{
-    browser.acceptAlert()
+    //browser.execute("window.print = function(){ return false;};");
     HashNotesPage.getTagSidebar().clickExportSummary();
+
    let windowHandles = browser.getWindowHandle()
    let windowTitle = browser.getTitle();
 
@@ -513,8 +514,10 @@ When(/^the user clicks the "Export Summary" button$/, {},() =>{
     console.log(windowHandles)
  
     browser.switchToWindow(windowHandles);
-    browser.acceptAlert()
+   
     $('//cr-button[@class="action-button"]').click()
+
+
     
 });
 
