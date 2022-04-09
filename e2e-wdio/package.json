@@ -29,7 +29,7 @@
     "webdriverio": "^6.0.13"
   },
   "dependencies": {
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "selenium-standalone": "^6.16.0"
   }
 }
