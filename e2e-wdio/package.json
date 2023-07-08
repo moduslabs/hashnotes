@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "moment": "^2.24.0",
-    "selenium-standalone": "^6.16.0"
+    "selenium-standalone": "^6.24.0"
   }
 }
